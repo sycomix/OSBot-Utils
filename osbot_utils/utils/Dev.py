@@ -19,9 +19,9 @@ class Dev:
 
     @staticmethod
     def pprint(*args):
-        print()                                 # add a line before
+        print()                                # add a line before
         for arg in args:
-            pprint.pprint(arg, indent=2)  # use a pprint to format
+            pprint.pprint(arg, indent=2)       # use a pprint to format
         if len(args) == 1:
             return args[0]
         return args
