@@ -1,7 +1,6 @@
 import json
 import pprint
 
-
 class Dev:
     @staticmethod
     def jformat(data):
@@ -28,7 +27,7 @@ class Dev:
 
     @staticmethod
     def print(data):
-        print()                                 # add a line before
+        print()                                # add a line before
         print(data)
         return data
 

@@ -4,12 +4,17 @@ from osbot_utils.utils.Dev  import Dev
 
 class Test_Dev(TestCase):
 
-    # Capture_Print is not needed any more since unittest.mock path decorator is a much better solution
-    # def test_pprint(self): 
-    #     with Capture_Print():
-    #         assert Dev.pprint('aaa')     == 'aaa'
-    #         assert Dev.pprint('aaa',123) == ('aaa',123)
-    #     assert Capture_Print.captured_values == [{'args': (), 'options': {}}, {'args': (), 'options': {}}]
+    def test_jformat(self):
+        assert Dev.jformat({'answer': 42}) == '{\n    "answer": 42\n}'
+
+    @patch('builtins.print')
+    def test_jprint(self, builtins_print):
+        assert Dev.jprint({'answer': 42}) == {'answer': 42 }
+        assert builtins_print.call_count == 2
+        builtins_print.assert_has_calls([call(), call('{\n    "answer": 42\n}')])
+
+    def test_pformat(self):
+        assert Dev.pformat({'answer': 42}) == "{'answer': 42}"
 
     @patch('builtins.print')
     def test_pprint__confirm_call_to_builtins_print(self, builtins_print):
@@ -19,20 +24,18 @@ class Test_Dev(TestCase):
         builtins_print.assert_called_with()                     # confirm last call was made with no params
         builtins_print.assert_has_calls([call(),call()])        # confirm values of two calls
 
-
-
-
-
-
-
-
     @patch('pprint.pprint')
-    @patch('builtins.print')
-    def atest_pprint_2(self, builtins_print,pprint_pprint):
-        Dev.pprint('aaa', 123)
-        builtins_print.assert_called_once_with()
-        pprint_pprint.assert_called_with(123, indent=2)
-        pprint_pprint.assert_has_calls([call('aaa',indent=2),call(123,indent=2)])
+    def test_pprint__confirm_call_to_pprint_pprint(self, pprint_pprint):
+        assert Dev.pprint('1st'    )    == '1st'
+        assert Dev.pprint('2nd',123)    == ('2nd',123)
+        assert pprint_pprint.call_count == 3
+        pprint_pprint.assert_has_calls([call('1st', indent=2), call('2nd', indent=2),call(123, indent=2)])
 
+
+    @patch('builtins.print')
+    def test_print(self, builtins_print):
+        assert Dev.print({'answer': 42}) == {'answer': 42 }
+        assert builtins_print.call_count == 2
+        builtins_print.assert_has_calls([call(), call({'answer': 42})])
 
 
