@@ -5,25 +5,22 @@ import string
 import textwrap
 import re
 from time import sleep
+from osbot_utils.decorators.Type_Check import function_type_check
 
-from osbot_utils.decorators.Type_Check import class_type_check, function_type_check
-
-
-#@class_type_check
 class Misc:
 
     @staticmethod
     @function_type_check
-    def array_add(array, value):
+    def array_add(array : list, value):
         if value is not None:
             array.append(value)
         return value
 
     @staticmethod
-    def array_find(array, item):
-        if type(array) is list:
-            if item in array:
-                return array.index(item)
+    @function_type_check
+    def array_find(array:list, item):
+        if item in array:
+            return array.index(item)
         return -1
 
     @staticmethod

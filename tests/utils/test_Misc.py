@@ -9,19 +9,19 @@ class test_Misc(TestCase):
 
     def test_array_add(self):
         array = ['aaa']
-        assert Misc.array_add(array,'abc') == 'abc'
-        assert Misc.array_add(array, None) is None
-        assert array                       == ['aaa','abc']
+        self.assertEqual  (Misc.array_add(array,'abc'), 'abc'       )
+        self.assertIsNone (Misc.array_add(array, None)              )
+        self.assertEqual  (array                      ,['aaa','abc'])
 
     def test_array_find(self):
         array = ['1',2,'3']
-        assert Misc.array_find(array, '1' ) == 0
-        assert Misc.array_find(array,  2  ) == 1
-        assert Misc.array_find(array, '3' ) == 2
-        assert Misc.array_find(array, 'a' ) == -1
-        assert Misc.array_find(array, None) == -1
-        assert Misc.array_find(None , None) == -1
-        assert Misc.array_find('a'  , None) == -1
+        self.assertEqual  (Misc.array_find(array, '1' ),  0)
+        self.assertEqual  (Misc.array_find(array,  2  ),  1)
+        self.assertEqual  (Misc.array_find(array, '3' ),  2)
+        self.assertEqual  (Misc.array_find(array, 'a' ), -1)
+        self.assertEqual  (Misc.array_find(array, None), -1)
+        self.assertRaises (Exception, Misc.array_find, None, None)
+        self.assertRaises (Exception, Misc.array_find, 'a', None)
 
     def test_array_get(self):
         array = ['1',2,'3']
