@@ -1,7 +1,7 @@
 import socket
 import ssl
 from   urllib.request import Request, urlopen
-#import websocket
+
 
 
 def DELETE(url, data='', headers={}):

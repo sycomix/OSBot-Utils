@@ -1,10 +1,8 @@
-
 from unittest import TestCase
-from pbx_gs_python_utils.utils.Files import Files
-from pbx_gs_python_utils.utils.Temp_File import Temp_File
+from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Temp_File import Temp_File
 
-
-class Test_Temp_File(TestCase):
+class test_Temp_File(TestCase):
 
     def test__init__(self):
         temp_file = Temp_File()

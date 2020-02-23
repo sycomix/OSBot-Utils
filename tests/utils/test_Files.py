@@ -1,11 +1,8 @@
+from unittest                import TestCase
+from osbot_utils.utils.Files import Files
 
 
-from unittest import TestCase
-
-from pbx_gs_python_utils.utils.Files import Files
-
-
-class Test_Files(TestCase):
+class test_Files(TestCase):
 
     def test_folder_create(self):
         tmp_folder = '_tmp_folder'
@@ -28,4 +25,4 @@ class Test_Files(TestCase):
 
     def test_temp_folder(self):
         assert Files.exists(Files.temp_folder())
-        assert '/tmp/aa_'  in Files.temp_folder('_bb','aa_','/tmp')
+        assert 'aa_'  in Files.temp_folder('_bb','aa_','/tmp')

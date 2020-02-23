@@ -1,14 +1,12 @@
 import json
 from unittest import TestCase
 
-from pbx_gs_python_utils.utils.Dev import Dev
-from pbx_gs_python_utils.utils.Files import Files
-from pbx_gs_python_utils.utils.Misc import Misc
-from pbx_gs_python_utils.utils.Unzip_File import Unzip_File
-from pbx_gs_python_utils.utils.Zip_Folder import Zip_Folder
+from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Unzip_File import Unzip_File
+from osbot_utils.utils.Zip_Folder import Zip_Folder
 
 
-class Test_Unzip_File(TestCase):
+class test_Unzip_File(TestCase):
 
     def test__using_with__no_params(self):
         with Unzip_File() as (temp_Folder):

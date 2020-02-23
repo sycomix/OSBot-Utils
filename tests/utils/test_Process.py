@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from utils.Dev      import Dev
-from utils.Process  import Process
+from osbot_utils.utils.Dev import Dev
+from osbot_utils.utils.Process import Process
 
 
-class Test_Process(TestCase):
+class test_Process(TestCase):
 
     def test_run__ls(self):
         result = Process.run('ls')

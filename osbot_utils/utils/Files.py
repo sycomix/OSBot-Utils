@@ -133,6 +133,7 @@ class Files:
     @staticmethod
     def temp_folder(prefix=None, suffix=None,parent_folder=None):
         return tempfile.mkdtemp(suffix, prefix, parent_folder)
+
     @staticmethod
     def write(path,contents):
         with open(path, "w") as file:
