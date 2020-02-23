@@ -1,51 +1,61 @@
 import hashlib
 import json
-import pprint
 import random
 import string
 import textwrap
 import re
 from time import sleep
 
+from osbot_utils.decorators.Type_Check import class_type_check, function_type_check
+
+
+#@class_type_check
 class Misc:
 
-
     @staticmethod
+    @function_type_check
     def array_add(array, value):
-        array.append(value)
+        if value is not None:
+            array.append(value)
         return value
 
     @staticmethod
     def array_find(array, item):
-        try:
-            return array.index(item)
-        except:
-            return None
+        if type(array) is list:
+            if item in array:
+                return array.index(item)
+        return -1
 
     @staticmethod
     def array_get(array, position=None):
-        if array and len(array) > 0:
-            if (position is not None) and len(array) > position:
-                return array[position]
+        if type(array) is list:
+            if type(position) is int and position >=0 :
+                if  len(array) > position:
+                    return array[position]
 
     @staticmethod
-    def array_pop(array, position=None):
-        if array and len(array) >0:
-            if (position is not None) and len(array) > position:
-                return array.pop(position)
-            else:
-                return array.pop()
+    def array_pop(array:list, position=None):
+        if array:
+            if len(array) >0:
+                if type(position) is int:
+                    if len(array) > position:
+                        return array.pop(position)
+                else:
+                    return array.pop()
 
     @staticmethod
     def array_pop_and_trim(array, position=None):
         value = Misc.array_pop(array,position)
-        return Misc.trim(value)
+        if type(value) is str:
+            return Misc.trim(value)
+        return value
 
 
     @staticmethod
-    def chunks(items, split):
-        for i in range(0, len(items), split):
-            yield items[i:i + split]
+    def chunks(items:list, split: int):
+        if items and split and split > 0:
+            for i in range(0, len(items), split):
+                yield items[i:i + split]
 
     @staticmethod
     def class_name(target):

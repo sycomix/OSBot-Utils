@@ -1,12 +1,7 @@
 import base64
-#import subprocess
-#import tempfile
 from os.path import abspath, join
 
-#import requests
-from osbot_aws.apis.Lambda import Lambda
-
-from pbx_gs_python_utils.utils.Files import Files
+from osbot_utils.utils.Files import Files
 
 
 class API_Plant_UML:
@@ -41,16 +36,16 @@ class API_Plant_UML:
     #             f.write(response.content)
     #     return tmp_png_file
 
-    def puml_to_png_using_lambda_function(self,puml, target_file = None):
-        if target_file is None : target_file = self.tmp_png_file
-        puml_to_png  = Lambda('utils.puml_to_png').invoke
-        result       = puml_to_png({"puml": puml})
-        if result.get('png_base64'):
-            with open(target_file, "wb") as fh:
-                fh.write(base64.decodebytes(result['png_base64'].encode()))
-            return target_file
-        print('\nError: no png_base64 field in puml_to_png data: {0}'.format(result))
-        return None
+    # def puml_to_png_using_lambda_function(self,puml, target_file = None):
+    #     if target_file is None : target_file = self.tmp_png_file
+    #     puml_to_png  = Lambda('utils.puml_to_png').invoke
+    #     result       = puml_to_png({"puml": puml})
+    #     if result.get('png_base64'):
+    #         with open(target_file, "wb") as fh:
+    #             fh.write(base64.decodebytes(result['png_base64'].encode()))
+    #         return target_file
+    #     print('\nError: no png_base64 field in puml_to_png data: {0}'.format(result))
+    #     return None
 
     # def puml_to_png_using_local_jar_file(self, puml):
     #     (fd, tmp_file) = tempfile.mkstemp('.puml')

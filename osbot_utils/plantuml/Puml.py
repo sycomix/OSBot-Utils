@@ -1,6 +1,6 @@
-from pbx_gs_python_utils.plantuml.API_Plant_UML import API_Plant_UML
-from pbx_gs_python_utils.utils.Files import Files
-from pbx_gs_python_utils.utils.Misc import Misc
+from osbot_utils.plantuml.API_Plant_UML import API_Plant_UML
+from osbot_utils.utils                  import Misc
+from osbot_utils.utils.Files            import Files
 
 
 class Puml:
@@ -77,17 +77,7 @@ class Puml:
     def set_on_add_node(self, callback): self.on_add_node = callback ; return self
     def set_on_add_edge(self, callback): self.on_add_edge = callback ; return self
 
-    # def show(self):
-    #     self.api_plantuml.show(self.puml)
-
     def __str__(self):
         return self.puml
-
-    # other util method to be used during developemt
-
-    def _dev_send_to_slack(self):
-        from pbx_gs_python_utils.utils.slack.API_Slack import API_Slack
-        API_Slack().puml_to_slack(self.puml)
-
 
 
