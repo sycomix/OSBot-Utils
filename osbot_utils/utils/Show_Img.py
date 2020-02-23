@@ -2,7 +2,8 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import base64
 import os
-from   pbx_gs_python_utils.utils.Dev import Dev
+
+from osbot_utils.utils.Dev import Dev
 
 
 class Show_Img:
