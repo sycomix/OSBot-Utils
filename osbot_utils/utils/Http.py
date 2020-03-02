@@ -2,14 +2,18 @@ import socket
 import ssl
 from   urllib.request import Request, urlopen
 
+from osbot_utils.decorators.Method_Wrappers import catch
 
 
 def DELETE(url, data='', headers={}):
     return Http_Request(url, data, headers, 'DELETE')
 
-
+@catch
 def GET(url,headers = {}, encoding = 'utf-8'):
-    return Http_Request(url, data='', headers=headers, method='GET', encoding=encoding)
+    return Http_Request(url, headers=headers, method='GET', encoding=encoding)
+
+def OPTIONS(url,headers = {}, encoding = 'utf-8'):
+    return Http_Request(url, headers=headers, method='OPTIONS', encoding=encoding)
 
 
 def POST(url, data='', headers={}):
@@ -21,10 +25,13 @@ def PUT(url, data='', headers={}):
 
 
 def Http_Request(url, data='', headers={}, method='POST', encoding = 'utf-8' ):
-    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+    gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     request  = Request(url, data.encode(), headers=headers)
     request.get_method = lambda: method
-    return urlopen(request, context=gcontext).read().decode(encoding)
+    data = urlopen(request, context=gcontext).read()
+    if encoding:
+        return data.decode(encoding)
+    return data
 
 
 def WS_is_open(ws_url):
