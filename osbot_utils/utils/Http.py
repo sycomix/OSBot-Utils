@@ -25,7 +25,7 @@ def PUT(url, data='', headers={}):
 
 
 def Http_Request(url, data='', headers={}, method='POST', encoding = 'utf-8' ):
-    gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
     request  = Request(url, data.encode(), headers=headers)
     request.get_method = lambda: method
     data = urlopen(request, context=gcontext).read()
