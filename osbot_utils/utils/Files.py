@@ -45,6 +45,16 @@ class Files:
         return glob.glob(path_pattern, recursive=True)
 
     @staticmethod
+    def file_contents(path):
+        with open(path, "rt") as file:
+            return file.read()
+
+    @staticmethod
+    def file_contents_as_bytes(path):
+        with open(path, "rb") as file:
+            return file.read()
+
+    @staticmethod
     def files(path):
         search_path = Files.path_combine(path,'**/*.*')
         return Files.find(search_path)
@@ -117,6 +127,18 @@ class Files:
     @staticmethod
     def parent_folder_combine(file, path):
         return Files.path_combine(os.path.dirname(file),path)
+
+    @staticmethod
+    def save_string_as_file(path, data):
+        with open(path, 'w') as fp:
+            fp.write(data)
+        return path
+
+    @staticmethod
+    def save_bytes_as_file(path, bytes):
+        with open(path, 'wb') as fp:
+            fp.write(bytes)
+        return path
 
     @staticmethod
     def temp_file(extension = '.tmp'):
