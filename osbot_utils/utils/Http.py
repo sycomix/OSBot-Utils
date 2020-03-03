@@ -8,7 +8,6 @@ from osbot_utils.decorators.Method_Wrappers import catch
 def DELETE(url, data='', headers={}):
     return Http_Request(url, data, headers, 'DELETE')
 
-@catch
 def GET(url,headers = {}, encoding = 'utf-8'):
     return Http_Request(url, headers=headers, method='GET', encoding=encoding)
 
