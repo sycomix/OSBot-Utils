@@ -1,3 +1,4 @@
+import json
 import socket
 import ssl
 from   urllib.request import Request, urlopen
@@ -10,6 +11,9 @@ def DELETE(url, data='', headers={}):
 
 def GET(url,headers = {}, encoding = 'utf-8'):
     return Http_Request(url, headers=headers, method='GET', encoding=encoding)
+
+def GET_Json(*args, **kwargs):
+    return json.loads(GET(*args, **kwargs))
 
 def OPTIONS(url,headers = {}, encoding = 'utf-8'):
     return Http_Request(url, headers=headers, method='OPTIONS', encoding=encoding)
