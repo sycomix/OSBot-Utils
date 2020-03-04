@@ -135,9 +135,11 @@ class Files:
         return path
 
     @staticmethod
-    def save_bytes_as_file(path, bytes):
+    def save_bytes_as_file(bytes_to_save, path=None, extension=None):
+        if path is None:
+            path = Files.temp_file(extension)
         with open(path, 'wb') as fp:
-            fp.write(bytes)
+            fp.write(bytes_to_save)
         return path
 
     @staticmethod
