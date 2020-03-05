@@ -1,10 +1,10 @@
 from osbot_utils.utils.Files import Files
-from osbot_utils.utils.Misc import Misc
+from osbot_utils.utils.Misc  import random_filename
 
 
 class Temp_File:
     def __init__(self, contents='...', extension='tmp'):
-        self.tmp_file   = Misc.random_filename(extension)
+        self.tmp_file   = random_filename(extension)
         self.tmp_folder = Files.temp_folder()
         self.file_path  = Files.path_combine(self.tmp_folder, self.tmp_file)
         self.contents   = contents
