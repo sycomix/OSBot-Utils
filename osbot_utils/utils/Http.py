@@ -3,8 +3,6 @@ import socket
 import ssl
 from   urllib.request import Request, urlopen
 
-from osbot_utils.decorators.Method_Wrappers import catch
-
 
 def DELETE(url, data='', headers={}):
     return Http_Request(url, data, headers, 'DELETE')
