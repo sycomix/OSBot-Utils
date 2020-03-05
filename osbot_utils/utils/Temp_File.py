@@ -1,5 +1,5 @@
 from osbot_utils.utils.Files import Files
-from osbot_utils.utils.Misc  import random_filename
+from osbot_utils.utils.Misc import random_filename
 
 
 class Temp_File:

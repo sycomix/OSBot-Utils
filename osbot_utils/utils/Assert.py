@@ -1,6 +1,6 @@
 import re
 
-from osbot_utils.utils.Misc import Misc
+from osbot_utils.utils.Misc import class_name
 
 
 class Assert:
@@ -9,7 +9,7 @@ class Assert:
 
 
     def is_class(self, name):
-        assert Misc.class_name(self.target) in name
+        assert class_name(self.target) in name
 
     def contains(self, text):
         assert text in self.target
