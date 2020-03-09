@@ -157,3 +157,31 @@ def remove_html_tags(html):
     if html:
         TAG_RE = re.compile(r'<[^>]+>')
         return TAG_RE.sub('', html).replace('&nbsp;', ' ')
+
+
+def get_field(target, field, default=None):
+    if target is not None:
+        try:
+            value = getattr(target, field)
+            if value is not None:
+                return value
+        except:
+            pass
+    return default
+
+def get_missing_fields(target,field):
+    missing_fields = []
+    for field in field:
+        if get_field(target, field) is None:
+            missing_fields.append(field)
+    return missing_fields
+
+def last_letter(text):
+    if text and (type(text) is str) and len(text) > 0:
+        return text[-1]
+
+def random_text(prefix=None,length=12):
+    if prefix is None: prefix = 'text_'
+    if last_letter(prefix) != '_':
+        prefix += '_'
+    return random_string_and_numbers(length=length, prefix=prefix)
