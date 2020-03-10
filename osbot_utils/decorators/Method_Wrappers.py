@@ -1,6 +1,9 @@
 from functools import wraps
 
 # todo: create signature based on request params so that we don't cache when the params are different
+from osbot_utils.utils.Misc import get_missing_fields
+
+
 def cache(function):
     @wraps(function)
     def wrapper(*args,**kwargs):
@@ -36,6 +39,20 @@ class aws_inject:           # todo this method should not be osbot_utils (since 
             return function(*args,**kwargs)
         return wrapper                                              # return wrapper function
 
+class required_fields:
+    """checks that required fields are not null in the current object (does not work for for static methods)"""
+    def __init__(self, field_names):
+        self.field_names = field_names
+
+    def __call__(self, function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            target_obj = args[0]                                                        # self of the caller
+            missing_fields = get_missing_fields(target_obj, self.field_names)
+            if len(missing_fields) > 0:
+                raise  Exception(f'missing fields in {function.__name__}: {missing_fields}')
+            return function(*args,**kwargs)
+        return wrapper
 
 class remove:
     """removes the field from the return value of the function (if it exists"""
