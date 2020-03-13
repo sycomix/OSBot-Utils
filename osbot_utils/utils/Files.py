@@ -7,6 +7,27 @@ import tempfile
 import zipfile
 from   os.path import abspath, join
 
+# todo: add UnitTests to methods below
+
+
+def file_create(path, contents):
+    with open(path, "w") as file:
+        return file.write(contents)
+
+def file_exists(path):
+    return os.path.exists(path)  # todo: add check to see if it is a file
+
+def folder_exists(path):
+    return Files.exists(path)    # todo: add check to see if it is a folder
+
+def folder_create_temp(prefix=None, suffix=None,parent_folder=None):
+    return tempfile.mkdtemp(suffix, prefix, parent_folder)
+
+def path_combine(path1, path2):
+    return abspath(join(path1, path2))
+
+
+#todo: move methods below to top-level methods (making sure that all top level methods start with 'file(s)_' or 'folder(s)_'
 class Files:
     @staticmethod
     def copy(source, destination):
@@ -70,7 +91,7 @@ class Files:
         return ''
 
     @staticmethod
-    def folder_exists(path):          # add check to see if it is a folder
+    def folder_exists(path):          # todo: add check to see if it is a folder
         return Files.exists(path)
 
     @staticmethod
