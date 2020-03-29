@@ -19,13 +19,14 @@ def array_find(array:list, item):
         return array.index(item)
     return -1
 
-def array_get(array, position=None):
+def array_get(array, position=None, default=None):
     if type(array) is list:
         if type(position) is int and position >=0 :
             if  len(array) > position:
                 return array[position]
+    return default
 
-def array_pop(array:list, position=None):
+def array_pop(array:list, position=None, default=None):
     if array:
         if len(array) >0:
             if type(position) is int:
@@ -33,6 +34,7 @@ def array_pop(array:list, position=None):
                     return array.pop(position)
             else:
                 return array.pop()
+    return default
 
 def array_pop_and_trim(array, position=None):
     value = array_pop(array,position)
