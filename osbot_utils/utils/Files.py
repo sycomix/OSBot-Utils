@@ -40,6 +40,17 @@ def save_bytes_as_file(bytes_to_save, path=None, extension=None):
         fp.write(bytes_to_save)
     return path
 
+def temp_file(extension = '.tmp'):
+    (fd, tmp_file) = tempfile.mkstemp(extension)
+    return tmp_file
+
+def temp_filename(extension='.tmp'):
+    if len(extension) > 0 and extension[0] != '.':  # make sure the extension starts with a dot
+        extension = '.' + extension
+    return Files.file_name(Files.temp_file(extension))
+
+def temp_folder(prefix=None, suffix=None,parent_folder=None):
+    return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
 #todo: move methods below to top-level methods (making sure that all top level methods start with 'file(s)_' or 'folder(s)_'
 class Files:
