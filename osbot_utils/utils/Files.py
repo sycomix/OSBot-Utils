@@ -26,7 +26,7 @@ def folder_create_temp(prefix=None, suffix=None,parent_folder=None):
 def path_combine(path1, path2):
     return abspath(join(path1, path2))
 
-def save_string_as_file(data, path, extension=None):
+def save_string_as_file(data, path=None, extension=None):
     if path is None:
         path = Files.temp_file(extension)
     with open(path, 'w') as fp:
