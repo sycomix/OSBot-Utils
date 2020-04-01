@@ -3,12 +3,18 @@ import socket
 import ssl
 from   urllib.request import Request, urlopen
 
+from osbot_utils.utils.Files import save_bytes_as_file
+
 
 def DELETE(url, data='', headers={}):
     return Http_Request(url, data, headers, 'DELETE')
 
-def GET(url,headers = {}, encoding = 'utf-8'):
+def GET(url,headers = None, encoding='utf-8'):
     return Http_Request(url, headers=headers, method='GET', encoding=encoding)
+
+def GET_bytes_to_file(url,path=None,headers=None,):
+    file_bytes = GET(url, headers=headers, encoding=None)
+    return save_bytes_as_file(file_bytes, path)
 
 def GET_Json(*args, **kwargs):
     return json.loads(GET(*args, **kwargs))
@@ -25,7 +31,8 @@ def PUT(url, data='', headers={}):
     return Http_Request(url, data, headers, 'PUT')
 
 
-def Http_Request(url, data='', headers={}, method='POST', encoding = 'utf-8' ):
+def Http_Request(url, data='', headers=None, method='POST', encoding = 'utf-8' ):
+    headers = headers or {}
     gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
     request  = Request(url, data.encode(), headers=headers)
     request.get_method = lambda: method
