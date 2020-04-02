@@ -131,7 +131,7 @@ def to_int(value):
     try:
         return int(value)
     except:
-        return None
+        return -1
 
 def wait(seconds):
     sleep(seconds)
