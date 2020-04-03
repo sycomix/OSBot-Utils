@@ -127,11 +127,11 @@ def trim(target):
         return target.strip()
     return target
 
-def to_int(value):
+def to_int(value, default=0):
     try:
         return int(value)
     except:
-        return 0
+        return default
 
 def wait(seconds):
     sleep(seconds)
