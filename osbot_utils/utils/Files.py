@@ -7,7 +7,7 @@ import tempfile
 import zipfile
 from   os.path import abspath, join
 
-# todo: add UnitTests to methods below
+# todo: add UnitTests to methods below (and refactor Files class to use these methods)
 
 
 def file_create(path, contents):
@@ -17,8 +17,23 @@ def file_create(path, contents):
 def file_exists(path):
     return os.path.exists(path)  # todo: add check to see if it is a file
 
+def file_not_exists(path):
+    return file_exists(path) is False
+
 def folder_exists(path):
-    return Files.exists(path)    # todo: add check to see if it is a folder
+    return Files.exists(path)
+
+def folder_create(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+    if Files.folder_exists(path):
+        return path
+    return None
 
 def folder_create_temp(prefix=None, suffix=None,parent_folder=None):
     return tempfile.mkdtemp(suffix, prefix, parent_folder)

@@ -1,6 +1,7 @@
 import json
 import socket
 import ssl
+from urllib.error import HTTPError
 from   urllib.request import Request, urlopen
 
 from osbot_utils.utils.Files import save_bytes_as_file
@@ -13,8 +14,12 @@ def GET(url,headers = None, encoding='utf-8'):
     return Http_Request(url, headers=headers, method='GET', encoding=encoding)
 
 def GET_bytes_to_file(url,path=None,headers=None,):
-    file_bytes = GET(url, headers=headers, encoding=None)
-    return save_bytes_as_file(file_bytes, path)
+    try:
+        file_bytes = GET(url, headers=headers, encoding=None)
+        return save_bytes_as_file(file_bytes, path)
+    except HTTPError:
+        return None
+
 
 def GET_Json(*args, **kwargs):
     return json.loads(GET(*args, **kwargs))
