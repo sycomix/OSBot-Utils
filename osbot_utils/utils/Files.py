@@ -14,14 +14,32 @@ def file_create(path, contents):
     with open(path, "w") as file:
         return file.write(contents)
 
+def file_contents(path):
+    with open(path, "rt") as file:
+        return file.read()
+
 def file_exists(path):
     return os.path.exists(path)  # todo: add check to see if it is a file
 
 def file_not_exists(path):
     return file_exists(path) is False
 
+def folder_copy(source, destination, ignore_pattern=None):
+    if ignore_pattern:
+        ignore = shutil.ignore_patterns(ignore_pattern)
+    else:
+        ignore = None
+    return shutil.copytree(src=source, dst=destination, ignore=ignore)
+
+def folder_copy_except(source, destination,ignore_pattern):
+    ignore =  shutil.ignore_patterns(ignore_pattern)
+    return shutil.copytree(src=source, dst=destination, ignore=ignore)
+
 def folder_exists(path):
     return Files.exists(path)
+
+def folder_not_exists(path):
+    return folder_exists(path) is False
 
 def folder_create(path):
     try:

@@ -47,10 +47,10 @@ def Http_Request(url, data='', headers=None, method='POST', encoding = 'utf-8' )
     return data
 
 
-def WS_is_open(ws_url):
-    try:
-        import websocket                 # was causing issues in lambda (couldn't find it)
-        ws = websocket.WebSocket()
+def WS_is_open(ws_url):                         # todo: move to separate API since this is not using native python classes
+    try:                                        # bug: this will also catch the error when the websocket-client is not installed
+        import websocket                        # needs pip install websocket-client
+        ws = websocket.WebSocket()              # was causing issues in lambda (couldn't find it)
         ws.connect(ws_url)
         return ws.connected
     except:
