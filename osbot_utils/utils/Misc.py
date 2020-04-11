@@ -4,6 +4,7 @@ import random
 import string
 import textwrap
 import re
+import uuid
 from time import sleep
 from osbot_utils.decorators.Type_Check import function_type_check
 
@@ -121,6 +122,9 @@ def md5(target):
     if target:
         return hashlib.md5('{0}'.format(target).encode()).hexdigest()
     return None
+
+def random_uuid():
+    return str(uuid.uuid4())
 
 def trim(target):
     if target:
