@@ -2,6 +2,15 @@ import json
 import gzip
 import os
 
+def save_json(path, data, pretty=True):
+    if pretty:
+        json_dump = json.dumps(data,indent=2)
+    else:
+        json_dump = json.dumps(data)
+    with open(path, 'w') as fp:
+        fp.write(json_dump)
+    return path
+
 class Json:
 
     @staticmethod

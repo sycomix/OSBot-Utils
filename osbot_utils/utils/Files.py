@@ -42,6 +42,8 @@ def folder_not_exists(path):
     return folder_exists(path) is False
 
 def folder_create(path):
+    if Files.folder_exists(path):
+        return path
     try:
         os.makedirs(path)
     except OSError as exc:

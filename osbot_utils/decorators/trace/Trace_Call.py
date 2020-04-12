@@ -6,12 +6,29 @@ from pycallgraph        import GlobbingFilter
 
 class Trace_Call:
 
-    def __init__(self, img_file = None):
+    def __init__(self, include_filter=None, exclude_filter=None, include_osbot=True, img_file = None):
         self.img_file = img_file
         if self.img_file is None:  self.img_file  = '/tmp/trace_PyCallGraph.png'
         self.graphviz             = GraphvizOutput()
         self.graphviz.output_file = self.img_file
-        self.include_filter       = ['osbot*', 'pbx*'] #, 'boto3*'
+        if include_osbot:
+            self.include_filter = ['osbot*', 'pbx*']
+        else:
+            self.include_filter = []
+        self.exclude_filter       = ['pycallgraph*']
+        self.add_include_filter(include_filter)
+        self.add_exclude_filter(exclude_filter)
+
+
+    def add_include_filter(self,  include_filter):
+        if type(include_filter) is str : self.include_filter.append(include_filter)
+        if type(include_filter) is list: self.include_filter.extend(include_filter)
+        return self
+
+    def add_exclude_filter(self,  exclude_filters):
+        if type(exclude_filters) is str : self.exclude_filter.append(exclude_filters)
+        if type(exclude_filters) is list: self.exclude_filter.extend(exclude_filters)
+        return self
 
     def rainbow(node):
         return Color.hsv(node.time.fraction * 0.8, 0.4, 0.9)
@@ -31,7 +48,7 @@ class Trace_Call:
 
         config = Config(include_stdlib=True)  # max_depth=10)
 
-        config.trace_filter = GlobbingFilter(include=self.include_filter)
+        config.trace_filter = GlobbingFilter(include=self.include_filter, exclude=self.exclude_filter)
 
         with PyCallGraph(output=self.graphviz, config=config):
             try:
