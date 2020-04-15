@@ -1,25 +1,30 @@
 import json
 import gzip
+import logging
 import os
 
-def save_json(path, data, pretty=True):
-    if pretty:
-        json_dump = json.dumps(data,indent=2)
-    else:
-        json_dump = json.dumps(data)
-    with open(path, 'w') as fp:
-        fp.write(json_dump)
-    return path
+log = logging.getLogger()   # todo: start using this API for capturing error messages from methods bellow
+
+from osbot_utils.utils.Files import file_exists, temp_file
+
+
+def json_load         (path                   ): return Json.load_json(path)
+def json_save         (path, data, pretty=True): return Json.save_json(path, data, pretty)
+def json_save_tmp_file(      data, pretty=True): return Json.save_json(None, data, pretty)
 
 class Json:
 
     @staticmethod
     def load_json(path):
-        if os.path.exists(path) is False:
-            return None
-        with open(path, "rt") as fp:
-            data = fp.read()
-            return json.loads(data)
+        """Note: will not throw errors and will return {} as default"""
+        try:
+            if file_exists(path):
+                with open(path, "rt") as fp:
+                    data = fp.read()
+                    return json.loads(data)
+        except:
+            log.exception('Error in load_json')
+        return {}
 
     @staticmethod
     def load_json_and_delete(path):
@@ -58,15 +63,17 @@ class Json:
         return path
 
     @staticmethod
-    def save_json(path, data):
-        json_dump = json.dumps(data)
+    def save_json(path, data, pretty=True):
+        if path is None:
+            path = temp_file()
+        if pretty:
+            json_dump = json.dumps(data, indent=2)
+        else:
+            json_dump = json.dumps(data)
         with open(path, 'w') as fp:
             fp.write(json_dump)
         return path
 
     @staticmethod
     def save_json_pretty(path, data):
-        json_dump = json.dumps(data,indent=2)
-        with open(path, 'w') as fp:
-            fp.write(json_dump)
-        return path
+        return Json.save_json(path, data, pretty=True)

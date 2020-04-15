@@ -2,6 +2,9 @@ import os
 import signal
 import subprocess
 
+def run_process(executable, params = None, cwd='.'):
+    return Process.run(executable, params, cwd)
+
 class Process:
 
     @staticmethod

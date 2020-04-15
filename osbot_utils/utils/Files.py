@@ -7,16 +7,12 @@ import tempfile
 import zipfile
 from   os.path import abspath, join
 
-# todo: add UnitTests to methods below (and refactor Files class to use these methods)
+# todo: add UnitTests to methods below (and refactor these to use the methods in the Files class (so that we don't have duplicated code)
 
-
-def file_create(path, contents):
-    with open(path, "w") as file:
-        return file.write(contents)
-
-def file_contents(path):
-    with open(path, "rt") as file:
-        return file.read()
+def file_copy       (source, destination): return Files.copy     (source,destination)
+def file_create     (path  , contents   ): return Files.write    (path,contents)
+def file_contents   (path               ): return Files.contents (path)
+def file_delete     (path               ): return Files.delete   (path)
 
 def file_exists(path):
     return os.path.exists(path)  # todo: add check to see if it is a file
@@ -87,13 +83,15 @@ def temp_filename(extension='.tmp'):
 def temp_folder(prefix=None, suffix=None,parent_folder=None):
     return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
-#todo: move methods below to top-level methods (making sure that all top level methods start with 'file(s)_' or 'folder(s)_'
+
+#todo: create stub methods below to top-level methods (making sure that all top level methods start with 'file(s)_' or 'folder(s)_'
 class Files:
     @staticmethod
-    def copy(source, destination):
-        parent_folder = Files.folder_name(destination)
-        Files.folder_create(parent_folder)                      # ensure targer folder exists
-        return shutil.copy(source, destination)
+    def copy(source:str, destination:str) -> str:
+        if file_exists(source):                                     # make sure source file exists
+            parent_folder = Files.folder_name(destination)          # get target parent folder
+            folder_create(parent_folder)                            # ensure targer folder exists
+            return shutil.copy(source, destination)                 # copy file and returns file destination
 
     @staticmethod
     def contents(path):
