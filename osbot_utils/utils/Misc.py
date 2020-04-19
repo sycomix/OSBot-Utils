@@ -115,6 +115,9 @@ def random_port(min=20000,max=65000):
 def random_number(min=1,max=65000):
     return random.randint(min, max)
 
+def random_string(length=6,prefix=''):
+    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length))
+
 def random_string_and_numbers(length=6,prefix=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
