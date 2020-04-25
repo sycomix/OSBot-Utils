@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import json
 import random
@@ -43,6 +44,9 @@ def array_pop_and_trim(array, position=None):
     if type(value) is str:
         return trim(value)
     return value
+
+def bytes_to_base64(bytes):
+    return base64.b64encode(bytes).decode()
 
 def chunks(items:list, split: int):
     if items and split and split > 0:
