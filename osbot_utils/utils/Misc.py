@@ -5,6 +5,7 @@ import string
 import textwrap
 import re
 import uuid
+from datetime import datetime
 from time import sleep
 from osbot_utils.decorators.Type_Check import function_type_check
 
@@ -52,6 +53,9 @@ def class_name(target):
     if target:
         return type(target).__name__
     return None
+
+def date_now():
+    return str(datetime.now())
 
 def get_value(target, key, default=None):
     if target is not None:
