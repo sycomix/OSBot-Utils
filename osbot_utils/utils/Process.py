@@ -5,6 +5,9 @@ import subprocess
 def run_process(executable, params = None, cwd='.'):
     return Process.run(executable, params, cwd)
 
+def chmod_x(executable_path):
+    return run_process("chmod", ['+x', executable_path])
+
 class Process:
 
     @staticmethod
@@ -32,3 +35,4 @@ class Process:
     def stop(pid):
         print('killing process {0} with {1}'.format(pid, signal.SIGKILL))
         print(os.kill(pid, signal.SIGKILL))
+
