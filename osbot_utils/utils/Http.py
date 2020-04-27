@@ -46,21 +46,13 @@ def Http_Request(url, data='', headers=None, method='POST', encoding = 'utf-8' )
         return data.decode(encoding)
     return data
 
-
-def WS_is_open(ws_url):                         # todo: move to separate API since this is not using native python classes
-    try:                                        # bug: this will also catch the error when the websocket-client is not installed
-        import websocket                        # needs pip install websocket-client
-        ws = websocket.WebSocket()              # was causing issues in lambda (couldn't find it)
-        ws.connect(ws_url)
-        return ws.connected
-    except:
-        return False
-
-
-def port_is_open(port, host='0.0.0.0'):
+def port_is_open(port : int , host='0.0.0.0'):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     result = sock.connect_ex((host, port))
     return result == 0
+
+def port_is_not_open(port, host='0.0.0.0'):
+    return port_is_open(port, host) is False
 
 
 def current_host_online():

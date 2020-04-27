@@ -8,11 +8,16 @@ import zipfile
 from   os.path import abspath, join
 
 # todo: add UnitTests to methods below (and refactor these to use the methods in the Files class (so that we don't have duplicated code)
+from pathlib import Path
 
+
+def file_bytes      (path               ): return Files.bytes    (path)
 def file_copy       (source, destination): return Files.copy     (source,destination)
 def file_create     (path  , contents   ): return Files.write    (path,contents)
 def file_contents   (path               ): return Files.contents (path)
 def file_delete     (path               ): return Files.delete   (path)
+
+def folder_files    (path               ): return Files.files    (path)
 
 def file_exists(path):
     return os.path.exists(path)  # todo: add check to see if it is a file
@@ -54,6 +59,12 @@ def folder_create(path):
 def folder_create_temp(prefix=None, suffix=None,parent_folder=None):
     return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
+def folder_temp(prefix=None, suffix=None,parent_folder=None):
+    return temp_folder(prefix, suffix,parent_folder)
+
+def folder_zip(root_dir):
+    return Files.zip_folder(root_dir)
+
 def path_combine(path1, path2):
     return abspath(join(path1, path2))
 
@@ -83,9 +94,19 @@ def temp_filename(extension='.tmp'):
 def temp_folder(prefix=None, suffix=None,parent_folder=None):
     return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
+def temp_folder_with_temp_file(prefix=None, suffix=None,parent_folder=None, file_name='temp_file.txt', file_contents='temp_file'):
+    folder = temp_folder(prefix,suffix,parent_folder)
+    file_create(path_combine(folder,file_name), file_contents)
+    return folder
+
 
 #todo: create stub methods below to top-level methods (making sure that all top level methods start with 'file(s)_' or 'folder(s)_'
 class Files:
+    @staticmethod
+    def bytes(path):
+        with open(path, 'rb') as file_data:
+            return file_data.read()
+
     @staticmethod
     def copy(source:str, destination:str) -> str:
         if file_exists(source):                                     # make sure source file exists
@@ -134,9 +155,14 @@ class Files:
             return file.read()
 
     @staticmethod
-    def files(path):
-        search_path = Files.path_combine(path,'**/*.*')
-        return Files.find(search_path)
+    def files(path):  # todo: check behaviour and improve ability to detect file (vs folders)
+        result = []
+        for file in Path(path).rglob('*.*'):
+            result.append(str(file))                        # see if there is a better way to do this conversion to string
+        return result
+        #search_path = Files.path_combine(path,'**/*.*')    # this wasn't working as expected
+        #return Files.find(search_path)
+
 
     @staticmethod
     def file_name(path):
@@ -247,16 +273,15 @@ class Files:
         return shutil.make_archive(root_dir, "zip", root_dir)
 
     @staticmethod
-    def unzip_file(zip_file, target_folder):
-        shutil.unpack_archive(zip_file, extract_dir=target_folder)
-        return target_folder
+    def zip_file_list(path):
+        with zipfile.ZipFile(path) as zip_file:
+            return zip_file.namelist()
 
     @staticmethod
     def zip_files(base_folder, file_pattern, target_file):
         if file_pattern and target_file and target_file:
             base_folder  = abspath(base_folder)
             file_pattern = Files.path_combine(base_folder, file_pattern)
-
 
             file_list = glob.glob(file_pattern)
 
@@ -268,29 +293,34 @@ class Files:
 
                 return target_file
 
-    # Not sure about the method below
     @staticmethod
-    def zip_files_from_two_folders(base_folder_1, file_pattern_1,base_folder_2, file_pattern_2, target_file):
-        if base_folder_1 and file_pattern_1 and base_folder_2 and file_pattern_2 and target_file:
-            base_folder_1  = abspath(base_folder_1)
-            file_pattern_1 = Files.path_combine(base_folder_1, file_pattern_1)
-            base_folder_2  = abspath(base_folder_2)
-            file_pattern_2 = Files.path_combine(base_folder_2, file_pattern_2)
+    def unzip_file(zip_file, target_folder):
+        shutil.unpack_archive(zip_file, extract_dir=target_folder)
+        return target_folder
 
-            file_list_1 =  glob.glob(file_pattern_1)
-            file_list_2 =  glob.glob(file_pattern_2)
 
-            file_list = {}
-            for file in file_list_1:
-                file_list[file] = file.replace(base_folder_1,'')
-            for file in file_list_2:
-                file_list[file] = file.replace(base_folder_2,'')
-            if len(set(file_list)) >0:
-
-                with zipfile.ZipFile(target_file,'w') as zip:
-                    for file_path,zip_file_path in file_list.items():
-                        zip.write(file_path, zip_file_path)
-
-                return target_file
-
-            return len(set(file_list))
+    # @staticmethod
+    # def zip_files_from_two_folders(base_folder_1, file_pattern_1,base_folder_2, file_pattern_2, target_file):
+    #     if base_folder_1 and file_pattern_1 and base_folder_2 and file_pattern_2 and target_file:
+    #         base_folder_1  = abspath(base_folder_1)
+    #         file_pattern_1 = Files.path_combine(base_folder_1, file_pattern_1)
+    #         base_folder_2  = abspath(base_folder_2)
+    #         file_pattern_2 = Files.path_combine(base_folder_2, file_pattern_2)
+    #
+    #         file_list_1 =  glob.glob(file_pattern_1)
+    #         file_list_2 =  glob.glob(file_pattern_2)
+    #
+    #         file_list = {}
+    #         for file in file_list_1:
+    #             file_list[file] = file.replace(base_folder_1,'')
+    #         for file in file_list_2:
+    #             file_list[file] = file.replace(base_folder_2,'')
+    #         if len(set(file_list)) >0:
+    #
+    #             with zipfile.ZipFile(target_file,'w') as zip:
+    #                 for file_path,zip_file_path in file_list.items():
+    #                     zip.write(file_path, zip_file_path)
+    #
+    #             return target_file
+    #
+    #         return len(set(file_list))
