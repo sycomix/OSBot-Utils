@@ -16,6 +16,7 @@ def file_copy       (source, destination): return Files.copy     (source,destina
 def file_create     (path  , contents   ): return Files.write    (path,contents)
 def file_contents   (path               ): return Files.contents (path)
 def file_delete     (path               ): return Files.delete   (path)
+def file_name       (path               ): return Files.file_name(path)
 
 def folder_files    (path               ): return Files.files    (path)
 
@@ -82,8 +83,10 @@ def save_bytes_as_file(bytes_to_save, path=None, extension=None):
         fp.write(bytes_to_save)
     return path
 
-def temp_file(extension = '.tmp'):
+def temp_file(extension = '.tmp', file_contents=None):
     (fd, tmp_file) = tempfile.mkstemp(extension)
+    if file_contents:
+        file_create(tmp_file, file_contents)
     return tmp_file
 
 def temp_filename(extension='.tmp'):
