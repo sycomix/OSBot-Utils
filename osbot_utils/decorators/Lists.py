@@ -2,8 +2,17 @@ from functools import wraps
 from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
 
 
-
+# todo: find way to also allow the used of function().index_by(key) to workin
+#     : maybe using Fluent_List
 def index_by(function):                                 # returns the list provided indexed by the key provided in index_by
+    def apply(key, values):
+        if key:
+            results = {}
+            for item in values:
+                results[item.get(key)] = item
+            return Fluent_Dict(results)
+        return values
+
     @wraps(function)
     def wrapper(*args,**kwargs):
         key = None
@@ -11,12 +20,8 @@ def index_by(function):                                 # returns the list provi
             key = kwargs.get('index_by')
             del kwargs['index_by']
         values = function(*args,**kwargs)
-        if key:
-            results = {}
-            for item in values:
-                results[item.get(key)] = item
-            return Fluent_Dict(results)
-        return values
+
+        return apply(key,values)
     return wrapper
 
 #todo: refactor with index_by
