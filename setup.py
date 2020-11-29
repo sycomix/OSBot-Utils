@@ -10,7 +10,7 @@ setuptools.setup(
     author_email                  = "dinis.cruz@owasp.org",
     description                   = "OWASP Security Bot - Utils",
     long_description              = long_description,
-    long_description_content_type = " text/markdown",
+    long_description_content_type = "text/markdown",
     url                           = "https://github.com/owasp-sbot/OSBot-Utils",
     packages                      = setuptools.find_packages(),
     classifiers                   = [ "Programming Language :: Python :: 3"   ,
