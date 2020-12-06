@@ -2,7 +2,7 @@ from functools import wraps
 from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
 
 
-# todo: find way to also allow the used of function().index_by(key) to workin
+# todo: find way to also allow the used of function().index_by(key) to working
 #     : maybe using Fluent_List
 def index_by(function):                                 # returns the list provided indexed by the key provided in index_by
     def apply(key, values):

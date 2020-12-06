@@ -11,14 +11,15 @@ from   os.path import abspath, join
 from pathlib import Path
 
 
-def file_bytes      (path               ): return Files.bytes    (path)
-def file_copy       (source, destination): return Files.copy     (source,destination)
-def file_create     (path  , contents   ): return Files.write    (path,contents)
-def file_contents   (path               ): return Files.contents (path)
-def file_delete     (path               ): return Files.delete   (path)
-def file_name       (path               ): return Files.file_name(path)
+def file_bytes            (path               ): return Files.bytes                 (path)
+def file_copy             (source, destination): return Files.copy                  (source,destination)
+def file_create           (path  , contents   ): return Files.write                 (path,contents)
+def file_contents         (path               ): return Files.contents              (path)
+def file_contents_as_bytes(path               ): return Files.file_contents_as_bytes(path)
+def file_delete           (path               ): return Files.delete                (path)
+def file_name             (path               ): return Files.file_name             (path)
 
-def folder_files    (path               ): return Files.files    (path)
+def folder_files          (path               ): return Files.files    (path)
 
 def file_exists(path):
     return os.path.exists(path)  # todo: add check to see if it is a file
@@ -85,6 +86,7 @@ def save_bytes_as_file(bytes_to_save, path=None, extension=None):
 
 def temp_file(extension = '.tmp', file_contents=None):
     (fd, tmp_file) = tempfile.mkstemp(extension)
+    file_delete(tmp_file)
     if file_contents:
         file_create(tmp_file, file_contents)
     return tmp_file

@@ -1,7 +1,8 @@
 import collections
 from typing import Generator
 from unittest import TestCase
-from osbot_utils.utils.Misc  import Misc
+
+from osbot_utils.utils import Misc
 from osbot_utils.utils.Files import Files
 
 
