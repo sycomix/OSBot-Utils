@@ -1,6 +1,7 @@
 from unittest                import TestCase
-from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Files import Files, path_combine, parent_folder
 
+#todo add tests for other methods in Files class
 
 class test_Files(TestCase):
 
@@ -22,6 +23,9 @@ class test_Files(TestCase):
         assert Files.file_extension('/a/b.c/a.git'         ) == '.git'
         assert Files.file_extension('/a/b.c/a.git.abc'     ) == '.abc'
         assert Files.file_extension(None)                    == ''
+
+    def test_path_combine(self):
+        assert path_combine('a', 'b') == f"{parent_folder(__file__)}/a/b"       # todo: add more use cases
 
     def test_temp_folder(self):
         assert Files.exists(Files.temp_folder())

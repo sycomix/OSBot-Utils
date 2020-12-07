@@ -68,9 +68,6 @@ def folder_temp(prefix=None, suffix=None,parent_folder=None):
 def folder_zip(root_dir):
     return Files.zip_folder(root_dir)
 
-def path_combine(path1, path2):
-    return abspath(join(path1, path2))
-
 def save_string_as_file(data, path=None, extension=None):
     if path is None:
         path = Files.temp_file(extension)
@@ -314,4 +311,6 @@ class Files:
 # helper methods
 # todo: all all methods above (including the duplicated mappings at the top)
 
-file_save = Files.save                   # better name for Files.write
+file_save     = Files.save                   # better name for Files.write
+path_combine  = Files.path_combine
+parent_folder = Files.parent_folder
