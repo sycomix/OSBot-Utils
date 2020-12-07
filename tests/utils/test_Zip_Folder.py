@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Files import Files, parent_folder
 from osbot_utils.utils.Zip_Folder import Zip_Folder
 
 
@@ -12,7 +12,7 @@ class test_Zip_Folder(TestCase):
             assert zip_file is None
 
     def test__using_with_params(self):
-        target_folder = Files.current_folder()
+        target_folder = parent_folder(__file__)
         with Zip_Folder(target_folder) as (zip_file):
             assert Files.exists(zip_file) is True
         assert Files.exists(zip_file) is False

@@ -311,6 +311,8 @@ class Files:
 # helper methods
 # todo: all all methods above (including the duplicated mappings at the top)
 
-file_save     = Files.save                   # better name for Files.write
-path_combine  = Files.path_combine
-parent_folder = Files.parent_folder
+file_save      = Files.save                   # better name for Files.write
+current_folder = Files.current_folder
+path_combine   = Files.path_combine
+path_current   = Files.current_folder
+parent_folder  = Files.parent_folder
