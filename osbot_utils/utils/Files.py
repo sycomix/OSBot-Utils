@@ -11,6 +11,7 @@ from   os.path import abspath, join
 from pathlib import Path
 
 
+#todo refactor this to the better format (as seen at the end of this file)
 def file_bytes            (path               ): return Files.bytes                 (path)
 def file_copy             (source, destination): return Files.copy                  (source,destination)
 def file_create           (path  , contents   ): return Files.write                 (path,contents)
@@ -239,7 +240,14 @@ class Files:
         return Files.path_combine(os.path.dirname(file),path)
 
     @staticmethod
-    def save_string_as_file(path, data):
+    def save(contents, path=None, extension=None):  # todo: refactor the other methods to have the data first
+        if path is None:
+            path = temp_file(extension=extension)
+        Files.write(path, contents)
+        return path
+
+    @staticmethod
+    def save_string_as_file(path, data):            # todo: refactor to have data first (and support creation of temp file)
         with open(path, 'w') as fp:
             fp.write(data)
         return path
@@ -303,29 +311,7 @@ class Files:
         shutil.unpack_archive(zip_file, extract_dir=target_folder)
         return target_folder
 
+# helper methods
+# todo: all all methods above (including the duplicated mappings at the top)
 
-    # @staticmethod
-    # def zip_files_from_two_folders(base_folder_1, file_pattern_1,base_folder_2, file_pattern_2, target_file):
-    #     if base_folder_1 and file_pattern_1 and base_folder_2 and file_pattern_2 and target_file:
-    #         base_folder_1  = abspath(base_folder_1)
-    #         file_pattern_1 = Files.path_combine(base_folder_1, file_pattern_1)
-    #         base_folder_2  = abspath(base_folder_2)
-    #         file_pattern_2 = Files.path_combine(base_folder_2, file_pattern_2)
-    #
-    #         file_list_1 =  glob.glob(file_pattern_1)
-    #         file_list_2 =  glob.glob(file_pattern_2)
-    #
-    #         file_list = {}
-    #         for file in file_list_1:
-    #             file_list[file] = file.replace(base_folder_1,'')
-    #         for file in file_list_2:
-    #             file_list[file] = file.replace(base_folder_2,'')
-    #         if len(set(file_list)) >0:
-    #
-    #             with zipfile.ZipFile(target_file,'w') as zip:
-    #                 for file_path,zip_file_path in file_list.items():
-    #                     zip.write(file_path, zip_file_path)
-    #
-    #             return target_file
-    #
-    #         return len(set(file_list))
+file_save = Files.save                   # better name for Files.write

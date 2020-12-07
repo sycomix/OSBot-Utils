@@ -6,7 +6,7 @@ from osbot_utils.utils.Process import Process
 
 class test_Process(TestCase):
 
-    def test_run__ls(self):
+    def test_run__ls(self):     # todo: add @patch('builtins.print') and confirm print data was correct
         result = Process.run('ls')
         #assert result == {'runParams': ['ls'], 'stderr': '', 'stdout': 'Test_Process.py\naws\n'}
         Dev.pprint(result)
