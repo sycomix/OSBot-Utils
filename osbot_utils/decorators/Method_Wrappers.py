@@ -1,3 +1,4 @@
+import inspect
 from functools import wraps
 
 # todo: create signature based on request params so that we don't cache when the params are different
@@ -5,13 +6,32 @@ from osbot_utils.utils.Misc import get_missing_fields
 
 
 def cache(function):
+    """
+    Use this decorator when wanting to cache a value for all executions of the current process
+    """
     @wraps(function)
     def wrapper(*args,**kwargs):
-        if hasattr(function, 'return_value') is False:                  # check if return_value has been set
-            function.return_value  = function(*args,**kwargs)           # invoke function and capture the return value
-        return function.return_value                                    # return the return value
+        cache_id= f'osbot_cache_return_value__{function.__name__}'
+        if hasattr(function, cache_id) is False:                     # check if return_value has been set
+            setattr(function, cache_id,  function(*args,**kwargs))   # invoke function and capture the return value
+        return getattr(function, cache_id)                           # return the return value
     return wrapper
 
+def cache_on_self(function):
+    """
+    Use this for cases where we want the cache to be tied to the Class instance (i.e. not global for all executions)
+    """
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        if len(args) == 0 or inspect.isclass(type(args[0])) is False:
+            raise Exception("In Method_Wrappers.cache_on_self could not find self")
+
+        self = args[0]                                              # get self
+        cache_id = f'osbot_cache_return_value__{function.__name__}' # generate cache_id
+        if hasattr(self, cache_id) is False:                        # check if return_value has been set
+            setattr(self, cache_id, function(*args, **kwargs))      # invoke function and capture the return value
+        return getattr(self, cache_id)                              # return the return value
+    return wrapper
 
 def catch(function):
     """Catches any errors and returns an object with the error"""
@@ -22,22 +42,6 @@ def catch(function):
         except Exception as error:
             return {'error': error }
     return wrapper
-
-class aws_inject:           # todo this method should not be osbot_utils (since it has a dependency on the Global osbot_aws class
-
-    """injects a number of AWS Specific values"""
-    def __init__(self, fields):
-        self.fields = fields                                        # field to inject
-
-    def __call__(self, function):
-        from osbot_aws.Globals import Globals
-        @wraps(function)                                            # makes __name__ work ok
-        def wrapper(*args,**kwargs):                                # wrapper function
-            for field in self.fields.split(','):                    # split value provided by comma
-                if field == 'region'    : kwargs[field] = Globals.aws_session_region_name
-                if field == 'account_id': kwargs[field] = Globals.aws_session_account_id
-            return function(*args,**kwargs)
-        return wrapper                                              # return wrapper function
 
 class required_fields:
     """checks that required fields are not null in the current object (does not work for for static methods)"""
