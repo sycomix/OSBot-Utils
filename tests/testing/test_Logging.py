@@ -11,8 +11,8 @@ class test_Logging(TestCase):
     def setUp(self):
         self.logging = Logging()
 
-    def test_is_pycharm_running(self):
-        assert self.logging.is_pycharm_running()
+    # def test_is_pycharm_running(self):
+    #     assert self.logging.is_pycharm_running()
 
     #todo: find way to mock/capture the output sent ot sys.stdout (since @patch('builtins.print') is not working)
     def test_enable_pycharm_logging(self):
@@ -39,8 +39,6 @@ DEBUG - debug
 ERROR - error
 CRITICAL - critical
 """
-
-
 
     def test_logger(self):
         # test default
