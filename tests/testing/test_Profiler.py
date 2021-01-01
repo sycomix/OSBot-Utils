@@ -9,9 +9,11 @@ from osbot_utils.utils.Misc import under_debugger
 
 
 class An_Class:
+    def __init__(self):
+        self.local_var = 42
+
     def an_function(self):
-        local_var = 42
-        return local_var
+        return self.local_var
 
 class test_Profiler(TestCase):
 
@@ -27,19 +29,36 @@ class test_Profiler(TestCase):
         assert len(profiler.events) == 0
 
     def test_current_profiler(self):
-        with Profiler() as trace:
+        with Profiler() as profiler:
             assert An_Class().an_function() == 42
-            assert trace.current_profiler() == trace.profiler
+            assert profiler.current_profiler() == profiler.profiling_function
 
-        assert trace.current_profiler() is trace.previous_profiler
-        assert len(trace.events)      == 2
-        assert trace.events.pop()['f_locals']['local_var'] == 42
+        assert profiler.current_profiler() is profiler.previous_profiler
+        assert len(profiler.events)      == 4
+        assert profiler.events.pop()['f_locals']['self'].local_var == 42
 
-    def test_profiler(self):
+    def test_profiling_function(self):
         frame = sys._getframe(0)  # get current frame
         event = {}
         arg = {}
 
         profiler = Profiler()
-        profiler.profiler(frame, event, arg)
+        profiler.profiling_function(frame, event, arg)
         assert len(profiler.events) == 1
+
+    def test_set_on_event(self):
+        def on_event(self, frame, event, arg):
+            if event == 'return':
+                #assert frame.f_locals['self'].local_var == 42          # for this to work we need to handle the two return calls
+                frame.f_locals['self'].local_var = 123
+                assert frame.f_locals['self'].local_var == 123
+
+        with Profiler() as profiler:
+            profiler.set_on_event(on_event)
+            assert 123 == An_Class().an_function()
+
+        profiler = Profiler().set_on_event(on_event)
+        profiler.profiling_function(sys._getframe(0), {}, {})
+        assert profiler.events.pop()['f_locals']['on_event'] == on_event
+
+

@@ -4,6 +4,7 @@ from unittest import TestCase
 from osbot_utils.decorators.methods.cache import cache
 from osbot_utils.decorators.methods.cache_on_self import cache_on_self
 from osbot_utils.testing.Catch import Catch
+from osbot_utils.testing.Profiler import Profiler
 
 
 class test_cache(TestCase):
@@ -15,38 +16,22 @@ class test_cache(TestCase):
             def an_function(self):
                 return 42
 
-        an_class    = An_Class()
+        with Profiler() as profiler:
+            assert An_Class().an_function() == 42
 
-        assert an_class.an_function() == 42
+        assert len(profiler.events) == 10
+        event    = profiler.events.pop()
+        f_locals = event['f_locals']
+        assert event['event'] == 'return'
+        cache_id = f_locals['cache_id']
+        function = f_locals['function']
 
-        function = None
+        assert cache_id == 'osbot_cache_return_value__an_function'
 
-        def tracer(frame, event, arg):
-            #print('***', event, set(frame.f_locals))
-            if event == 'return':
-                function = frame.f_locals['function']
-                print(dir(function))
-                print(event, set(frame.f_locals))
-                print(function.osbot_cache_return_value__an_function)
-                function.osbot_cache_return_value__an_function = 123
-                #_locals = frame.f_locals.copy()
+        assert getattr(function, cache_id) == 42
 
-        # tracer is activated on next call, return or exception
-        print()
-        import sys
-        sys.setprofile(tracer)
-        try:
-            # trace the function call
-            an_class.an_function()
-        finally:
-            sys.setprofile(None) # disable tracer
-
-        print(an_class.an_function()) # osbot_cache_return_value__an_function
-
-        #an_class.an_function()
-        #assert an_class.an_function.osbot_cache_return_value__an_function == 42
-        #an_class.an_function.osbot_cache_return_value__an_function = 12
-        #assert an_class.an_function.osbot_cache_return_value__an_function == 12
+        setattr(function, cache_id, 123)
+        assert An_Class().an_function() == 123
 
     def test_cache_on_self__outside_an_class(self):
 

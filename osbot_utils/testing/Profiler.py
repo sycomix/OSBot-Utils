@@ -8,13 +8,29 @@ class Profiler:
         self.events = []
         self.profile_options   = self.default_profile_options()
         self.previous_profiler = self.current_profiler()
+        self.on_event = None
 
     def __enter__(self):
-        sys.setprofile(self.profiler)
+        sys.setprofile(self.profiling_function)
         return self
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         sys.setprofile(self.previous_profiler)
+
+    def add_values(self, profile_options, source):
+        item = {}
+        for arg_name in set(profile_options):
+            option =  profile_options.get(arg_name)
+            value  = getattr(source, arg_name)
+            if type(option) is dict:
+                item[arg_name] = self.add_values(option, value)
+            else:
+                if profile_options.get(arg_name):
+                    if arg_name == 'f_locals':
+                        item[arg_name] = value.copy()           # create a copy of the var
+                    else:
+                        item[arg_name] = value
+        return item
 
     def current_profiler(self):
         return sys.getprofile()
@@ -50,26 +66,15 @@ class Profiler:
             'f_trace_opcodes': True
         }
 
-
-    def add_values(self, profile_options, source):
-        item = {}
-        for arg_name in set(profile_options):
-            option =  profile_options.get(arg_name)
-            value  = getattr(source, arg_name)
-            if type(option) is dict:
-                item[arg_name] = self.add_values(option, value)
-            else:
-                if profile_options.get(arg_name):
-                    if arg_name == 'f_locals':
-                        item[arg_name] = value.copy()           # create a copy of the var
-                    else:
-                        item[arg_name] = value
-        return item
-
-
-    def profiler(self, frame, event, arg):
-        if type(frame.f_locals.get('self')) != Profiler:                  # dont' capture traces of the current (Trace) class
+    def profiling_function(self, frame, event, arg):
+        if type(frame.f_locals.get('self')) != Profiler:                    # dont' capture traces of the current (Trace) class
             item = self.add_values(self.profile_options, frame)
             item['arg'  ] = arg
             item['event'] = event
             self.events.append(item)
+            if self.on_event:
+                self.on_event(self,frame, event, arg)                         # allow the caler to see and modify the data (after its data been captured)
+
+    def set_on_event(self, on_event):
+        self.on_event = on_event
+        return self
