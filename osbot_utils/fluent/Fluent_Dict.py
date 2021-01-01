@@ -1,6 +1,5 @@
 from osbot_utils.fluent.Fluent_List import Fluent_List
 
-
 class Fluent_Dict(dict):
     def __new__(cls, *args, **kwargs):
         first_one = args[0]
@@ -10,11 +9,11 @@ class Fluent_Dict(dict):
         self.data = args[0]
         super().__init__(*args,**kwargs)
 
-    def size(self):
-        return len(self.data)
-
     def keys(self):
         return Fluent_List(list(self.data.keys()))
+
+    def size(self):
+        return len(self.data)
 
     def type(self):
         return type(self)
