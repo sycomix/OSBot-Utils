@@ -1,3 +1,5 @@
+# todo: refactor into separate project (since the idea is to minimize the dependencies on OSBot-Utils
+# this method requires pycallgraph and dot installed
 from pycallgraph.output import GraphvizOutput
 from pycallgraph        import Color
 from pycallgraph        import Config

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from osbot_utils.decorators.Type_Check import function_type_check, is_instance_method
+from osbot_utils.decorators.methods.function_type_check import function_type_check, is_instance_method
 
 
 #@class_type_check

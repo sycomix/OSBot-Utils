@@ -1,5 +1,3 @@
-import types
-import inspect
 from functools import wraps
 
 # this is an attempt at creating something simpler than

@@ -3,12 +3,13 @@ import hashlib
 import json
 import random
 import string
+import sys
 import textwrap
 import re
 import uuid
 from datetime import datetime
 from time import sleep
-from osbot_utils.decorators.Type_Check import function_type_check
+from osbot_utils.decorators.methods.function_type_check import function_type_check
 
 @function_type_check
 def array_add(array : list, value):
@@ -197,8 +198,26 @@ def last_letter(text):
     if text and (type(text) is str) and len(text) > 0:
         return text[-1]
 
+def random_password(length=24, prefix=''):
+    password = prefix + ''.join(random.choices(string.ascii_lowercase  +
+                                               string.ascii_uppercase +
+                                               string.punctuation     +
+                                               string.digits          ,
+                                               k=length))
+    # replace these chars with _  (to make prevent errors in command prompts)
+    items = ['"', '\'', '`','\\','}']
+    for item in items:
+        password = password.replace(item, '_')
+    return password
+
 def random_text(prefix=None,length=12):
     if prefix is None: prefix = 'text_'
     if last_letter(prefix) != '_':
         prefix += '_'
     return random_string_and_numbers(length=length, prefix=prefix)
+
+def split_lines(text):
+    return text.split('\n')
+
+def under_debugger():
+    return 'pydevd' in sys.modules

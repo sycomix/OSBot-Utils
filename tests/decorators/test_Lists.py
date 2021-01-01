@@ -1,7 +1,6 @@
-from osbot_utils.decorators.Lists import group_by, index_by
+from osbot_utils.decorators.lists.group_by import group_by
+from osbot_utils.decorators.lists.index_by import index_by
 from osbot_utils.testing.Unit_Test import Unit_Test
-
-
 
 class test_Lists(Unit_Test):
 

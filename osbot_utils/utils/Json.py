@@ -7,12 +7,11 @@ log = logging.getLogger()   # todo: start using this API for capturing error mes
 
 from osbot_utils.utils.Files import file_exists, temp_file
 
-
-def json_load         (path                   ): return Json.load_json(path)
-def json_save         (path, data, pretty=True): return Json.save_json(path, data, pretty)
-def json_save_tmp_file(      data, pretty=True): return Json.save_json(None, data, pretty)
-
 class Json:
+
+    def round_trip(data):
+        return json.loads(json.dumps(data))
+
 
     @staticmethod
     def load_json(path):
@@ -75,5 +74,14 @@ class Json:
         return path
 
     @staticmethod
+    def json_save_tmp_file(data, pretty=True):
+        return Json.save_json(None, data, pretty)
+
+    @staticmethod
     def save_json_pretty(path, data):
         return Json.save_json(path, data, pretty=True)
+
+json_load          = Json.load_json
+json_round_trip    = Json.round_trip
+json_save          = Json.save_json
+json_save_tmp_file = Json.json_save_tmp_file

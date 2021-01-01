@@ -2,8 +2,9 @@ import inspect
 import logging
 from io import StringIO
 
-from osbot_utils.decorators.Method_Wrappers import cache, cache_on_self
 import sys
+
+from osbot_utils.decorators.methods.cache_on_self import cache_on_self
 
 DEFAULT_LOG_FORMAT = '%(levelname)s - %(message)s'
 DEFAULT_LOG_LEVEL  = logging.DEBUG

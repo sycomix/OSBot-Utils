@@ -1,8 +1,9 @@
+# todo: refactor into separate project (since the idea is to minimize the dependencies on OSBot-Utils
 from functools import wraps
 
 from osbot_utils.decorators.trace.Trace_Call import Trace_Call
 
-class trace:           # todo this method should not be osbot_utils (since it has a dependency on the Global osbot_aws class
+class trace:
 
     def __init__(self,include=None, exclude=None):
         self.include = include
@@ -20,12 +21,4 @@ class trace:           # todo this method should not be osbot_utils (since it ha
             return trace_call.invoke_method(function, *args,**kwargs)
         return wrapper
 
-
-# def trace(function):
-#     @wraps(function)
-#     def wrapper(*args,**kwargs):
-#         trace_call = Trace_Call()
-#         trace_call.include_filter = ['botocore.http*']#'osbot*', 'gwbot*', 'boto*', 'ConnectionPool*']
-#         return trace_call.invoke_method(function, *args,**kwargs)
-#     return wrapper
 
