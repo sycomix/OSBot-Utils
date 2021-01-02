@@ -2,11 +2,9 @@ import re
 
 from osbot_utils.utils.Misc import class_name
 
-
 class Assert:
     def __init__(self ,target):
         self.target = target
-
 
     def is_class(self, name):
         assert class_name(self.target) in name

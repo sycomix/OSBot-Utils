@@ -23,6 +23,13 @@ class test_Logging(TestCase):
         self.logging.error('aaaa')
         self.logging.critical('aaaa')
 
+        # simulate case when is_pycharm_running returns True (for example when running tests in CI pipeline)
+        self.logging.is_pycharm_running = lambda : True
+
+        self.logging.enable_pycharm_logging()
+        self.logging.info('aaaa')
+
+
 
     def test_log_to_string(self):
         stream_handler = self.logging.log_to_string_io()
