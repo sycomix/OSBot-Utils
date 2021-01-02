@@ -4,7 +4,8 @@ from   osbot_utils.utils.Dev import Dev
 
 
 class Unit_Test(TestCase):
-    """Unite test helpers
+    """Unit test helpers
+
         - self.result will be written to the output
         - self.png_data will be saved to '/tmp/unit-test.png'"""
 
