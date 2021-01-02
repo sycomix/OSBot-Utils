@@ -149,8 +149,11 @@ class test_Files(TestCase):
         assert folder_not_exists(tmp_folder) is True
 
     def test_folder_files(self):
-        assert 'test_Files.py' in folder_files('.')
-        assert 'test_Json.py'  in folder_files('.')
+        folder = parent_folder(__file__)
+        assert path_combine(folder, 'test_Files.py') in folder_files(folder)
+        assert path_combine(folder, 'test_Json.py' ) in folder_files(folder)
+
+
 
     def test_folder_zip(self):
         folder = temp_folder_with_temp_file(file_contents=random_string())
