@@ -8,6 +8,7 @@ import textwrap
 import re
 import uuid
 from datetime import datetime
+from secrets import token_bytes
 from time import sleep
 from osbot_utils.decorators.methods.function_type_check import function_type_check
 
@@ -198,6 +199,10 @@ def last_letter(text):
     if text and (type(text) is str) and len(text) > 0:
         return text[-1]
 
+def random_bytes(length=24):
+    return token_bytes(length)
+
+
 def random_password(length=24, prefix=''):
     password = prefix + ''.join(random.choices(string.ascii_lowercase  +
                                                string.ascii_uppercase +
@@ -215,6 +220,12 @@ def random_text(prefix=None,length=12):
     if last_letter(prefix) != '_':
         prefix += '_'
     return random_string_and_numbers(length=length, prefix=prefix)
+
+def remove(target_string, string_to_remove):
+    return replace(target_string, string_to_remove, '')
+
+def replace(target_string, string_to_find, string_to_replace):
+    return target_string.replace(string_to_find, string_to_replace)
 
 def split_lines(text):
     return text.split('\n')

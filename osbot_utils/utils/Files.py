@@ -1,4 +1,3 @@
-import errno
 import gzip
 import os
 import glob
@@ -10,105 +9,11 @@ from   os.path import abspath, join
 # todo: add UnitTests to methods below (and refactor these to use the methods in the Files class (so that we don't have duplicated code)
 from pathlib import Path
 
-
-#todo refactor this to the better format (as seen at the end of this file)
-def file_bytes            (path               ): return Files.bytes                 (path)
-def file_copy             (source, destination): return Files.copy                  (source,destination)
-def file_create           (path  , contents   ): return Files.write                 (path,contents)
-def file_contents         (path               ): return Files.contents              (path)
-def file_contents_as_bytes(path               ): return Files.file_contents_as_bytes(path)
-def file_delete           (path               ): return Files.delete                (path)
-def file_name             (path               ): return Files.file_name             (path)
-
-def folder_files          (path               ): return Files.files    (path)
-
-def file_exists(path):
-    return os.path.exists(path)  # todo: add check to see if it is a file
-
-def file_not_exists(path):
-    return file_exists(path) is False
-
-def folder_copy(source, destination, ignore_pattern=None):
-    if ignore_pattern:
-        ignore = shutil.ignore_patterns(ignore_pattern)
-    else:
-        ignore = None
-    return shutil.copytree(src=source, dst=destination, ignore=ignore)
-
-def folder_copy_except(source, destination,ignore_pattern):
-    ignore =  shutil.ignore_patterns(ignore_pattern)
-    return shutil.copytree(src=source, dst=destination, ignore=ignore)
-
-def folder_exists(path):
-    return Files.exists(path)
-
-def folder_not_exists(path):
-    return folder_exists(path) is False
-
-def folder_create(path):
-    if Files.folder_exists(path):
-        return path
-    try:
-        os.makedirs(path)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-    if Files.folder_exists(path):
-        return path
-    return None
-
-def folder_create_temp(prefix=None, suffix=None,parent_folder=None):
-    return tempfile.mkdtemp(suffix, prefix, parent_folder)
-
-def folder_temp(prefix=None, suffix=None,parent_folder=None):
-    return temp_folder(prefix, suffix,parent_folder)
-
-def folder_zip(root_dir):
-    return Files.zip_folder(root_dir)
-
-def save_string_as_file(data, path=None, extension=None):
-    if path is None:
-        path = Files.temp_file(extension)
-    with open(path, 'w') as fp:
-        fp.write(data)
-    return path
-
-def save_bytes_as_file(bytes_to_save, path=None, extension=None):
-    if path is None:
-        path = Files.temp_file(extension)
-    with open(path, 'wb') as fp:
-        fp.write(bytes_to_save)
-    return path
-
-def temp_file(extension = '.tmp', file_contents=None):
-    (fd, tmp_file) = tempfile.mkstemp(extension)
-    file_delete(tmp_file)
-    if file_contents:
-        file_create(tmp_file, file_contents)
-    return tmp_file
-
-def temp_filename(extension='.tmp'):
-    if len(extension) > 0 and extension[0] != '.':  # make sure the extension starts with a dot
-        extension = '.' + extension
-    return Files.file_name(Files.temp_file(extension))
-
-def temp_folder(prefix=None, suffix=None,parent_folder=None):
-    return tempfile.mkdtemp(suffix, prefix, parent_folder)
-
-def temp_folder_with_temp_file(prefix=None, suffix=None,parent_folder=None, file_name='temp_file.txt', file_contents='temp_file'):
-    folder = temp_folder(prefix,suffix,parent_folder)
-    file_create(path_combine(folder,file_name), file_contents)
-    return folder
-
-
-#todo: create stub methods below to top-level methods (making sure that all top level methods start with 'file(s)_' or 'folder(s)_'
 class Files:
     @staticmethod
     def bytes(path):
-        with open(path, 'rb') as file_data:
-            return file_data.read()
+        with open(path, 'rb') as file:
+            return file.read()
 
     @staticmethod
     def copy(source:str, destination:str) -> str:
@@ -138,33 +43,21 @@ class Files:
         return Files.exists(path) is False
 
     @staticmethod
-    def exists(path):
+    def exists(path):                           # todo: add check to see if it is a file (vs being a folder)_
         if path:
             return os.path.exists(path)
         return False
 
     @staticmethod
-    def find(path_pattern):
-        return glob.glob(path_pattern, recursive=True)
+    def find(path_pattern, recursive=True):
+        return glob.glob(path_pattern, recursive=recursive)
 
     @staticmethod
-    def file_contents(path):
-        with open(path, "rt") as file:
-            return file.read()
-
-    @staticmethod
-    def file_contents_as_bytes(path):
-        with open(path, "rb") as file:
-            return file.read()
-
-    @staticmethod
-    def files(path):  # todo: check behaviour and improve ability to detect file (vs folders)
+    def files(path, pattern= '*.*'):                        # todo: check behaviour and improve ability to detect file (vs folders)
         result = []
-        for file in Path(path).rglob('*.*'):
-            result.append(str(file))                        # see if there is a better way to do this conversion to string
-        return result
-        #search_path = Files.path_combine(path,'**/*.*')    # this wasn't working as expected
-        #return Files.find(search_path)
+        for file in Path(path).rglob(pattern):
+            result.append(str(file))                        # todo: see if there is a better way to do this conversion to string
+        return sorted(result)
 
 
     @staticmethod
@@ -178,35 +71,54 @@ class Files:
         return ''
 
     @staticmethod
+    def file_extension_fix(extension):
+        if extension is None or len(extension) == 0:        # if it None or empty return default .tmp extension
+            return '.tmp'
+        if extension[0] != '.':                             # make sure that the extension starts with a dot
+            return '.' + extension
+        return extension
+
+    @staticmethod
+    def file_size(path):
+        return file_stats(path).st_size
+
+    @staticmethod
+    def file_stats(path):
+        return os.stat(path)
+
+    @staticmethod
     def folder_exists(path):          # todo: add check to see if it is a folder
         return Files.exists(path)
 
+    staticmethod
+    def folder_copy(source, destination, ignore_pattern=None):
+        if ignore_pattern:
+            ignore = shutil.ignore_patterns(ignore_pattern)
+        else:
+            ignore = None
+        return shutil.copytree(src=source, dst=destination, ignore=ignore)
+
     @staticmethod
     def folder_create(path):
-        try:
-            os.makedirs(path)
-        except OSError as exc:
-            if exc.errno == errno.EEXIST and os.path.isdir(path):
-                pass
-            else:
-                raise
-        if Files.folder_exists(path):
+        if folder_exists(path):
             return path
-        return None
+
+        os.makedirs(path)
+        return path
 
     @staticmethod
     def folder_delete_all(path):                # this will remove recursively
-        if Files.folder_exists(path):
+        if folder_exists(path):
             shutil.rmtree(path)
-            return Files.exists(path) is False
-        return True
+        return folder_exists(path) is False
 
     @staticmethod
     def folder_name(path):
         return os.path.dirname(path)
 
-    def find(path_pattern):
-        return glob.glob(path_pattern)
+    @staticmethod
+    def folder_not_exists(path):
+        return folder_exists(path) is False
 
     @staticmethod
     def path_combine(path1, path2):
@@ -237,17 +149,11 @@ class Files:
         return Files.path_combine(os.path.dirname(file),path)
 
     @staticmethod
-    def save(contents, path=None, extension=None):  # todo: refactor the other methods to have the data first
-        if path is None:
-            path = temp_file(extension=extension)
-        Files.write(path, contents)
+    def save(contents, path=None, extension=None):
+        path = path or temp_file(extension=extension)
+        file_create(path, contents)
         return path
 
-    @staticmethod
-    def save_string_as_file(path, data):            # todo: refactor to have data first (and support creation of temp file)
-        with open(path, 'w') as fp:
-            fp.write(data)
-        return path
 
     @staticmethod
     def save_bytes_as_file(bytes_to_save, path=None, extension=None):
@@ -258,15 +164,20 @@ class Files:
         return path
 
     @staticmethod
-    def temp_file(extension = '.tmp'):
-        (fd, tmp_file) = tempfile.mkstemp(extension)
+    def temp_file(extension = '.tmp', contents=None, parent_folder=None):
+        extension = file_extension_fix(extension)
+        if parent_folder is None:
+            (fd, tmp_file) = tempfile.mkstemp(extension)
+            file_delete(tmp_file)
+        else:
+            tmp_file = path_combine(parent_folder, temp_filename(extension))
+
+        if contents:
+            file_create(tmp_file, contents)
         return tmp_file
-        #return '/tmp/{0}'.format(os.path.basename(tmp_file))
 
     @staticmethod
     def temp_filename(extension='.tmp'):
-        if len(extension) > 0 and extension[0] != '.':  # make sure the extension starts with a dot
-            extension = '.' + extension
         return Files.file_name(Files.temp_file(extension))
 
     @staticmethod
@@ -274,45 +185,115 @@ class Files:
         return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
     @staticmethod
-    def write(path,contents):
-        with open(path, "w") as file:
-            return file.write(contents)
+    def temp_folder_with_temp_file(prefix=None, suffix=None,parent_folder=None, file_name='temp_file.txt', file_contents='temp_file'):
+        folder = temp_folder(prefix,suffix,parent_folder)
+        file_create(path_combine(folder,file_name), file_contents)
+        return folder
 
     @staticmethod
-    def zip_folder(root_dir):
-        return shutil.make_archive(root_dir, "zip", root_dir)
+    def write(path = None,contents=None):
+        path     = path or temp_file()
+        contents = contents or ''
+        with open(path, "w") as file:
+            file.write(contents)
+        return path
+
+    @staticmethod
+    def write_gz(path=None, contents=None):
+        path = path or temp_file(extension='.gz')
+        contents = contents or ''
+        if type(contents) is str:
+            contents = contents.encode()
+        with gzip.open(path, "w") as file:
+            file.write(contents)
+        return path
+
+    @staticmethod
+    def unzip_file(zip_file, target_folder=None, format='zip'):
+        target_folder = target_folder or temp_folder()
+        shutil.unpack_archive(zip_file, extract_dir=target_folder, format=format)
+        return target_folder
+
+    @staticmethod
+    def zip_folder(root_dir, format='zip'):
+        return shutil.make_archive(base_name=root_dir, format=format, root_dir=root_dir)
 
     @staticmethod
     def zip_file_list(path):
         with zipfile.ZipFile(path) as zip_file:
-            return zip_file.namelist()
+            return sorted(zip_file.namelist())
 
     @staticmethod
-    def zip_files(base_folder, file_pattern, target_file):
-        if file_pattern and target_file and target_file:
-            base_folder  = abspath(base_folder)
-            file_pattern = Files.path_combine(base_folder, file_pattern)
+    def zip_files(base_folder, file_pattern="*.*", target_file=None):
+        base_folder = abspath(base_folder)
+        file_list   = folder_files(base_folder, file_pattern)
 
-            file_list = glob.glob(file_pattern)
+        if len(file_list):                                                  # if there were files found
+            target_file = target_file or temp_file(extension='zip')
+            with zipfile.ZipFile(target_file,'w') as zip:
+                for file_name in file_list:
+                    zip_file_path = file_name.replace(base_folder,'')
+                    zip.write(file_name, zip_file_path)
 
-            if len(file_list):                                                  # if there were files found
-                with zipfile.ZipFile(target_file,'w') as zip:
-                    for file_name in file_list:
-                        zip_file_path = file_name.replace(base_folder,'')
-                        zip.write(file_name, zip_file_path)
+            return target_file
 
-                return target_file
 
-    @staticmethod
-    def unzip_file(zip_file, target_folder):
-        shutil.unpack_archive(zip_file, extract_dir=target_folder)
-        return target_folder
 
 # helper methods
 # todo: all all methods above (including the duplicated mappings at the top)
 
-file_save      = Files.save                   # better name for Files.write
-current_folder = Files.current_folder
-path_combine   = Files.path_combine
-path_current   = Files.current_folder
-parent_folder  = Files.parent_folder
+current_folder              = Files.current_folder
+
+file_bytes                  = Files.bytes
+file_contents               = Files.contents
+file_contents_gz            = Files.contents_gz
+file_contents_as_bytes      = Files.bytes
+file_copy                   = Files.copy
+file_delete                 = Files.delete
+file_create                 = Files.write
+file_create_gz              = Files.write_gz
+file_exists                 = Files.exists
+file_extension              = Files.file_extension
+file_extension_fix          = Files.file_extension_fix
+file_find                   = Files.find
+file_lines                  = Files.lines
+file_lines_gz               = Files.lines_gz
+file_name                   = Files.file_name
+file_not_exists             = Files.not_exists
+file_save                   = Files.save
+file_size                   = Files.file_size
+file_stats                  = Files.file_stats
+file_write                  = Files.write
+file_write_gz               = Files.write_gz
+file_unzip                  = Files.unzip_file
+
+folder_create               = Files.folder_create
+folder_create_temp          = Files.temp_folder
+folder_copy                 = Files.folder_copy
+folder_copy_except          = Files.folder_copy
+folder_delete_all           = Files.folder_delete_all
+folder_exists               = Files.folder_exists
+folder_not_exists           = Files.folder_not_exists
+folder_name                 = Files.folder_name
+folder_temp                 = Files.temp_folder
+folder_files                = Files.files
+folder_zip                  = Files.zip_folder
+
+path_append                 = Files.path_combine
+path_combine                = Files.path_combine
+path_current                = Files.current_folder
+parent_folder               = Files.parent_folder
+parent_folder_combine       = Files.parent_folder_combine
+
+save_bytes_as_file          = Files.save_bytes_as_file
+save_string_as_file         = Files.save
+
+temp_file                   = Files.temp_file
+temp_filename               = Files.temp_filename
+temp_folder                 = Files.temp_folder
+temp_folder_with_temp_file  = Files.temp_folder_with_temp_file
+
+zip_files                   = Files.zip_files
+zip_folder                  = Files.zip_folder
+zip_file_list               = Files.zip_file_list
+unzip_file                  = Files.unzip_file
