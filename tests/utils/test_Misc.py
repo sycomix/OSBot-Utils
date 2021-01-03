@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from osbot_utils.utils import Misc
 from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes
 
 
 class test_Misc(TestCase):
@@ -55,6 +56,13 @@ class test_Misc(TestCase):
         assert Misc.array_pop_and_trim(array,   0 ) == '1'
         assert Misc.array_pop_and_trim(array, None) is None
 
+    def test_base64_to_bytes__bytes_to_base64(self):
+        bytes        = b"\x89PNG__"
+        bytes_base64 = "iVBOR19f"
+        assert bytes_to_base64(bytes                ) == bytes_base64
+        assert base64_to_bytes(bytes_base64         ) == bytes
+        assert base64_to_bytes(bytes_base64.encode()) == bytes
+
     def test_chunks(self):
         array = ['1',2,'3',4 ,'5']
         assert list(Misc.chunks(array,  2  )) == [['1', 2    ], ['3', 4], ['5']]
@@ -63,6 +71,8 @@ class test_Misc(TestCase):
         assert list(Misc.chunks(array, None)) == []
         assert type(Misc.chunks(None , 0)).__name__ == 'generator'
         assert list(Misc.chunks(None , 0)) == []
+
+    #def class_name(self):
 
 
     def test_random_filename(self):

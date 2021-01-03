@@ -46,6 +46,11 @@ def array_pop_and_trim(array, position=None):
         return trim(value)
     return value
 
+def base64_to_bytes(bytes_base64):
+    if type(bytes_base64) is str:
+        bytes_base64 = bytes_base64.encode()
+    return base64.decodebytes(bytes_base64)
+
 def bytes_to_base64(bytes):
     return base64.b64encode(bytes).decode()
 
