@@ -36,16 +36,21 @@ class Process:
 
     @staticmethod
     def stop(pid):
-        print('killing process {0} with {1}'.format(pid, signal.SIGKILL))
-        print(os.kill(pid, signal.SIGKILL))
+        #print('killing process {0} with {1}'.format(pid, signal.SIGKILL))
+        return os.kill(pid, signal.SIGKILL)
 
     # exec helpers
     @staticmethod
     def exec_open(file_path, cwd='.'): return Process.run("open", [file_path], cwd)
 
-run_process  = Process.run
-exec_open    = Process.exec_open
-exec_process = Process.run
+
+kill_process  = Process.stop
+run_process   = Process.run
+exec_open     = Process.exec_open
+exec_process  = Process.run
+start_process = Process.run
+stop_process  = Process.stop
+
 
 
 

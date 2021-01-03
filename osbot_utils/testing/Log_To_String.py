@@ -22,7 +22,6 @@ class Log_To_String():
         self.logger.addHandler(self.string_handler)
 
     def contents(self):
-        #self.string_stream.flush()
         return self.string_stream.getvalue()
 
     def set_level(self, level):

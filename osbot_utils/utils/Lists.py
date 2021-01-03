@@ -17,3 +17,7 @@ class Lists:
     @staticmethod
     def empty(list):
         return not Lists.not_empty(list)
+
+list_empty     = Lists.empty
+list_first     = Lists.first
+list_not_empty = Lists.not_empty
