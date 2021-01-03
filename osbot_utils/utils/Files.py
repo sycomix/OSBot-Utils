@@ -141,6 +141,14 @@ class Files:
         return os.path.exists(path) is False
 
     @staticmethod
+    def open(path, mode='r'):
+        return open(path, mode=mode)
+
+    @staticmethod
+    def open_bytes(path):
+        return Files.open(path, mode='rb')
+
+    @staticmethod
     def parent_folder(path):
         return os.path.dirname(path)
 
@@ -191,12 +199,16 @@ class Files:
         return folder
 
     @staticmethod
-    def write(path = None,contents=None):
-        path     = path or temp_file()
+    def write(path = None,contents=None, extension=None, mode='w'):
+        path     = path or temp_file(extension)
         contents = contents or ''
-        with open(path, "w") as file:
+        with open(file=path, mode=mode) as file:
             file.write(contents)
         return path
+
+    @staticmethod
+    def write_bytes(path=None, contents=None, extension=None):
+        return Files.write(path=path, contents=contents, extension=extension, mode='wb')
 
     @staticmethod
     def write_gz(path=None, contents=None):
@@ -251,6 +263,7 @@ file_contents_as_bytes      = Files.bytes
 file_copy                   = Files.copy
 file_delete                 = Files.delete
 file_create                 = Files.write
+file_create_bytes           = Files.write_bytes
 file_create_gz              = Files.write_gz
 file_exists                 = Files.exists
 file_extension              = Files.file_extension
@@ -260,10 +273,13 @@ file_lines                  = Files.lines
 file_lines_gz               = Files.lines_gz
 file_name                   = Files.file_name
 file_not_exists             = Files.not_exists
+file_open                   = Files.open
+file_open_bytes             = Files.open_bytes
 file_save                   = Files.save
 file_size                   = Files.file_size
 file_stats                  = Files.file_stats
 file_write                  = Files.write
+file_write_bytes            = Files.write_bytes
 file_write_gz               = Files.write_gz
 file_unzip                  = Files.unzip_file
 

@@ -5,7 +5,7 @@ from osbot_utils.utils.Files import Files, path_combine, parent_folder, path_cur
     folder_name, folder_files, file_not_exists, temp_folder, folder_copy, path_append, folder_exists, folder_create, \
     folder_delete_all, folder_not_exists, temp_folder_with_temp_file, folder_zip, file_unzip, file_extension, \
     zip_file_list, zip_files, save_string_as_file, file_write_gz, file_contents_gz, file_size, file_write, file_find, \
-    file_lines, file_create_gz, file_lines_gz, parent_folder_combine
+    file_lines, file_create_gz, file_lines_gz, parent_folder_combine, file_write_bytes, file_open_bytes
 from osbot_utils.utils.Misc import random_bytes, random_string, remove
 
 
@@ -104,6 +104,22 @@ class test_Files(TestCase):
         assert file_not_exists(target) is True
         file_create(target,'asd')
         assert file_not_exists(target) is False
+
+    def test_file_write(self):
+        target = temp_file()
+        text   = "this is a string"
+        assert file_contents(file_write(target, text)) == text
+        assert file_bytes   (file_write(target, text)) == text.encode()
+
+        assert file_contents(file_write(target, text.encode(), mode='wb')) == text
+        assert file_bytes   (file_write(target, b"\x89PNG___", mode='wb')) == b"\x89PNG___"
+
+    def test_file_write_bytes(self):
+        target = temp_file()
+        bytes  = b"\x89PNG___"
+        assert file_bytes(file_write_bytes(target, contents=bytes)) == bytes
+        assert file_open_bytes(target).read() == b'\x89PNG___'
+
 
     def test_folder_copy(self):
         folder_a = temp_folder(prefix='folder_a_')
