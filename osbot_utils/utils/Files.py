@@ -23,14 +23,16 @@ class Files:
             return shutil.copy(source, destination)                 # copy file and returns file destination
 
     @staticmethod
-    def contents(path):
-        with open(path, "rt") as file:
-            return file.read()
+    def contents(path, mode='rt'):
+        if file_exists(path):
+            with file_open(path, mode) as file:
+                return file.read()
 
     @staticmethod
-    def contents_gz(path):
-        with gzip.open(path, "rt") as file:
-            return file.read()
+    def contents_gz(path, mode='rt'):
+        if file_exists(path):
+            with file_open_gz(path, mode) as file:
+                return file.read()
 
     @staticmethod
     def current_folder():
@@ -143,6 +145,10 @@ class Files:
     @staticmethod
     def open(path, mode='r'):
         return open(path, mode=mode)
+
+    @staticmethod
+    def open_gz(path, mode='r'):
+        return gzip.open(path, mode=mode)
 
     @staticmethod
     def open_bytes(path):
@@ -274,6 +280,7 @@ file_lines_gz               = Files.lines_gz
 file_name                   = Files.file_name
 file_not_exists             = Files.not_exists
 file_open                   = Files.open
+file_open_gz                = Files.open_gz
 file_open_bytes             = Files.open_bytes
 file_save                   = Files.save
 file_size                   = Files.file_size
@@ -294,6 +301,9 @@ folder_name                 = Files.folder_name
 folder_temp                 = Files.temp_folder
 folder_files                = Files.files
 folder_zip                  = Files.zip_folder
+
+load_file                   = Files.contents
+load_file_gz                = Files.contents_gz
 
 path_append                 = Files.path_combine
 path_combine                = Files.path_combine

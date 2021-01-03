@@ -86,24 +86,6 @@ def is_number(value):
         pass
     return False
 
-def json_dumps(target, message=None):
-    if target:
-        return json.dumps(target, indent=4)
-    return message
-
-def json_format(target, message=None):
-    if target:
-        return json.dumps(target, indent=4)
-    return message
-
-def json_load(target):
-    if target:
-        try:
-            return json.loads(target)
-        except:
-            pass
-    return None
-
 def none_or_empty(target,field):
     if target:
         value = target.get(field)
