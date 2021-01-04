@@ -228,7 +228,7 @@ do eiusmod tempor incididunt ut labore et dolore magna
 aliqua."""
 
 
-    def test_word_wrap(self):
+    def test_word_wrap_escaped(self):
         text = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         assert word_wrap_escaped(text) == "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\\nAAAAAAAAAAAAAAAAAAAALorem ipsum dolor\\nsit amet, consectetur adipiscing elit,\\nsed do eiusmod tempor incididunt ut\\nlabore et dolore magna aliqua."
 
