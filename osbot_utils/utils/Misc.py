@@ -10,6 +10,8 @@ from datetime import datetime
 from secrets import token_bytes
 from time import sleep
 from osbot_utils.decorators.methods.function_type_check import function_type_check
+from osbot_utils.utils.Files import file_extension_fix
+
 
 @function_type_check
 def array_add(array : list, value):
@@ -62,21 +64,21 @@ def chunks(items:list, split: int):
 def class_name(target):
     if target:
         return type(target).__name__
-    return None
 
 def date_now():
     return str(datetime.now())
 
+def str_to_date(str_date, format='%Y-%m-%d %H:%M:%S.%f'):
+    return datetime.strptime(str_date,format)
+
 def get_value(target, key, default=None):
     if target is not None:
-        try:
-            value = target.get(key)
-            if value is not None:
-                return value
-        except:
-            pass
+        value = target.get(key)
+        if value is not None:
+            return value
     return default
 
+# todo: check if this should still be here
 def get_random_color(max=5):
     if max > 5: max = 5                                                             # add support for more than 5 colors
     colors = ['skyblue', 'darkseagreen', 'palevioletred', 'coral', 'darkgray']
@@ -91,18 +93,18 @@ def is_number(value):
     return False
 
 def none_or_empty(target,field):
-    if target:
+    if target and field:
         value = target.get(field)
         return (value is None) or value == ''
     return True
 
-def object_data(target):
-    #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith("a__")]
-    return target.__dict__ # this one seems to do the trick (if not look at the code sample above)
+# def object_data(target):
+#     #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith("a__")]
+#     return target.__dict__ # this one seems to do the trick (if not look at the code sample above)
 
 
 def random_filename(extension='.tmp', length=10):
-    if len(extension) > 0 and  extension[0] != '.' : extension = '.' + extension
+    extension = file_extension_fix(extension)
     return '{0}{1}'.format(''.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)
 
 def random_port(min=20000,max=65000):
@@ -117,16 +119,16 @@ def random_string(length=6,prefix=''):
 def random_string_and_numbers(length=6,prefix=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
-def md5(target):
-    if target:
-        return hashlib.md5('{0}'.format(target).encode()).hexdigest()
+def md5(text):
+    if text:
+        return hashlib.md5('{0}'.format(text).encode()).hexdigest()
     return None
 
 def random_uuid():
     return str(uuid.uuid4())
 
 def trim(target):
-    if target:
+    if type(target) is str:
         return target.strip()
     return target
 
@@ -147,9 +149,9 @@ def word_wrap_escaped(text,length = 40):
         return '\\n'.join(textwrap.wrap(text, length))
 
 def convert_to_number(value):
-    if value != '':
+    if value:
         try:
-            if value[0] == '£':
+            if value[0] in ['£','$','€']:
                 return float(re.sub(r'[^\d.]', '', value))
             else:
                 return float(value)
@@ -214,7 +216,10 @@ def replace(target_string, string_to_find, string_to_replace):
     return target_string.replace(string_to_find, string_to_replace)
 
 def split_lines(text):
-    return text.split('\n')
+    return text.replace('\r\n','\n').split('\n')
 
 def under_debugger():
     return 'pydevd' in sys.modules
+
+
+convert_to_float = convert_to_number
