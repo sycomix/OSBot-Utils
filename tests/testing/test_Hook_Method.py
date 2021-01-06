@@ -26,9 +26,9 @@ class test_Hook_Method(TestCase):
         assert requests.api.request == self.target
 
     def test_after_call(self):
-        def on_after_call(return_value):
+        def on_after_call(return_value,  *args, **kwargs):
             if type(return_value) is str:
-                return f'status code: {return_value}'
+                return f'status code: {return_value} {args[0]} {args[1]} {kwargs}'
             else:
                 return f'{return_value.status_code}'
 
@@ -38,7 +38,7 @@ class test_Hook_Method(TestCase):
         with self.wrap_method:
             requests.head('https://www.google.com')
 
-        assert self.wrap_method.calls_last_one()['return_value'] == 'status code: 200'
+        assert self.wrap_method.calls_last_one()['return_value'] == "status code: 200 ('head', 'https://www.google.com') {'allow_redirects': False} {}"
 
     def test_before_call(self):
         assert self.wrap_method.calls_last_one() == None
@@ -60,7 +60,7 @@ class test_Hook_Method(TestCase):
             assert kwargs == {'allow_redirects': False}
             return return_value
 
-        self.wrap_method.mock_call = mock_call
+        self.wrap_method.set_mock_call(mock_call)
 
 
         with self.wrap_method:

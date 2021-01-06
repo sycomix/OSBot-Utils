@@ -18,10 +18,22 @@ class Hook_Method:
         self.unwrap()
 
     def add_on_after_call(self, on_after_call):
+        """
+        method to be after before the Hooked call
+
+        method signature: def on_after_call(return_value,  *args, **kwargs):
+        should return: return_value
+        """
         self.on_after_call.append(on_after_call)
         return self
 
     def add_on_before_call(self, on_before_call):
+        """
+        method to be called before the Hooked call
+
+        method signature: def on_after_call(*args, **kwargs):
+        should return: (args, kwargs)
+        """
         self.on_before_call.append(on_before_call)
         return self
 
@@ -32,17 +44,29 @@ class Hook_Method:
         if len(self.calls) > 0:
             return self.calls[-1]
 
-    def after_call(self, return_value):
+    def after_call(self, return_value, *args, **kwargs):
+        """
+        call all methods added via `add_on_after_call` with the params: return_value, *args, **kwargs
+        return value from each on_after_call will on override existing return_value
+        """
         for method in self.on_after_call:
-            return_value = method(return_value)
+            return_value = method(return_value, *args, **kwargs)
         return return_value
 
     def before_call(self, *args, **kwargs):
+        """
+        call all methods added via `add_on_before_call` with the params: *args, **kwargs
+        return value is expected to be args and kwargs on each on_after_call which will on override existing args and kwargs values
+        """
         for method in self.on_before_call:
             (args, kwargs) = method(*args, **kwargs)
         return (args, kwargs)
 
-
+    def set_mock_call(self, mock_call):
+        """
+        Use this to simulate a call to the Hooked Method (the
+        """
+        self.mock_call = mock_call
 
     def wrap(self):
 
@@ -53,7 +77,7 @@ class Hook_Method:
             else:
                 (args, kwargs) = self.before_call(*args, **kwargs)
                 return_value   = self.target(*args, **kwargs)
-                return_value   = self.after_call(return_value)
+                return_value   = self.after_call(return_value, args, kwargs)
 
             call = {
                         'args'        : args,

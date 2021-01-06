@@ -113,7 +113,7 @@ class test_Http(TestCase):
         host    = "www.google.com"
         port    = 443
         host_ip = dns_ip_address(host)
-        timeout = 0.06
+        timeout = 0.10                          # note: some cases when it failed locally
         assert port_is_open(host=host   , port=port  , timeout=timeout) is True
         assert port_is_open(host=host_ip, port=port  , timeout=timeout) is True
         #assert port_is_open(host=host   , port=port+1, timeout=timeout) is False
