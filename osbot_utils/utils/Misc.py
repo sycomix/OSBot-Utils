@@ -65,11 +65,30 @@ def class_name(target):
     if target:
         return type(target).__name__
 
+def convert_to_number(value):
+    if value:
+        try:
+            if value[0] in ['£','$','€']:
+                return float(re.sub(r'[^\d.]', '', value))
+            else:
+                return float(value)
+        except:
+          return 0
+    else:
+        return 0
+
 def date_now():
     return str(datetime.now())
 
-def str_to_date(str_date, format='%Y-%m-%d %H:%M:%S.%f'):
-    return datetime.strptime(str_date,format)
+def get_field(target, field, default=None):
+    if target is not None:
+        try:
+            value = getattr(target, field)
+            if value is not None:
+                return value
+        except:
+            pass
+    return default
 
 def get_value(target, key, default=None):
     if target is not None:
@@ -84,6 +103,13 @@ def get_random_color(max=5):
     colors = ['skyblue', 'darkseagreen', 'palevioletred', 'coral', 'darkgray']
     return colors[random_number(0, max-1)]
 
+def get_missing_fields(target,field):
+    missing_fields = []
+    for field in field:
+        if get_field(target, field) is None:
+            missing_fields.append(field)
+    return missing_fields
+
 def is_number(value):
     try:
         int(value)
@@ -92,16 +118,23 @@ def is_number(value):
         pass
     return False
 
+def last_letter(text):
+    if text and (type(text) is str) and len(text) > 0:
+        return text[-1]
+
+def md5(text):
+    if text:
+        return hashlib.md5('{0}'.format(text).encode()).hexdigest()
+    return None
+
 def none_or_empty(target,field):
     if target and field:
         value = target.get(field)
         return (value is None) or value == ''
     return True
 
-# def object_data(target):
-#     #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith("a__")]
-#     return target.__dict__ # this one seems to do the trick (if not look at the code sample above)
-
+def random_bytes(length=24):
+    return token_bytes(length)
 
 def random_filename(extension='.tmp', length=10):
     extension = file_extension_fix(extension)
@@ -112,84 +145,6 @@ def random_port(min=20000,max=65000):
 
 def random_number(min=1,max=65000):
     return random.randint(min, max)
-
-def random_string(length=6,prefix=''):
-    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length))
-
-def random_string_and_numbers(length=6,prefix=''):
-    return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
-
-def md5(text):
-    if text:
-        return hashlib.md5('{0}'.format(text).encode()).hexdigest()
-    return None
-
-def random_uuid():
-    return str(uuid.uuid4())
-
-def trim(target):
-    if type(target) is str:
-        return target.strip()
-    return target
-
-def to_int(value, default=0):
-    try:
-        return int(value)
-    except:
-        return default
-
-def wait(seconds):
-    sleep(seconds)
-
-def word_wrap(text,length = 40):
-    return '\n'.join(textwrap.wrap(text, length))
-
-def word_wrap_escaped(text,length = 40):
-    if text:
-        return '\\n'.join(textwrap.wrap(text, length))
-
-def convert_to_number(value):
-    if value:
-        try:
-            if value[0] in ['£','$','€']:
-                return float(re.sub(r'[^\d.]', '', value))
-            else:
-                return float(value)
-        except:
-          return 0
-    else:
-        return 0
-
-def remove_html_tags(html):
-    if html:
-        TAG_RE = re.compile(r'<[^>]+>')
-        return TAG_RE.sub('', html).replace('&nbsp;', ' ')
-
-
-def get_field(target, field, default=None):
-    if target is not None:
-        try:
-            value = getattr(target, field)
-            if value is not None:
-                return value
-        except:
-            pass
-    return default
-
-def get_missing_fields(target,field):
-    missing_fields = []
-    for field in field:
-        if get_field(target, field) is None:
-            missing_fields.append(field)
-    return missing_fields
-
-def last_letter(text):
-    if text and (type(text) is str) and len(text) > 0:
-        return text[-1]
-
-def random_bytes(length=24):
-    return token_bytes(length)
-
 
 def random_password(length=24, prefix=''):
     password = prefix + ''.join(random.choices(string.ascii_lowercase  +
@@ -203,11 +158,20 @@ def random_password(length=24, prefix=''):
         password = password.replace(item, '_')
     return password
 
+def random_string(length=6,prefix=''):
+    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length))
+
+def random_string_and_numbers(length=6,prefix=''):
+    return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
 def random_text(prefix=None,length=12):
     if prefix is None: prefix = 'text_'
     if last_letter(prefix) != '_':
         prefix += '_'
     return random_string_and_numbers(length=length, prefix=prefix)
+
+def random_uuid():
+    return str(uuid.uuid4())
 
 def remove(target_string, string_to_remove):
     return replace(target_string, string_to_remove, '')
@@ -215,11 +179,40 @@ def remove(target_string, string_to_remove):
 def replace(target_string, string_to_find, string_to_replace):
     return target_string.replace(string_to_find, string_to_replace)
 
+def remove_html_tags(html):
+    if html:
+        TAG_RE = re.compile(r'<[^>]+>')
+        return TAG_RE.sub('', html).replace('&nbsp;', ' ')
+
 def split_lines(text):
     return text.replace('\r\n','\n').split('\n')
 
+def str_to_date(str_date, format='%Y-%m-%d %H:%M:%S.%f'):
+    return datetime.strptime(str_date,format)
+
+def to_int(value, default=0):
+    try:
+        return int(value)
+    except:
+        return default
+
+def trim(target):
+    if type(target) is str:
+        return target.strip()
+    return target
+
 def under_debugger():
     return 'pydevd' in sys.modules
+
+def wait(seconds):
+    sleep(seconds)
+
+def word_wrap(text,length = 40):
+    return '\n'.join(textwrap.wrap(text, length))
+
+def word_wrap_escaped(text,length = 40):
+    if text:
+        return '\\n'.join(textwrap.wrap(text, length))
 
 
 convert_to_float = convert_to_number
