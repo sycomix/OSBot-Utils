@@ -1,14 +1,22 @@
 import base64
 import hashlib
+import os
 import random
 import string
 import sys
 import textwrap
 import re
 import uuid
+import warnings
 from datetime import datetime
 from secrets import token_bytes
 from time import sleep
+
+from dotenv import load_dotenv
+from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
+
+from osbot_utils.fluent.Fluent_List import Fluent_List
+
 from osbot_utils.decorators.methods.function_type_check import function_type_check
 from osbot_utils.utils.Files import file_extension_fix
 
@@ -53,8 +61,14 @@ def base64_to_bytes(bytes_base64):
         bytes_base64 = bytes_base64.encode()
     return base64.decodebytes(bytes_base64)
 
+def base64_to_str(target):
+    return bytes_to_str(base64_to_bytes(target))
+
 def bytes_to_base64(bytes):
     return base64.b64encode(bytes).decode()
+
+def bytes_to_str(target, encoding='ascii'):
+    return target.decode(encoding=encoding)
 
 def chunks(items:list, split: int):
     if items and split and split > 0:
@@ -79,6 +93,26 @@ def convert_to_number(value):
 
 def date_now():
     return str(datetime.now())
+
+def env_value(var_name):
+    return env_vars().get(var_name, None)
+
+def env_vars():
+    """
+    reload data from .env file and return dictionary with current environment variables
+    """
+    load_dotenv()
+    vars = os.environ
+    data = {}
+    for key in vars:
+        data[key] = vars[key]
+    return data
+
+def env_vars_list():
+    return list_set(env_vars())
+
+def flist(target):
+    return Fluent_List(target)
 
 def get_field(target, field, default=None):
     if target is not None:
@@ -118,9 +152,34 @@ def is_number(value):
         pass
     return False
 
+def ignore_warning__unclosed_ssl():
+    warnings.filterwarnings("ignore", category=ResourceWarning, message="unclosed.*<ssl.SSLSocket.*>")
+
 def last_letter(text):
     if text and (type(text) is str) and len(text) > 0:
         return text[-1]
+
+def list_set(target):
+    return sorted(list(set(target)))
+
+def list_index_by(values, index_by):
+    results = {}
+    for item in values:
+        results[item.get(index_by)] = item
+    return Fluent_Dict(results)
+
+def list_group_by(values, group_by):
+    results = {}
+    for item in values:
+        value = item.get(group_by)
+        if results.get(value) is None: results[value] = []
+        results[value].append(item)
+    return results
+
+def lower(target : str):
+    if target:
+        return target.lower()
+    return ""
 
 def md5(text):
     if text:
@@ -176,6 +235,9 @@ def random_uuid():
 def remove(target_string, string_to_remove):
     return replace(target_string, string_to_remove, '')
 
+def remove_multiple_spaces(target):
+    return re.sub(' +', ' ', target)
+
 def replace(target_string, string_to_find, string_to_replace):
     return target_string.replace(string_to_find, string_to_replace)
 
@@ -186,6 +248,20 @@ def remove_html_tags(html):
 
 def split_lines(text):
     return text.replace('\r\n','\n').split('\n')
+
+def split_spaces(target):
+    return remove_multiple_spaces(target).split(' ')
+
+def sorted_set(target : object):
+    if target:
+        return sorted(set(target))
+    return []
+
+def str_to_base64(target):
+    return bytes_to_base64(str_to_bytes(target))
+
+def str_to_bytes(target):
+    return target.encode()
 
 def str_to_date(str_date, format='%Y-%m-%d %H:%M:%S.%f'):
     return datetime.strptime(str_date,format)
@@ -199,10 +275,15 @@ def to_int(value, default=0):
 def trim(target):
     if type(target) is str:
         return target.strip()
-    return target
+    return ""
 
 def under_debugger():
     return 'pydevd' in sys.modules
+
+def upper(target : str):
+    if target:
+        return target.upper()
+    return ""
 
 def wait(seconds):
     sleep(seconds)
@@ -214,5 +295,5 @@ def word_wrap_escaped(text,length = 40):
     if text:
         return '\\n'.join(textwrap.wrap(text, length))
 
-
+bytes_to_string = bytes_to_str
 convert_to_float = convert_to_number

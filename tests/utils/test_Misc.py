@@ -199,8 +199,8 @@ class test_Misc(TestCase):
         assert trim(''       ) == ''
         assert trim('       ') == ''
         assert trim(' \t \n ') == ''
-        assert trim(None     ) is None
-        assert trim({}       ) == {}
+        assert trim(None     ) == ''
+        assert trim({}       ) == ''
 
     def test_to_int(self):
         assert to_int('12'   ) == 12

@@ -36,3 +36,6 @@ class Fluent_List(list):
 
     def type(self):                         # todo: find a way to add this kind of methods to all Fluent Classes
         return type(self)
+
+
+Fluent_List.sort = Fluent_List.sorted
