@@ -66,6 +66,15 @@ class Profiler:
             'f_trace_opcodes': True
         }
 
+    def get_last_event(self):
+        return self.events.pop()
+
+    def get_f_locals(self):
+        return self.get_last_event().get('f_locals')
+
+    def get_f_locals_variable(self, var_name):
+        return self.get_f_locals().get(var_name)
+
     def profiling_function(self, frame, event, arg):
         if type(frame.f_locals.get('self')) != Profiler:                    # dont' capture traces of the current (Trace) class
             item = self.add_values(self.profile_options, frame)

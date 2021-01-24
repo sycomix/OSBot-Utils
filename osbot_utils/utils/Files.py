@@ -5,9 +5,8 @@ import shutil
 import tempfile
 import zipfile
 from   os.path import abspath, join
-
-# todo: add UnitTests to methods below (and refactor these to use the methods in the Files class (so that we don't have duplicated code)
 from pathlib import Path
+
 
 class Files:
     @staticmethod
@@ -33,6 +32,16 @@ class Files:
         if file_exists(path):
             with file_open_gz(path, mode) as file:
                 return file.read()
+
+    @staticmethod
+    def contents_md5(path):
+        from osbot_utils.utils.Misc import bytes_md5
+        return bytes_md5(file_contents_as_bytes(path))
+
+    @staticmethod
+    def contents_sha256(path):
+        from osbot_utils.utils.Misc import bytes_sha256
+        return bytes_sha256(file_contents_as_bytes(path))
 
     @staticmethod
     def current_folder():
@@ -107,6 +116,11 @@ class Files:
 
         os.makedirs(path)
         return path
+
+    @staticmethod
+    def folder_create_in_parent(path, name):
+        folder_path = path_combine(path, name)
+        return folder_create(folder_path)
 
     @staticmethod
     def folder_delete_all(path):                # this will remove recursively
@@ -199,6 +213,10 @@ class Files:
         return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
     @staticmethod
+    def temp_folder_current():
+        return tempfile.gettempdir()
+
+    @staticmethod
     def temp_folder_with_temp_file(prefix=None, suffix=None,parent_folder=None, file_name='temp_file.txt', file_contents='temp_file'):
         folder = temp_folder(prefix,suffix,parent_folder)
         file_create(path_combine(folder,file_name), file_contents)
@@ -260,11 +278,17 @@ class Files:
 # helper methods
 # todo: all all methods above (including the duplicated mappings at the top)
 
+create_folder               = Files.folder_create
+create_folder_in_parent     = Files.folder_create_in_parent
+create_temp_file            = Files.write
 current_folder              = Files.current_folder
+current_temp_folder         = Files.temp_folder_current
 
 file_bytes                  = Files.bytes
 file_contents               = Files.contents
 file_contents_gz            = Files.contents_gz
+file_contents_md5           = Files.contents_md5
+file_contents_sha256        = Files.contents_sha256
 file_contents_as_bytes      = Files.bytes
 file_copy                   = Files.copy
 file_delete                 = Files.delete
@@ -277,12 +301,14 @@ file_extension_fix          = Files.file_extension_fix
 file_find                   = Files.find
 file_lines                  = Files.lines
 file_lines_gz               = Files.lines_gz
+file_md5                    = Files.contents_md5
 file_name                   = Files.file_name
 file_not_exists             = Files.not_exists
 file_open                   = Files.open
 file_open_gz                = Files.open_gz
 file_open_bytes             = Files.open_bytes
 file_save                   = Files.save
+file_sha256                 = Files.contents_sha256
 file_size                   = Files.file_size
 file_stats                  = Files.file_stats
 file_write                  = Files.write
@@ -291,6 +317,7 @@ file_write_gz               = Files.write_gz
 file_unzip                  = Files.unzip_file
 
 folder_create               = Files.folder_create
+folder_create_in_parent     = Files.folder_create_in_parent
 folder_create_temp          = Files.temp_folder
 folder_copy                 = Files.folder_copy
 folder_copy_except          = Files.folder_copy
@@ -317,6 +344,7 @@ save_string_as_file         = Files.save
 temp_file                   = Files.temp_file
 temp_filename               = Files.temp_filename
 temp_folder                 = Files.temp_folder
+temp_folder_current         = Files.temp_folder_current
 temp_folder_with_temp_file  = Files.temp_folder_with_temp_file
 
 zip_files                   = Files.zip_files

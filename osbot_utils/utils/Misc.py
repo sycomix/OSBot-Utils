@@ -8,26 +8,17 @@ import textwrap
 import re
 import uuid
 import warnings
-from datetime import datetime
-from secrets import token_bytes
+from datetime   import datetime
+from secrets    import token_bytes
 from time import sleep
 
-from dotenv import load_dotenv
-from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
+from dotenv     import load_dotenv
 
-from osbot_utils.fluent.Fluent_List import Fluent_List
-
-from osbot_utils.decorators.methods.function_type_check import function_type_check
-from osbot_utils.utils.Files import file_extension_fix
-
-
-@function_type_check
 def array_add(array : list, value):
     if value is not None:
         array.append(value)
     return value
 
-@function_type_check
 def array_find(array:list, item):
     if item in array:
         return array.index(item)
@@ -55,6 +46,12 @@ def array_pop_and_trim(array, position=None):
     if type(value) is str:
         return trim(value)
     return value
+
+def bytes_md5(bytes : bytes):
+    return hashlib.md5(bytes).hexdigest()
+
+def bytes_sha256(bytes : bytes):
+    return hashlib.sha256(bytes).hexdigest()
 
 def base64_to_bytes(bytes_base64):
     if type(bytes_base64) is str:
@@ -112,6 +109,7 @@ def env_vars_list():
     return list_set(env_vars())
 
 def flist(target):
+    from osbot_utils.fluent.Fluent_List import Fluent_List
     return Fluent_List(target)
 
 def get_field(target, field, default=None):
@@ -163,6 +161,7 @@ def list_set(target):
     return sorted(list(set(target)))
 
 def list_index_by(values, index_by):
+    from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
     results = {}
     for item in values:
         results[item.get(index_by)] = item
@@ -181,9 +180,9 @@ def lower(target : str):
         return target.lower()
     return ""
 
-def md5(text):
+def str_md5(text : str):
     if text:
-        return hashlib.md5('{0}'.format(text).encode()).hexdigest()
+        return bytes_md5(text.encode())
     return None
 
 def none_or_empty(target,field):
@@ -192,10 +191,17 @@ def none_or_empty(target,field):
         return (value is None) or value == ''
     return True
 
+def str_sha256(text: str):
+    if text:
+        return bytes_sha256(text.encode())
+        #return hashlib.sha256('{0}'.format(text).encode()).hexdigest()
+    return None
+
 def random_bytes(length=24):
     return token_bytes(length)
 
 def random_filename(extension='.tmp', length=10):
+    from osbot_utils.utils.Files import file_extension_fix
     extension = file_extension_fix(extension)
     return '{0}{1}'.format(''.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)
 
@@ -295,5 +301,6 @@ def word_wrap_escaped(text,length = 40):
     if text:
         return '\\n'.join(textwrap.wrap(text, length))
 
-bytes_to_string = bytes_to_str
+bytes_to_string  = bytes_to_str
 convert_to_float = convert_to_number
+new_guid         = random_uuid

@@ -62,7 +62,7 @@ def GET(url,headers = None, encoding='utf-8'):
 def GET_bytes(url, headers=None):
     return GET(url, headers=headers, encoding=None)
 
-def GET_bytes_to_file(url,path, headers = None):
+def GET_bytes_to_file(url,path=None, headers = None):
     file_bytes = GET_bytes(url, headers)
     return save_bytes_as_file(file_bytes, path)
 
