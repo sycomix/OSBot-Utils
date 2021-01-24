@@ -199,6 +199,10 @@ class Files:
         return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
     @staticmethod
+    def temp_folder_current():
+        return tempfile.gettempdir()
+
+    @staticmethod
     def temp_folder_with_temp_file(prefix=None, suffix=None,parent_folder=None, file_name='temp_file.txt', file_contents='temp_file'):
         folder = temp_folder(prefix,suffix,parent_folder)
         file_create(path_combine(folder,file_name), file_contents)
@@ -317,6 +321,7 @@ save_string_as_file         = Files.save
 temp_file                   = Files.temp_file
 temp_filename               = Files.temp_filename
 temp_folder                 = Files.temp_folder
+temp_folder_current         = Files.temp_folder_current
 temp_folder_with_temp_file  = Files.temp_folder_with_temp_file
 
 zip_files                   = Files.zip_files
