@@ -12,31 +12,45 @@ def chmod_x(executable_path):
 class Process:
 
     @staticmethod
-    def run(executable, params = None, cwd='.'):
+    def run(executable, params = None, cwd='.', **run_kwargs):
         params = params or []
         if type(params) is str:
             params = [params]
-        run_params  = [executable] + params
+        run_params = [executable] + params
+        error      = None
+        stderr     = ''
+        stdout     = ''
+        kwargs = { 'cwd'    : cwd             ,
+                   'stdout' : subprocess.PIPE ,
+                   'stderr' : subprocess.PIPE ,
+                   'timeout': None }
+        kwargs = { **kwargs , **run_kwargs }                 # merge dictionaries with run_kwargs taking precedence
         try:
-            result      = subprocess.run(run_params, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            return {
-                "runParams" : run_params            ,
+            result      = subprocess.run(run_params, **kwargs)
+            stderr      = result.stderr.decode()
+            stdout      = result.stdout.decode()
+            status      = "ok"
+        except subprocess.TimeoutExpired as timeout_error:
+            if timeout_error.stderr:
+                stderr = timeout_error.stderr.decode()
+            if timeout_error.stdout:
+                stdout = timeout_error.stdout.decode()
+            error  = timeout_error
+            status = 'error'
+        except Exception as exception:
+            error  = exception
+            status = 'error'
+        return {
                 "cwd"       : cwd                   ,
-                "stdout"    : result.stdout.decode(),
-                "stderr"    : result.stderr.decode(),
-            }
-        except Exception as error:
-            return {
+                "error"     : error                 ,
+                "kwargs"    : kwargs                ,
                 "runParams" : run_params            ,
-                "cwd"       : cwd                   ,
-                "stdout"    : None                  ,
-                "stderr"    : error                 ,
+                "status"    : status                ,
+                "stdout"    : stdout                ,
+                "stderr"    : stderr
             }
-
     @staticmethod
     def stop(pid):
-        #print('killing process {0} with {1}'.format(pid, signal.SIGKILL))
         return os.kill(pid, signal.SIGKILL)
 
     # exec helpers
