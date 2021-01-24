@@ -8,10 +8,11 @@ class cache_on_tmp:
     Caches the return value of the wrapped method in tmp folder
     Takes into account the request params to create the file name used for caching
     """
-    def __init__(self, reload_data=False):
+    def __init__(self, reload_data=False, return_cache_key=False):
         self.cache_folder_name = "osbot_cache_on_tmp"
         self.cache_folder      = path_combine(temp_folder_current(), self.cache_folder_name)
         self.last_cache_path   = None
+        self.return_cache_key  = return_cache_key
         self.reload_data       = reload_data
         folder_create(self.cache_folder)
 
@@ -20,6 +21,8 @@ class cache_on_tmp:
             params     = list(args)
             self_obj   = params.pop(0)       # todo: add support for methods without this
             cache_path = self.get_cache_in_tmp_path(self_obj, function, params)
+            if self.return_cache_key:
+                return cache_path
             data       = self.get_cache_in_tmp_data(cache_path)
             if data and self.reload_data is False:
                return data
