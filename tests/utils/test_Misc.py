@@ -10,8 +10,9 @@ from osbot_utils.utils import Misc
 from osbot_utils.utils.Files import Files, file_extension
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
-    random_string_and_numbers, md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, convert_to_number, \
-    remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger
+    random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, \
+    convert_to_number, \
+    remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, str_sha256
 
 
 class test_Misc(TestCase):
@@ -186,8 +187,12 @@ class test_Misc(TestCase):
         assert len(random_string_and_numbers()) == 6
 
     def test_md5(self):
-        assert md5('admin') == '21232f297a57a5a743894a0e4a801fc3'
-        assert md5(None   ) == None
+        assert str_md5('admin') == '21232f297a57a5a743894a0e4a801fc3'
+        assert str_md5(None   ) is None
+
+    def test_sha256(self):
+        assert str_sha256('admin') == '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+        assert str_sha256(None   ) is  None
 
     def test_random_uuid(self):
         assert len(random_uuid()) == 36

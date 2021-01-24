@@ -5,9 +5,8 @@ import shutil
 import tempfile
 import zipfile
 from   os.path import abspath, join
-
-# todo: add UnitTests to methods below (and refactor these to use the methods in the Files class (so that we don't have duplicated code)
 from pathlib import Path
+
 
 class Files:
     @staticmethod
@@ -33,6 +32,16 @@ class Files:
         if file_exists(path):
             with file_open_gz(path, mode) as file:
                 return file.read()
+
+    @staticmethod
+    def contents_md5(path):
+        from osbot_utils.utils.Misc import bytes_md5
+        return bytes_md5(file_contents_as_bytes(path))
+
+    @staticmethod
+    def contents_sha256(path):
+        from osbot_utils.utils.Misc import bytes_sha256
+        return bytes_sha256(file_contents_as_bytes(path))
 
     @staticmethod
     def current_folder():
@@ -278,6 +287,8 @@ current_temp_folder         = Files.temp_folder_current
 file_bytes                  = Files.bytes
 file_contents               = Files.contents
 file_contents_gz            = Files.contents_gz
+file_contents_md5           = Files.contents_md5
+file_contents_sha256        = Files.contents_sha256
 file_contents_as_bytes      = Files.bytes
 file_copy                   = Files.copy
 file_delete                 = Files.delete
@@ -290,12 +301,14 @@ file_extension_fix          = Files.file_extension_fix
 file_find                   = Files.find
 file_lines                  = Files.lines
 file_lines_gz               = Files.lines_gz
+file_md5                    = Files.contents_md5
 file_name                   = Files.file_name
 file_not_exists             = Files.not_exists
 file_open                   = Files.open
 file_open_gz                = Files.open_gz
 file_open_bytes             = Files.open_bytes
 file_save                   = Files.save
+file_sha256                 = Files.contents_sha256
 file_size                   = Files.file_size
 file_stats                  = Files.file_stats
 file_write                  = Files.write
