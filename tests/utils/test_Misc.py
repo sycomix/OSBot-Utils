@@ -11,7 +11,7 @@ from osbot_utils.utils import Misc
 from osbot_utils.utils.Files import Files, file_extension
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
-    random_string_and_numbers, md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, convert_to_number, \
+    random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, convert_to_number, \
     remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, base64_to_str, \
     str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning_unclosed_ssl, list_set, list_index_by, \
     list_group_by, lower, remove_multiple_spaces, split_spaces, sorted_set, upper
