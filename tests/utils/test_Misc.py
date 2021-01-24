@@ -1,17 +1,20 @@
-import collections
+import base64
 import datetime
+import os
 import sys
 import time
-import timeit
-from typing import Generator
+import warnings
 from unittest import TestCase
 
+from osbot_utils.fluent import Fluent_List
 from osbot_utils.utils import Misc
 from osbot_utils.utils.Files import Files, file_extension
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
     random_string_and_numbers, md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, convert_to_number, \
-    remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger
+    remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, base64_to_str, \
+    str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning_unclosed_ssl, list_set, list_index_by, \
+    list_group_by, lower, remove_multiple_spaces, split_spaces, sorted_set, upper
 
 
 class test_Misc(TestCase):
@@ -255,3 +258,67 @@ aliqua."""
             assert under_debugger() is True
         else:
             assert under_debugger() is False
+
+    def test_base64_to_str_and_str_to_base64(self):
+        text = "Lorem Ipsum AAAAAA"
+        base64_encoded_string = base64.b64encode(text.encode()).decode()
+        assert base64_to_str(base64_encoded_string) == text
+        assert str_to_base64(text                 ) == base64_encoded_string
+
+    def test_env_value(self):
+        assert env_value("ENV_VAR_1") == "ENV_VAR_1_VALUE"
+
+    def test_env_vars(self):
+        os.environ.__setitem__("ENV_VAR_FROM_CODE", "ENV_VAR_FROM_CODE_VALUE")
+        loaded_env_vars = env_vars()
+        assert loaded_env_vars.get("ENV_VAR_1")         == 'ENV_VAR_1_VALUE'
+        assert loaded_env_vars.get("ENV_VAR_2")         == 'ENV_VAR_2_VALUE'
+        assert loaded_env_vars.get("ENV_VAR_FROM_CODE") == 'ENV_VAR_FROM_CODE_VALUE'
+
+    def test_env_vars_list(self):
+        assert env_vars_list().__contains__("ENV_VAR_1")
+        assert env_vars_list().__contains__("ENV_VAR_2")
+        assert env_vars_list() == sorted(set(env_vars()))
+
+    def test_flist(self):
+        fluent_list = flist(["element1", "element2"])
+        self.assertIsNotNone(fluent_list)
+        assert fluent_list.type() == Fluent_List.Fluent_List
+
+    def test_ignore_warning_unclosed_ssl(self):
+        with warnings.catch_warnings(record=True) as raisedWarning:
+            warnings.simplefilter("always")
+            warnings.warn("unclosed.test<ssl.SSLSocket.test>", ResourceWarning)
+            assert len(raisedWarning) == 1
+        with warnings.catch_warnings(record=True) as ignoredWarning:
+            ignore_warning_unclosed_ssl()
+            warnings.warn("unclosed.test<ssl.SSLSocket.test>", ResourceWarning)
+            assert ignoredWarning == []
+
+    def test_list_set(self):
+        test_set = {3, 2, 1}
+        sorted_list = list_set(test_set)
+        assert sorted_list == sorted(list(test_set))
+
+    def test_lower(self):
+        assert lower("ABC#$4abc") == "abc#$4abc"
+        assert lower("")       == ""
+        assert lower(" ")      == " "
+
+    def test_remove_multiple_spaces(self):
+        assert remove_multiple_spaces("")           == ""
+        assert remove_multiple_spaces(" ")          == " "
+        assert remove_multiple_spaces("a  a  a") == "a a a"
+
+    def test_split_spaces(self):
+        assert split_spaces("a b") == ["a", "b"]
+        assert split_spaces("")    == [""]
+
+    def test_sorted_set(self):
+        assert sorted_set({}) == []
+        assert sorted_set({"b", "a", "c"}) == ["a", "b", "c"]
+
+    def test_upper(self):
+        assert upper("abc$#4ABC") == "ABC$#4ABC"
+        assert upper("")          == ""
+        assert upper(" ")         == " "
