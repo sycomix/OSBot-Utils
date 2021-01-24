@@ -23,7 +23,7 @@ class An_Class:
     def method_4(an_int : int, an_string:str) -> int:
         return an_int
 
-class test_Type_Check(TestCase):
+class test_function_type_check(TestCase):
 
     def setUp(self) -> None:
         pass

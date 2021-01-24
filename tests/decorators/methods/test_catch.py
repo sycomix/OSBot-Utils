@@ -12,4 +12,5 @@ class test_catch(TestCase):
         def raise_exception():
             raise Exception('exception raised')
 
-        assert str(raise_exception()) == "{'error': Exception('exception raised')}"
+        assert str(raise_exception()) == ("{'status': 'error', 'error': 'exception raised', 'exception': "
+                                            "Exception('exception raised')}")
