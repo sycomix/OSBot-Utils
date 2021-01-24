@@ -5,8 +5,9 @@ from osbot_utils.utils.Files import Files, path_combine, parent_folder, path_cur
     folder_name, folder_files, file_not_exists, temp_folder, folder_copy, path_append, folder_exists, folder_create, \
     folder_delete_all, folder_not_exists, temp_folder_with_temp_file, folder_zip, file_unzip, file_extension, \
     zip_file_list, zip_files, save_string_as_file, file_write_gz, file_contents_gz, file_size, file_write, file_find, \
-    file_lines, file_create_gz, file_lines_gz, parent_folder_combine, file_write_bytes, file_open_bytes
-from osbot_utils.utils.Misc import random_bytes, random_string, remove
+    file_lines, file_create_gz, file_lines_gz, parent_folder_combine, file_write_bytes, file_open_bytes, file_contents_md5, \
+    file_contents_sha256
+from osbot_utils.utils.Misc import random_bytes, random_string, remove, bytes_md5, str_to_bytes, bytes_sha256
 
 
 class test_Files(TestCase):
@@ -204,3 +205,13 @@ class test_Files(TestCase):
     def test_temp_folder(self):
         assert Files.exists(Files.temp_folder())
         assert 'aa_'  in Files.temp_folder('_bb','aa_','/tmp')
+
+    def test_file_content_md5(self):
+        contents = random_string()
+        file_path = file_create(contents=contents)
+        assert file_contents_md5(file_path) == bytes_md5(str_to_bytes(contents))
+
+    def test_file_content_sha256(self):
+        contents = random_string()
+        file_path = file_create(contents=contents)
+        assert file_contents_sha256(file_path) == bytes_sha256(str_to_bytes(contents))
