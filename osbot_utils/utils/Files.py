@@ -109,6 +109,11 @@ class Files:
         return path
 
     @staticmethod
+    def folder_create_in_parent(path, name):
+        folder_path = path_combine(path, name)
+        return folder_create(folder_path)
+
+    @staticmethod
     def folder_delete_all(path):                # this will remove recursively
         if folder_exists(path):
             shutil.rmtree(path)
@@ -264,7 +269,11 @@ class Files:
 # helper methods
 # todo: all all methods above (including the duplicated mappings at the top)
 
+create_folder               = Files.folder_create
+create_folder_in_parent     = Files.folder_create_in_parent
+create_temp_file            = Files.write
 current_folder              = Files.current_folder
+current_temp_folder         = Files.temp_folder_current
 
 file_bytes                  = Files.bytes
 file_contents               = Files.contents
@@ -295,6 +304,7 @@ file_write_gz               = Files.write_gz
 file_unzip                  = Files.unzip_file
 
 folder_create               = Files.folder_create
+folder_create_in_parent     = Files.folder_create_in_parent
 folder_create_temp          = Files.temp_folder
 folder_copy                 = Files.folder_copy
 folder_copy_except          = Files.folder_copy

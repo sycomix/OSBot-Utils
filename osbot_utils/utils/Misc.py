@@ -295,5 +295,6 @@ def word_wrap_escaped(text,length = 40):
     if text:
         return '\\n'.join(textwrap.wrap(text, length))
 
-bytes_to_string = bytes_to_str
+bytes_to_string  = bytes_to_str
 convert_to_float = convert_to_number
+new_guid         = random_uuid
