@@ -44,6 +44,9 @@ class test_cache_on_tmp(TestCase):
         cache_on_tmp_self.reload_data = True
         assert an_class.an_function() == 42
 
+        cache_on_tmp_self.return_cache_key = True
+        assert an_class.an_function()      == '/tmp/osbot_cache_on_tmp/An_Class_an_function.gz'
+
     def test_cache_on_tmp__with_params(self):
         with Profiler() as profiler:
             assert An_Class().an_function_with_params('aaaaa') == 'aaaaa'
