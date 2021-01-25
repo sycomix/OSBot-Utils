@@ -304,3 +304,4 @@ def word_wrap_escaped(text,length = 40):
 bytes_to_string  = bytes_to_str
 convert_to_float = convert_to_number
 new_guid         = random_uuid
+str_lines        = split_lines

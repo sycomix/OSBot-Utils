@@ -19,9 +19,9 @@ class test_Process(TestCase):
         assert run_process('echo', ['hello', 'world'])['stdout'] == 'hello world\n'
         assert run_process('echo', 'hello world')['stdout'] == 'hello world\n'
 
-        run_error = run_process('aaaaa_bbbbb')['stderr']
+        run_error = run_process('aaaaa_bbbbb')['error']
         assert type(run_error) == FileNotFoundError
-        assert str(run_error) == "[Errno 2] No such file or directory: 'aaaaa_bbbbb'"
+        assert str(run_error ) == "[Errno 2] No such file or directory: 'aaaaa_bbbbb'"
 
     @patch("osbot_utils.utils.Process.Process.run")
     def test_exec_open(self, process_run):
