@@ -5,6 +5,9 @@ class Fluent_List(list):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
 
+    def contains(self, item):
+        return item in self
+
     def index(self, index):
         if index < self.size():
             return self[index]

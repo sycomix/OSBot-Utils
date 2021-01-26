@@ -14,6 +14,9 @@ from time import sleep
 
 from dotenv     import load_dotenv
 
+def append_random_string(target, length=6, prefix='-'):
+    return f'{target}{random_string(length, prefix)}'
+
 def array_add(array : list, value):
     if value is not None:
         array.append(value)
@@ -223,8 +226,8 @@ def random_password(length=24, prefix=''):
         password = password.replace(item, '_')
     return password
 
-def random_string(length=6,prefix=''):
-    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length))
+def random_string(length=8,prefix=''):
+    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
 
 def random_string_and_numbers(length=6,prefix=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
@@ -305,3 +308,5 @@ bytes_to_string  = bytes_to_str
 convert_to_float = convert_to_number
 new_guid         = random_uuid
 str_lines        = split_lines
+
+random_id        = random_string
