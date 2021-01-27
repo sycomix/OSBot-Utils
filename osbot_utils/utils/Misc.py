@@ -200,6 +200,11 @@ def str_sha256(text: str):
         #return hashlib.sha256('{0}'.format(text).encode()).hexdigest()
     return None
 
+def to_string(target):
+    if target:
+        return str(target)
+    return ''
+
 def random_bytes(length=24):
     return token_bytes(length)
 
