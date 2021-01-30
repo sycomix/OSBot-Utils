@@ -1,7 +1,7 @@
 from functools import wraps
 
 # todo: create signature based on request params so that we don't cache when the params are different
-
+# todo: add capability to reset or change the cache value currently stored in the cache_id value
 def cache(function):
     """
     Use this decorator when wanting to cache a value for all executions of the current process
