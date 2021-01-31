@@ -313,5 +313,5 @@ bytes_to_string  = bytes_to_str
 convert_to_float = convert_to_number
 new_guid         = random_uuid
 str_lines        = split_lines
-
 random_id        = random_string
+wait_for         = wait
