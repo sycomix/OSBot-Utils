@@ -110,7 +110,7 @@ class test_Http(TestCase):
 
         assert response['form'] == {'aaa': '42', 'bbb': '123'}
 
-    def test_is_port_open_port_is_open__port_is_not_open(self):
+    def test_is_port_open__port_is_open__port_is_not_open(self):
         host    = "www.google.com"
         port    = 443
         host_ip = dns_ip_address(host)

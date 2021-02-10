@@ -13,7 +13,7 @@ from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_now, c
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
     random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, convert_to_number, \
     remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, base64_to_str, \
-    str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning_unclosed_ssl, list_set, list_index_by, \
+    str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning__unclosed_ssl, list_set, list_index_by, \
     list_group_by, lower, remove_multiple_spaces, split_spaces, sorted_set, upper
 
 
@@ -275,8 +275,8 @@ aliqua."""
     def test_env_vars(self):
         os.environ.__setitem__("ENV_VAR_FROM_CODE", "ENV_VAR_FROM_CODE_VALUE")
         loaded_env_vars = env_vars()
-        assert loaded_env_vars.get("ENV_VAR_1")         == 'ENV_VAR_1_VALUE'
-        assert loaded_env_vars.get("ENV_VAR_2")         == 'ENV_VAR_2_VALUE'
+        assert loaded_env_vars.get("ENV_VAR_1"        ) == 'ENV_VAR_1_VALUE'
+        assert loaded_env_vars.get("ENV_VAR_2"        ) == 'ENV_VAR_2_VALUE'
         assert loaded_env_vars.get("ENV_VAR_FROM_CODE") == 'ENV_VAR_FROM_CODE_VALUE'
 
     def test_env_vars_list(self):
@@ -295,7 +295,7 @@ aliqua."""
             warnings.warn("unclosed.test<ssl.SSLSocket.test>", ResourceWarning)
             assert len(raisedWarning) == 1
         with warnings.catch_warnings(record=True) as ignoredWarning:
-            ignore_warning_unclosed_ssl()
+            ignore_warning__unclosed_ssl()
             warnings.warn("unclosed.test<ssl.SSLSocket.test>", ResourceWarning)
             assert ignoredWarning == []
 
@@ -306,8 +306,8 @@ aliqua."""
 
     def test_lower(self):
         assert lower("ABC#$4abc") == "abc#$4abc"
-        assert lower("")       == ""
-        assert lower(" ")      == " "
+        assert lower("")          == ""
+        assert lower(" ")         == " "
 
     def test_remove_multiple_spaces(self):
         assert remove_multiple_spaces("")           == ""
@@ -319,7 +319,7 @@ aliqua."""
         assert split_spaces("")    == [""]
 
     def test_sorted_set(self):
-        assert sorted_set({}) == []
+        assert sorted_set({})              == []
         assert sorted_set({"b", "a", "c"}) == ["a", "b", "c"]
 
     def test_upper(self):

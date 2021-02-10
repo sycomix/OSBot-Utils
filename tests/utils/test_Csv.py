@@ -14,20 +14,23 @@ class Test_Csv(TestCase):
 
     def test_load_csv_from_file(self):
         csv_content = load_csv_from_file(self.file_path)
+
         assert len(csv_content) == 2
         assert csv_content.__getitem__(0).get('a') == '1'
         assert csv_content.__getitem__(1).get('b') == 'y'
 
     def test_load_csv_from_string(self):
         csv_content = load_csv_from_str(csv_string)
+
         assert len(csv_content) == 2
         assert csv_content.__getitem__(0).get('a') == '1'
         assert csv_content.__getitem__(1).get('b') == 'y'
 
     def test_load_csv_from_url(self):
-        sample_url = 'https://filesamples.com/samples/document/csv/sample1.csv'
-        headers = {"User-Agent": "Mozilla/5.0"}
+        sample_url  = 'https://filesamples.com/samples/document/csv/sample1.csv'
+        headers     = {"User-Agent": "Mozilla/5.0"}
         csv_content = load_csv_from_url(sample_url, headers)
+
         self.assertIsNotNone(csv_content)
 
 
