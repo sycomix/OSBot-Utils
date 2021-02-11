@@ -7,12 +7,14 @@ from typing import Generator
 from unittest import TestCase
 
 from osbot_utils.utils import Misc
+from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import Files, file_extension
-from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_now, class_name, str_to_date, get_value, \
+from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
     random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, \
     convert_to_number, \
-    remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, str_sha256
+    remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, str_sha256, \
+    time_now, time_str_milliseconds, str_index
 
 
 class test_Misc(TestCase):
@@ -85,7 +87,7 @@ class test_Misc(TestCase):
         assert class_name(TestCase()) == "TestCase"
 
     def test_date_now(self):
-        now = date_now()
+        now = date_time_now()
         assert type(str_to_date(now)) == datetime.datetime
 
     def test_get_field(self):
@@ -113,6 +115,11 @@ class test_Misc(TestCase):
         assert is_number(True) is False
         assert is_number('42') is False
         assert is_number(None) is False
+        assert Misc.is_number(123) is True
+        assert Misc.is_number('123') is True
+        assert Misc.is_number('abc') is False
+        assert Misc.is_number(None) is False
+        assert Misc.is_number([]) is False
 
     def test_last_letter(self):
         assert last_letter("abc") == "c"
@@ -149,13 +156,6 @@ class test_Misc(TestCase):
         assert Files.exists(Files.current_folder()) is True
         assert Files.exists('aaaa_bbb_ccc'        ) is False
         assert Files.exists(None                  ) is False
-
-    def test_is_number(self):
-        assert Misc.is_number(123   ) is True
-        assert Misc.is_number('123' ) is True
-        assert Misc.is_number('abc' ) is False
-        assert Misc.is_number(None  ) is False
-        assert Misc.is_number([]    ) is False
 
     def test_split_lines(self):
         text="aaa\nbbbbb\r\ncccc"
@@ -197,6 +197,21 @@ class test_Misc(TestCase):
     def test_random_uuid(self):
         assert len(random_uuid()) == 36
         assert len(random_uuid().split('-')) == 5
+
+    def test_time_now(self):
+        assert time_now() in date_time_now(milliseconds_numbers=1)
+        assert time_now(milliseconds_numbers=0) in date_time_now(milliseconds_numbers=0)
+        assert time_now(milliseconds_numbers=2) in date_time_now(milliseconds_numbers=2)
+        assert str_index(time_now(milliseconds_numbers=0), ':') ==  2
+        assert str_index(time_now(milliseconds_numbers=3), '.') ==  8
+        assert str_index(time_now(milliseconds_numbers=0), '.') == -1
+
+    def test_time_str_milliseconds(self):
+        def size_of_milliseconds(target):
+            return len(time_str.split('.').pop())
+        time_str = time_now(milliseconds_numbers=6)
+        assert size_of_milliseconds(time_str                            )== 6
+        assert size_of_milliseconds(time_str_milliseconds(time_str,"%f")) == 6
 
     def test_trim(self):
         assert trim('  aaa  ') == 'aaa'

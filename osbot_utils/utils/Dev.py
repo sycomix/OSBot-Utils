@@ -1,6 +1,9 @@
 import json
 import pprint as original_pprint
 
+from osbot_utils.utils.Misc import date_time_now
+
+
 class Dev:
     @staticmethod
     def jformat(data):
@@ -31,9 +34,15 @@ class Dev:
         print(data)
         return data
 
+    @staticmethod
+    def print_now():
+        print(date_time_now())
 
-jformat = Dev.jformat
-jprint  = Dev.jprint
-pformat = Dev.pformat
-pprint  = Dev.pprint
-nprint  = Dev.nprint
+
+jformat   = Dev.jformat
+jprint    = Dev.jprint
+pformat   = Dev.pformat
+pprint    = Dev.pprint
+nprint    = Dev.nprint
+
+print_now = Dev.print_now

@@ -3,6 +3,8 @@ import gzip
 import logging
 import os
 
+from osbot_utils.utils.Misc import str_lines
+
 logger_json = logging.getLogger()   # todo: start using this API for capturing error messages from methods bellow
 
 from osbot_utils.utils.Files import file_exists, temp_file, file_create_gz, file_create, load_file_gz, file_contents
@@ -64,6 +66,12 @@ class Json:
         return {}
 
     @staticmethod
+    def loads_json_lines(json_lines):
+        json_data = '[' + ','.join(str_lines(json_lines.strip())) + ']'
+        return json_loads(json_data)
+
+
+    @staticmethod
     def round_trip(data):
         return json.loads(json.dumps(data))
 
@@ -98,7 +106,10 @@ json_load_file_gz            = Json.load_file_gz
 json_load_file_gz_and_delete = Json.load_file_gz_and_delete
 json_from_string             = Json.loads
 json_loads                   = Json.loads
+json_lines_loads             = Json.loads_json_lines
 json_parse                   = Json.loads
+json_lines_parse             = Json.loads_json_lines
+json_to_str                  = Json.dumps
 json_round_trip              = Json.round_trip
 json_save                    = Json.save_file
 json_save_file               = Json.save_file
@@ -106,3 +117,4 @@ json_save_file_pretty        = Json.save_file_pretty
 json_save_file_gz            = Json.save_file_gz
 json_save_file_pretty_gz     = Json.save_file_pretty_gz
 json_save_tmp_file           = Json.json_save_tmp_file
+str_to_json                  = Json.loads

@@ -315,6 +315,7 @@ file_write                  = Files.write
 file_write_bytes            = Files.write_bytes
 file_write_gz               = Files.write_gz
 file_unzip                  = Files.unzip_file
+files_list                  = Files.files
 
 folder_create               = Files.folder_create
 folder_create_in_parent     = Files.folder_create_in_parent
