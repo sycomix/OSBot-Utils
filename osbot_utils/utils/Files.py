@@ -101,7 +101,7 @@ class Files:
     def folder_exists(path):          # todo: add check to see if it is a folder
         return Files.exists(path)
 
-    staticmethod
+    @staticmethod
     def folder_copy(source, destination, ignore_pattern=None):
         if ignore_pattern:
             ignore = shutil.ignore_patterns(ignore_pattern)
