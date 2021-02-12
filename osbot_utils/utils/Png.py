@@ -22,7 +22,7 @@ def save_png_base64_to_file(png_data, png_file=None):
             try:
                 with open(png_file, "wb") as fh:
                     fh.write(base64.decodebytes(png_data.encode()))
-                logger_png.error(f'Png data with size {len(png_data)} saved to {png_file}')
+                logger_png.info(f'Png data with size {len(png_data)} saved to {png_file}')
                 return png_file
             except Exception as error:
                 logger_png.error(f'png save error: {error}')
