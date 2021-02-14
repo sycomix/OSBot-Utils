@@ -205,6 +205,15 @@ def list_pop_and_trim(array, position=None):
 def list_set(target):
     return sorted(list(set(target)))
 
+def list_filter(target_list, filter_function):
+    return list(filter(filter_function, target_list))
+
+def list_filter_starts_with(target_list, prefix):
+    return list_filter(target_list, lambda x: x.startswith(prefix))
+
+def list_filter_contains(target_list, value):
+    return list_filter(target_list, lambda x: x.find(value) > -1)
+
 def lower(target : str):
     if target:
         return target.lower()
@@ -255,6 +264,13 @@ def time_now(use_utc=True, milliseconds_numbers=1):
 def time_to_str(datetime_value, time_format='%H:%M:%S.%f', milliseconds_numbers=3):
     time_str = datetime_value.strftime(time_format)
     return time_str_milliseconds(datetime_str=time_str, datetime_format=time_format, milliseconds_numbers=milliseconds_numbers)
+
+def timestamp_utc_now():
+    return int(datetime.utcnow().timestamp() * 1000)
+    return int(datetime.utcnow().strftime('%s')) * 1000
+
+def timestamp_to_datetime(timestamp):
+    return datetime.fromtimestamp(timestamp/1000)
 
 def to_string(target):
     if target:
@@ -374,6 +390,7 @@ array_add           = list_add
 bytes_to_string     = bytes_to_str
 convert_to_float    = convert_to_number
 datetime_now        = date_time_now
+list_contains       = list_filter_contains
 new_guid            = random_uuid
 str_lines           = split_lines
 random_id           = random_string

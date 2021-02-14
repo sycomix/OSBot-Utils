@@ -37,8 +37,8 @@ class Assert:
         assert self.target == to
 
     def is_today(self):
-        assert type(self._assert.target) == datetime.datetime
-        assert str(self._assert.target.date())  == str(datetime.datetime.utcnow().date())
+        assert type(self.target) == datetime.datetime
+        assert str(self.target.date())  == str(datetime.datetime.utcnow().date())
 
     def match_regex(self, regex):
         assert re.compile(regex).match(self.target) is not None
