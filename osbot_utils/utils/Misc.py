@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import logging
 import os
 import random
 import string
@@ -213,6 +214,46 @@ def list_filter_starts_with(target_list, prefix):
 
 def list_filter_contains(target_list, value):
     return list_filter(target_list, lambda x: x.find(value) > -1)
+
+def log_critical(message): logger().critical(message) # level 50
+def log_debug   (message): logger().debug   (message) # level 10
+def log_error   (message): logger().error   (message) # level 40
+def log_info    (message): logger().info    (message) # level 20
+def log_warning (message): logger().warning (message) # level 30
+
+def log_to_console(level="INFO"):
+    logger_set_level(level)
+    logger_add_handler__console()
+    print()                             # add extra print so that in pytest the first line is not hidden
+
+def log_to_file(level="INFO"):
+    logger_set_level(level)
+    return logger_add_handler__file()
+
+def logger():
+    return logging.getLogger()
+
+def logger_add_handler(handler):
+    logger().addHandler(handler)
+
+def logger_add_handler__console():
+    logger_add_handler(logging.StreamHandler())
+
+def logger_add_handler__file(log_file=None):
+    from osbot_utils.utils.Files import temp_file
+    log_file = log_file or temp_file(extension=".log")
+    logger_add_handler(logging.FileHandler(filename=log_file))
+    return log_file
+    #logging.basicConfig(level=logging.DEBUG, filename='myapp.log', format='%(asctime)s %(levelname)s:%(message)s')
+
+def logger_set_level(level):
+    logger().setLevel(level)
+
+def logger_set_level_critical(): logger_set_level('CRITICAL') # level 50
+def logger_set_level_debug   (): logger_set_level('DEBUG'   ) # level 10
+def logger_set_level_error   (): logger_set_level('ERROR'   ) # level 40
+def logger_set_level_info    (): logger_set_level('INFO'    ) # level 20
+def logger_set_level_warning (): logger_set_level('WARNING' ) # level 30
 
 def lower(target : str):
     if target:

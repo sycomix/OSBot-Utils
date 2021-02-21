@@ -10,17 +10,23 @@ class Duration:
     def __init__(self, use_utc=True, print_result=True):
         self.use_utc            = use_utc
         self.print_result       = print_result
-        self.start              = None
-        self.end                = None
+        self.start_time         = None
+        self.end_time           = None
         self.duration           = None
 
     def __enter__(self):
-        self.start = date_time_now(use_utc=self.use_utc, return_str=False)
+        self.start()
         return self
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
-        self.end      = date_time_now(use_utc=self.use_utc, return_str=False)
-        self.duration = self.end - self.start
+        self.end()
+
+    def start(self):
+        self.start_time = date_time_now(use_utc=self.use_utc, return_str=False)
+
+    def end(self):
+        self.end_time = date_time_now(use_utc=self.use_utc, return_str=False)
+        self.duration = self.end_time - self.start_time
         if self.print_result:
             print(f"\nDuration: {time_delta_to_str(self.duration)}\n")
 

@@ -5,16 +5,18 @@ import time
 import timeit
 from typing import Generator
 from unittest import TestCase
+from unittest.mock import patch
 
 from osbot_utils.utils import Misc
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import Files, file_extension
+from osbot_utils.utils.Files import Files, file_extension, file_contents
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
     random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, \
     convert_to_number, \
     remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, str_sha256, \
-    time_now, time_str_milliseconds, str_index
+    time_now, time_str_milliseconds, str_index, log_info, log_error, log_debug, log_to_console, \
+    log_to_file
 
 
 class test_Misc(TestCase):
@@ -125,6 +127,15 @@ class test_Misc(TestCase):
         assert last_letter("abc") == "c"
         assert last_letter(""   ) == None
         assert last_letter(None ) == None
+
+    def test_logger_add_handler__file(self):
+        log_file = log_to_file()
+        log_debug('debug')
+        log_error('error')
+        log_info ('info')
+        assert file_contents(log_file) == 'error\ninfo\n'
+
+
 
     def test_none_or_empty(self):
         assert none_or_empty(None, None) is True

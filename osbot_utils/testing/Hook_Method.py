@@ -1,4 +1,5 @@
-# previous name was Wrap_Method
+from osbot_utils.testing.Duration import Duration
+
 class Hook_Method:
     def __init__(self, target_module, target_method):
         self.target_module   = target_module
@@ -71,18 +72,20 @@ class Hook_Method:
     def wrap(self):
 
         def wrapper_method(*args, **kwargs):
-
-            if self.mock_call:
-                return_value = self.mock_call(*args,**kwargs)
-            else:
-                (args, kwargs) = self.before_call(*args, **kwargs)
-                return_value   = self.target(*args, **kwargs)
-                return_value   = self.after_call(return_value, args, kwargs)
+            with Duration(print_result=False) as duration:
+                if self.mock_call:
+                    return_value = self.mock_call(*args,**kwargs)
+                else:
+                    (args, kwargs) = self.before_call(*args, **kwargs)
+                    return_value   = self.target(*args, **kwargs)
+                    return_value   = self.after_call(return_value, args, kwargs)
 
             call = {
                         'args'        : args,
                         'kwargs'      : kwargs,
-                        'return_value': return_value
+                        'return_value': return_value,
+                        'index'       : len(self.calls),
+                        'duration'    : int(duration.seconds()*1000)
                     }
             self.calls.append(call)
             return call['return_value']
