@@ -261,6 +261,7 @@ def lower(target : str):
         return target.lower()
     return ""
 
+
 def str_index(target:str, source:str):
     try:
         return target.index(source)

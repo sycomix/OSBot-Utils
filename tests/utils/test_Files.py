@@ -199,6 +199,13 @@ class test_Files(TestCase):
     def test_path_combine(self):
         assert path_combine('a', 'b') == f"{path_current()}/a/b"       # todo: add more use cases
 
+
+    def test_pickle_save_to_file__pickle_load_from_file(self):
+        an_object = {"answer" : 42 }
+        pickled_file = Files.pickle_save_to_file(an_object)
+        pickle_data = Files.pickle_load_from_file(pickled_file)
+        assert pickle_data == an_object
+
     def test_save_string_as_file(self):
         data      = random_string()
         temp_file = save_string_as_file(data)

@@ -1,6 +1,7 @@
 import gzip
 import os
 import glob
+import pickle
 import shutil
 import tempfile
 import zipfile
@@ -177,6 +178,21 @@ class Files:
         return Files.path_combine(os.path.dirname(file),path)
 
     @staticmethod
+    def pickle_save_to_file(object_to_save, path=None):
+        path = path or temp_file(extension=".pickle")
+        file_to_store = open(path, "wb")
+        pickle.dump(object_to_save, file_to_store)
+        file_to_store.close()
+        return path
+
+    @staticmethod
+    def pickle_load_from_file(path=None):
+        file_to_read = open(path, "rb")
+        loaded_object = pickle.load(file_to_read)
+        file_to_read.close()
+        return loaded_object
+
+    @staticmethod
     def save(contents, path=None, extension=None):
         path = path or temp_file(extension=extension)
         file_create(path, contents)
@@ -338,6 +354,8 @@ path_combine                = Files.path_combine
 path_current                = Files.current_folder
 parent_folder               = Files.parent_folder
 parent_folder_combine       = Files.parent_folder_combine
+pickle_load_from_file       = Files.pickle_load_from_file
+pickle_save_to_file         = Files.pickle_save_to_file
 
 save_bytes_as_file          = Files.save_bytes_as_file
 save_string_as_file         = Files.save
