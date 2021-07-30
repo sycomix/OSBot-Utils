@@ -1,6 +1,6 @@
 import re
-
-from osbot_utils.utils.Misc import class_name
+import datetime
+from   osbot_utils.utils.Misc import class_name
 
 class Assert:
     def __init__(self ,target):
@@ -35,6 +35,10 @@ class Assert:
 
     def is_equal(self, to):
         assert self.target == to
+
+    def is_today(self):
+        assert type(self.target) == datetime.datetime
+        assert str(self.target.date())  == str(datetime.datetime.utcnow().date())
 
     def match_regex(self, regex):
         assert re.compile(regex).match(self.target) is not None

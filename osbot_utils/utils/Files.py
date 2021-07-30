@@ -101,7 +101,7 @@ class Files:
     def folder_exists(path):          # todo: add check to see if it is a folder
         return Files.exists(path)
 
-    staticmethod
+    @staticmethod
     def folder_copy(source, destination, ignore_pattern=None):
         if ignore_pattern:
             ignore = shutil.ignore_patterns(ignore_pattern)
@@ -315,6 +315,7 @@ file_write                  = Files.write
 file_write_bytes            = Files.write_bytes
 file_write_gz               = Files.write_gz
 file_unzip                  = Files.unzip_file
+files_list                  = Files.files
 
 folder_create               = Files.folder_create
 folder_create_in_parent     = Files.folder_create_in_parent

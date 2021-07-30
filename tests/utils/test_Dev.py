@@ -33,8 +33,8 @@ class Test_Dev(TestCase):
 
 
     @patch('builtins.print')
-    def test_print(self, builtins_print):
-        assert Dev.print({'answer': 42}) == {'answer': 42 }
+    def test_nprint(self, builtins_print):
+        assert Dev.nprint({'answer': 42}) == {'answer': 42 }
         assert builtins_print.call_count == 2
         builtins_print.assert_has_calls([call(), call({'answer': 42})])
 

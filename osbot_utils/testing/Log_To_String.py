@@ -17,7 +17,6 @@ class Log_To_String():
 
     def add_handler(self):
         self.string_stream = StringIO()
-
         self.string_handler = logging.StreamHandler(self.string_stream)
         self.logger.addHandler(self.string_handler)
 

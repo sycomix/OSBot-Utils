@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import logging
 import os
 import random
 import string
@@ -14,38 +15,8 @@ from time import sleep
 
 from dotenv     import load_dotenv
 
-def array_add(array : list, value):
-    if value is not None:
-        array.append(value)
-    return value
-
-def array_find(array:list, item):
-    if item in array:
-        return array.index(item)
-    return -1
-
-def array_get(array, position=None, default=None):
-    if type(array) is list:
-        if type(position) is int and position >=0 :
-            if  len(array) > position:
-                return array[position]
-    return default
-
-def array_pop(array:list, position=None, default=None):
-    if array:
-        if len(array) >0:
-            if type(position) is int:
-                if len(array) > position:
-                    return array.pop(position)
-            else:
-                return array.pop()
-    return default
-
-def array_pop_and_trim(array, position=None):
-    value = array_pop(array,position)
-    if type(value) is str:
-        return trim(value)
-    return value
+def append_random_string(target, length=6, prefix='-'):
+    return f'{target}{random_string(length, prefix)}'
 
 def bytes_md5(bytes : bytes):
     return hashlib.md5(bytes).hexdigest()
@@ -88,8 +59,35 @@ def convert_to_number(value):
     else:
         return 0
 
-def date_now():
-    return str(datetime.now())
+def date_now(use_utc=True, return_str=True):
+    value = date_time_now(use_utc=use_utc, return_str=False)
+    if return_str:
+        return date_to_str(date=value)
+    return value
+
+def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0):
+    if use_utc:
+        value = datetime.utcnow()
+    else:
+        value = datetime.now()
+    if return_str:
+        return date_time_to_str(value, milliseconds_numbers=milliseconds_numbers)
+    return value
+
+def date_time_to_str(date_time, date_time_format='%Y-%m-%d %H:%M:%S.%f', milliseconds_numbers=3):
+    date_time_str = date_time.strftime(date_time_format)
+    return time_str_milliseconds(datetime_str=date_time_str, datetime_format=date_time_format, milliseconds_numbers=milliseconds_numbers)
+
+def date_to_str(date, date_format='%Y-%m-%d'):
+    return date.strftime(date_format)
+
+def time_str_milliseconds(datetime_str, datetime_format, milliseconds_numbers=0):
+    if '.%f' in datetime_format and -1 < milliseconds_numbers < 6:
+        chars_to_remove = milliseconds_numbers-6
+        if milliseconds_numbers == 0:
+            chars_to_remove -= 1
+        return datetime_str[:chars_to_remove]
+    return datetime_str
 
 def env_value(var_name):
     return env_vars().get(var_name, None)
@@ -157,8 +155,15 @@ def last_letter(text):
     if text and (type(text) is str) and len(text) > 0:
         return text[-1]
 
-def list_set(target):
-    return sorted(list(set(target)))
+def list_add(array : list, value):
+    if value is not None:
+        array.append(value)
+    return value
+
+def list_find(array:list, item):
+    if item in array:
+        return array.index(item)
+    return -1
 
 def list_index_by(values, index_by):
     from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
@@ -175,10 +180,91 @@ def list_group_by(values, group_by):
         results[value].append(item)
     return results
 
+def list_get(array, position=None, default=None):
+    if type(array) is list:
+        if type(position) is int and position >=0 :
+            if  len(array) > position:
+                return array[position]
+    return default
+
+def list_pop(array:list, position=None, default=None):
+    if array:
+        if len(array) >0:
+            if type(position) is int:
+                if len(array) > position:
+                    return array.pop(position)
+            else:
+                return array.pop()
+    return default
+
+def list_pop_and_trim(array, position=None):
+    value = array_pop(array,position)
+    if type(value) is str:
+        return trim(value)
+    return value
+
+def list_set(target):
+    return sorted(list(set(target)))
+
+def list_filter(target_list, filter_function):
+    return list(filter(filter_function, target_list))
+
+def list_filter_starts_with(target_list, prefix):
+    return list_filter(target_list, lambda x: x.startswith(prefix))
+
+def list_filter_contains(target_list, value):
+    return list_filter(target_list, lambda x: x.find(value) > -1)
+
+def log_critical(message): logger().critical(message) # level 50
+def log_debug   (message): logger().debug   (message) # level 10
+def log_error   (message): logger().error   (message) # level 40
+def log_info    (message): logger().info    (message) # level 20
+def log_warning (message): logger().warning (message) # level 30
+
+def log_to_console(level="INFO"):
+    logger_set_level(level)
+    logger_add_handler__console()
+    print()                             # add extra print so that in pytest the first line is not hidden
+
+def log_to_file(level="INFO"):
+    logger_set_level(level)
+    return logger_add_handler__file()
+
+def logger():
+    return logging.getLogger()
+
+def logger_add_handler(handler):
+    logger().addHandler(handler)
+
+def logger_add_handler__console():
+    logger_add_handler(logging.StreamHandler())
+
+def logger_add_handler__file(log_file=None):
+    from osbot_utils.utils.Files import temp_file
+    log_file = log_file or temp_file(extension=".log")
+    logger_add_handler(logging.FileHandler(filename=log_file))
+    return log_file
+    #logging.basicConfig(level=logging.DEBUG, filename='myapp.log', format='%(asctime)s %(levelname)s:%(message)s')
+
+def logger_set_level(level):
+    logger().setLevel(level)
+
+def logger_set_level_critical(): logger_set_level('CRITICAL') # level 50
+def logger_set_level_debug   (): logger_set_level('DEBUG'   ) # level 10
+def logger_set_level_error   (): logger_set_level('ERROR'   ) # level 40
+def logger_set_level_info    (): logger_set_level('INFO'    ) # level 20
+def logger_set_level_warning (): logger_set_level('WARNING' ) # level 30
+
 def lower(target : str):
     if target:
         return target.lower()
     return ""
+
+def str_index(target:str, source:str):
+    try:
+        return target.index(source)
+    except:
+        return -1
 
 def str_md5(text : str):
     if text:
@@ -191,11 +277,46 @@ def none_or_empty(target,field):
         return (value is None) or value == ''
     return True
 
+def print_date_now(use_utc=True):
+    print(date_time_now(use_utc=use_utc))
+
+def print_time_now(use_utc=True):
+    print(time_now(use_utc=use_utc))
+
 def str_sha256(text: str):
     if text:
         return bytes_sha256(text.encode())
         #return hashlib.sha256('{0}'.format(text).encode()).hexdigest()
     return None
+
+def time_delta_to_str(time_delta):
+    microseconds  = time_delta.microseconds
+    milliseconds  = int(microseconds / 1000)
+    total_seconds = int(time_delta.total_seconds())
+    return f'{total_seconds}s {milliseconds}ms'
+
+def time_now(use_utc=True, milliseconds_numbers=1):
+    if use_utc:
+        datetime_now = datetime.utcnow()
+    else:
+        datetime_now = datetime.now()
+    return time_to_str(datetime_value=datetime_now,milliseconds_numbers=milliseconds_numbers)
+
+def time_to_str(datetime_value, time_format='%H:%M:%S.%f', milliseconds_numbers=3):
+    time_str = datetime_value.strftime(time_format)
+    return time_str_milliseconds(datetime_str=time_str, datetime_format=time_format, milliseconds_numbers=milliseconds_numbers)
+
+def timestamp_utc_now():
+    return int(datetime.utcnow().timestamp() * 1000)
+    return int(datetime.utcnow().strftime('%s')) * 1000
+
+def timestamp_to_datetime(timestamp):
+    return datetime.fromtimestamp(timestamp/1000)
+
+def to_string(target):
+    if target:
+        return str(target)
+    return ''
 
 def random_bytes(length=24):
     return token_bytes(length)
@@ -223,8 +344,8 @@ def random_password(length=24, prefix=''):
         password = password.replace(item, '_')
     return password
 
-def random_string(length=6,prefix=''):
-    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length))
+def random_string(length=8,prefix=''):
+    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
 
 def random_string_and_numbers(length=6,prefix=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
@@ -301,7 +422,18 @@ def word_wrap_escaped(text,length = 40):
     if text:
         return '\\n'.join(textwrap.wrap(text, length))
 
-bytes_to_string  = bytes_to_str
-convert_to_float = convert_to_number
-new_guid         = random_uuid
-str_lines        = split_lines
+
+array_find          = list_find
+array_get           = list_get
+array_pop           = list_pop
+array_pop_and_trim  = list_pop_and_trim
+array_add           = list_add
+bytes_to_string     = bytes_to_str
+convert_to_float    = convert_to_number
+datetime_now        = date_time_now
+list_contains       = list_filter_contains
+new_guid            = random_uuid
+str_lines           = split_lines
+random_id           = random_string
+wait_for            = wait
+
