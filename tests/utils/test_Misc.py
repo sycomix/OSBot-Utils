@@ -13,10 +13,11 @@ from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import Files, file_extension, file_contents
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
-    random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, convert_to_number, \
-    remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, base64_to_str, \
-    str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning__unclosed_ssl, list_set, list_index_by, \
-    list_group_by, lower, remove_multiple_spaces, split_spaces, sorted_set, upper
+    random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, \
+    convert_to_number, remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, base64_to_str, \
+    str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning__unclosed_ssl, list_set, \
+    lower, remove_multiple_spaces, split_spaces, sorted_set, upper, log_to_file, log_debug, log_error, \
+    log_info, time_now, str_index, time_str_milliseconds
 
 
 class test_Misc(TestCase):
@@ -89,7 +90,7 @@ class test_Misc(TestCase):
         assert class_name(TestCase()) == "TestCase"
 
     def test_date_now(self):
-        now = date_time_now()
+        now = date_time_now(milliseconds_numbers=6)
         assert type(str_to_date(now)) == datetime.datetime
 
     def test_get_field(self):
@@ -111,17 +112,20 @@ class test_Misc(TestCase):
         assert get_random_color() in ['skyblue', 'darkseagreen', 'palevioletred', 'coral', 'darkgray']
 
     def test_is_number(self):
-        assert is_number(42 ) is True
-        assert is_number(4.2) is True
-        assert is_number(-1 ) is True
-        assert is_number(True) is False
-        assert is_number('42') is False
-        assert is_number(None) is False
-        assert Misc.is_number(123) is True
-        assert Misc.is_number('123') is True
-        assert Misc.is_number('abc') is False
-        assert Misc.is_number(None) is False
-        assert Misc.is_number([]) is False
+        assert is_number      ( 42   ) is True
+        assert is_number      ( 4.2  ) is True
+        assert is_number      ( -1   ) is True
+
+        assert is_number      ( True ) is False
+        assert is_number      ( '42' ) is False
+        assert is_number      ( None ) is False
+
+        assert Misc.is_number ( 123  ) is True
+
+        assert Misc.is_number ( '123') is False
+        assert Misc.is_number ( 'abc') is False
+        assert Misc.is_number ( None ) is False
+        assert Misc.is_number ( []) is False
 
     def test_last_letter(self):
         assert last_letter("abc") == "c"
@@ -189,9 +193,9 @@ class test_Misc(TestCase):
         assert 0 < random_number() < 65001
 
     def test_def_random_string(self):
-        assert len(random_string()) == 6
+        assert len(random_string()) == 8
         assert len(random_string(length=12)) == 12
-        assert len(random_string(prefix="prefix_")) == 13
+        assert len(random_string(prefix="prefix_")) == 15
         assert random_string(prefix="prefix_")[:7]  == "prefix_"
 
     def test_random_string_and_numbers(self):

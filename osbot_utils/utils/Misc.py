@@ -142,8 +142,9 @@ def get_missing_fields(target,field):
 
 def is_number(value):
     try:
-        int(value)
-        return True
+        if type(value) is int or type(value) is float :
+            int(value)
+            return True
     except:
         pass
     return False

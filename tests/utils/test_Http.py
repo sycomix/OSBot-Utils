@@ -24,7 +24,7 @@ class test_Http(TestCase):
         self.headers      = {"Accept": "application/json"}
         self.data         = "aaa=42&bbb=123"
         self.data_json    = { "aaa":42 , "bbb":"123"}
-        self.url_png      = 'https://via.placeholder.com/1.png'
+        self.url_png      = 'https://avatars.githubusercontent.com/u/52993993?s=200&v=4'
         self.url_template = "https://httpbin.org/{method}?ddd=1&eee=2"
 
     def test_current_host_online(self):
@@ -38,7 +38,7 @@ class test_Http(TestCase):
 
     def test_GET_bytes(self):
         bytes = GET_bytes(self.url_png)
-        assert len(bytes) == 106
+        assert len(bytes) == 17575
         assert bytes[:4] == b"\x89PNG"
 
     def test_GET_bytes_to_file(self):
@@ -46,7 +46,7 @@ class test_Http(TestCase):
         assert file_not_exists(target)
         assert GET_bytes_to_file(self.url_png, target)
         assert file_exists(target)
-        assert file_size(target) == 106
+        assert file_size(target) == 17575
         assert file_bytes(target)[:4] == b"\x89PNG"
 
     def test_GET_json(self):
