@@ -67,6 +67,8 @@ class test_Hook_Method(TestCase):
             assert requests.head('https://www.google.com') == return_value
 
         assert self.wrap_method.calls == [{ 'args'        : ('head', 'https://www.google.com'),
+                                            'duration'    : 0 ,
+                                            'index'       : 0 ,
                                             'kwargs'      : {'allow_redirects': False},
                                             'return_value': 'an result'}]
 
@@ -97,7 +99,7 @@ class test_Hook_Method(TestCase):
         assert self.wrap_method.calls[2]['kwargs'      ] == {'allow_redirects': False}
         assert self.wrap_method.calls[2]['return_value'].status_code == 200
         assert self.wrap_method.calls[3]['args'        ] == ('get', 'https://www.google.com/404')
-        assert self.wrap_method.calls[3]['kwargs'      ] == {'allow_redirects': True, 'params': None}
+        assert self.wrap_method.calls[3]['kwargs'      ] == {'params': None}
         assert self.wrap_method.calls[3]['return_value'].status_code == 404
 
         self.wrap_method.unwrap()

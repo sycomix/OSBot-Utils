@@ -12,15 +12,12 @@ class test_Catch(TestCase):
 
         with Catch() as catch:
             raise Exception('new exception')
-        assert builtins_print.call_count == 8
+        assert builtins_print.call_count == 5
 
         calls = builtins_print.mock_calls
         assert calls[0] == call('')
-        assert calls[1] == call('***************************')
-        assert calls[2] == call('********* Catch ***********')
-        assert calls[3] == call('***************************')
-        assert calls[4] == call('')
-        assert calls[5] == call(Exception)
-        assert calls[6] == call('')
-        assert str(calls[7]) == str(call(Exception('new exception')))
+        assert calls[1] == call('********* Catch ***********')
+        assert calls[2] == call(Exception)
+        assert calls[3] == call('')
+        assert str(calls[4]) == str(call(Exception('new exception')))
 
