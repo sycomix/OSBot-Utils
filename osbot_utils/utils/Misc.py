@@ -409,6 +409,9 @@ def trim(target):
 def under_debugger():
     return 'pydevd' in sys.modules
 
+def unique(target):
+    return list_set(target)
+
 def upper(target : str):
     if target:
         return target.upper()
