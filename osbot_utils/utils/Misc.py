@@ -340,8 +340,8 @@ def random_password(length=24, prefix=''):
                                                string.punctuation     +
                                                string.digits          ,
                                                k=length))
-    # replace these chars with _  (to make prevent errors in command prompts)
-    items = ['"', '\'', '`','\\','}']
+    # replace these chars with _  (to make prevent errors in command prompts and urls)
+    items = ['"', '\'', '`','\\','/','}','?','#',';',':']
     for item in items:
         password = password.replace(item, '_')
     return password
