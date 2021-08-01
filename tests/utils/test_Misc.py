@@ -14,10 +14,11 @@ from osbot_utils.utils.Files import Files, file_extension, file_contents
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
     random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, \
-    convert_to_number, remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, base64_to_str, \
+    convert_to_number, remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, \
+    under_debugger, base64_to_str, \
     str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning__unclosed_ssl, list_set, \
     lower, remove_multiple_spaces, split_spaces, sorted_set, upper, log_to_file, log_debug, log_error, \
-    log_info, time_now, str_index, time_str_milliseconds
+    log_info, time_now, str_index, time_str_milliseconds, url_encode, url_decode
 
 
 class test_Misc(TestCase):
@@ -349,6 +350,11 @@ aliqua."""
     def test_sorted_set(self):
         assert sorted_set({})              == []
         assert sorted_set({"b", "a", "c"}) == ["a", "b", "c"]
+
+    def test_url_encode(self):
+        data = "https://aaa.com?aaaa=bbb&cccc=ddd+eee fff ;/n!@£$%"
+        assert url_encode(data) == 'https%3A%2F%2Faaa.com%3Faaaa%3Dbbb%26cccc%3Dddd%2Beee+fff+%3B%2Fn%21%40%C2%A3%24%25'
+        assert url_decode(url_encode(data)) == data             # confirm round trip
 
     def test_upper(self):
         assert upper("abc$#4ABC") == "ABC$#4ABC"

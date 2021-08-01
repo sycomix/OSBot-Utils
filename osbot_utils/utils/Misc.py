@@ -12,6 +12,7 @@ import warnings
 from datetime   import datetime
 from secrets    import token_bytes
 from time import sleep
+from urllib.parse import urlencode, quote_plus, unquote_plus
 
 from dotenv     import load_dotenv
 
@@ -411,6 +412,14 @@ def under_debugger():
 
 def unique(target):
     return list_set(target)
+
+def url_encode(data):
+    if type(data) is str:
+        return quote_plus(data)
+
+def url_decode(data):
+    if type(data) is str:
+        return unquote_plus(data)
 
 def upper(target : str):
     if target:
