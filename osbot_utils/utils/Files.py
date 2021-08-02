@@ -247,8 +247,8 @@ class Files:
         return path
 
     @staticmethod
-    def write_bytes(path=None, contents=None, extension=None):
-        return Files.write(path=path, contents=contents, extension=extension, mode='wb')
+    def write_bytes(path=None, bytes=None, extension=None):
+        return Files.write(path=path, contents=bytes, extension=extension, mode='wb')
 
     @staticmethod
     def write_gz(path=None, contents=None):
@@ -310,6 +310,7 @@ file_copy                   = Files.copy
 file_delete                 = Files.delete
 file_create                 = Files.write
 file_create_bytes           = Files.write_bytes
+file_create_from_bytes      = Files.write_bytes
 file_create_gz              = Files.write_gz
 file_exists                 = Files.exists
 file_extension              = Files.file_extension
