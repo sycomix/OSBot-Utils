@@ -8,7 +8,7 @@ import zipfile
 from   os.path import abspath, join
 from pathlib import Path
 
-from osbot_utils.utils.Misc import bytes_to_base64
+from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes
 
 
 class Files:
@@ -111,6 +111,11 @@ class Files:
     @staticmethod
     def file_to_base64(path):
         return bytes_to_base64(file_bytes(path))
+
+    @staticmethod
+    def file_from_base64(bytes_base64, path=None, extension=None):
+        bytes_ = base64_to_bytes(bytes_base64)
+        return file_create_bytes(bytes=bytes_, path=path, extension=None)
 
     @staticmethod
     def file_size(path):
@@ -349,6 +354,7 @@ file_open                      = Files.open
 file_open_gz                   = Files.open_gz
 file_open_bytes                = Files.open_bytes
 file_to_base64                 = Files.file_to_base64
+file_from_base64               = Files.file_from_base64
 file_save                      = Files.save
 file_sha256                    = Files.contents_sha256
 file_size                      = Files.file_size
