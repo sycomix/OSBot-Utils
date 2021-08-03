@@ -8,6 +8,8 @@ import zipfile
 from   os.path import abspath, join
 from pathlib import Path
 
+from osbot_utils.utils.Misc import bytes_to_base64
+
 
 class Files:
     @staticmethod
@@ -105,6 +107,10 @@ class Files:
         if extension[0] != '.':                             # make sure that the extension starts with a dot
             return '.' + extension
         return extension
+
+    @staticmethod
+    def file_to_base64(path):
+        return bytes_to_base64(file_bytes(path))
 
     @staticmethod
     def file_size(path):
@@ -342,6 +348,7 @@ file_not_exists                = Files.not_exists
 file_open                      = Files.open
 file_open_gz                   = Files.open_gz
 file_open_bytes                = Files.open_bytes
+file_to_base64                 = Files.file_to_base64
 file_save                      = Files.save
 file_sha256                    = Files.contents_sha256
 file_size                      = Files.file_size
