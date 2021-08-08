@@ -10,7 +10,7 @@ class Fluent_Dict(dict):
         super().__init__(*args,**kwargs)
 
     def keys(self):
-        return Fluent_List(list(self.data.keys()))
+        return Fluent_List(sorted(list(self.data.keys())))
 
     def size(self):
         return len(self.data)
