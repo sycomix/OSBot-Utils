@@ -62,6 +62,10 @@ class Python_Logger:
             self.config = Python_Logger_Config()
         return self.config
 
+    def set_log_format(self, format):
+        if format:
+            self.config.log_format = format
+
     def set_log_level(self, level=None):
         level = level or self.config.log_level
         if self.logger:
