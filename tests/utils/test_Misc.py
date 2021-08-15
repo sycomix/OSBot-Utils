@@ -18,7 +18,8 @@ from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_n
     under_debugger, base64_to_str, \
     str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning__unclosed_ssl, list_set, \
     lower, remove_multiple_spaces, split_spaces, sorted_set, upper, log_to_file, log_debug, log_error, \
-    log_info, time_now, str_index, time_str_milliseconds, url_encode, url_decode
+    log_info, time_now, str_index, time_str_milliseconds, url_encode, url_decode, obj_dict, obj_items, obj_keys, \
+    obj_values, obj_get_value, size
 
 
 class test_Misc(TestCase):
@@ -140,7 +141,35 @@ class test_Misc(TestCase):
         log_info ('info')
         assert file_contents(log_file) == 'error\ninfo\n'
 
+    def test_obj_dict(self):
+        class Target:
+            def __init__(self):
+                self.var_1 = 'the answer'
+                self.var_2 = 'is'
+                self.var_3 = 42
+        assert obj_dict  (Target()) == {'var_1': 'the answer', 'var_2': 'is', 'var_3': 42}
+        assert obj_items (Target()) == [('var_1', 'the answer'), ('var_2', 'is'), ('var_3', 42)]
+        assert obj_keys  (Target()) == ['var_1', 'var_2', 'var_3']
+        assert obj_values(Target()) == ['the answer', 'is', 42]
+        target = Target()
+        for key,value in obj_items(target):
+            assert obj_get_value(target, key          ) == value
+            assert obj_get_value(target, key    , 'aa') == value
+            assert obj_get_value(target, key+'a', 'aa') == 'aa'
 
+        # check cases when bad data is submitted
+        assert obj_dict  ()   == {}
+        assert obj_items ()   == []
+        assert obj_keys  ()   == []
+        assert obj_values()   == []
+        assert obj_dict  (42) == {}
+        assert obj_items (42) == []
+        assert obj_keys  (42) == []
+        assert obj_values({}) == []
+        assert obj_dict  ({}) == {}
+        assert obj_items ({}) == []
+        assert obj_keys  ({}) == []
+        assert obj_values({}) == []
 
     def test_none_or_empty(self):
         assert none_or_empty(None, None) is True
@@ -149,6 +178,24 @@ class test_Misc(TestCase):
         assert none_or_empty({}  , 'aa') is True
         assert none_or_empty({'a': 42}, 'b') is True
         assert none_or_empty({'a': 42}, 'a') is False
+
+    def test_size(self):
+        assert size(    ) == 0
+        assert size(0   ) == 0
+        assert size(''  ) == 0
+        assert size(None) == 0
+        assert size('1' ) == 1
+        assert size(1   ) == 0
+        assert size('2' ) == 1
+        assert size(2   ) == 0
+        assert size('22') == 2
+
+        assert size([]   ) == 0
+        assert size([0]  ) == 1
+        assert size([0,1]) == 2
+
+        assert size({}     ) == 0
+        assert size({'a':0}) == 1
 
     def test_random_filename(self):
         result = random_filename()
