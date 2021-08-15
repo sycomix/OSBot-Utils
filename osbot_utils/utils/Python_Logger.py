@@ -1,6 +1,6 @@
 import logging
 import sys
-from logging          import Logger
+from logging          import Logger, StreamHandler, FileHandler
 from logging.handlers import MemoryHandler
 
 from osbot_utils.decorators.lists.group_by import group_by
@@ -86,7 +86,7 @@ class Python_Logger:
         return None
 
     def log_handler_console(self):
-        return self.log_handler(logging.StreamHandler)
+        return self.log_handler(StreamHandler)
 
     def log_handler_file(self):
         return self.log_handler(logging.FileHandler)
@@ -117,7 +117,7 @@ class Python_Logger:
     # Handlers
     def add_handler_console(self):
         if self.logger and self.config.log_to_console:
-            handler = logging.StreamHandler(sys.stdout)
+            handler = StreamHandler(sys.stdout)
             handler.setLevel(logging.DEBUG)
             handler.setFormatter(self.log_formatter())
             self.logger.addHandler(handler)
@@ -128,7 +128,7 @@ class Python_Logger:
         if self.logger and self.config.log_to_file:
             if path_log_file is None:
                 path_log_file = temp_file(extension='.log')
-            handler = logging.FileHandler(path_log_file)
+            handler = FileHandler(path_log_file)
             handler.setLevel(self.log_level())
             handler.setFormatter(self.log_formatter())
             self.logger.addHandler(handler)
@@ -162,7 +162,6 @@ class Python_Logger:
 
     def memory_handler_messages(self):
         return [log_entry.get('message') for log_entry in self.memory_handler_logs()]
-
 
     # Logging methods
 
