@@ -65,17 +65,6 @@ class test_Python_Logger(TestCase):
         assert logger.handlers      == []
         assert logger.name.startswith("Python_Logger") is True
 
-    @pytest.mark.skip
-    def test_get_logger(self):
-        logger = self.logger.logger()
-
-        logger.info('this is an info message')
-
-        assert len_list(file_lines(self.logger.logger_file)) == 1
-        log_data = json_load_file(self.logger.logger_file)
-        assert list_set(log_data) == ['@timestamp', 'ecs', 'log', 'log.level', 'message', 'process']
-        assert log_data.get('message') == 'this is an info message'
-
     # Logging methods
 
 
