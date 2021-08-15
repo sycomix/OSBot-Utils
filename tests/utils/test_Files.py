@@ -119,7 +119,7 @@ class test_Files(TestCase):
     def test_file_write_bytes(self):
         target = temp_file()
         bytes  = b"\x89PNG___"
-        assert file_bytes(file_write_bytes(target, contents=bytes)) == bytes
+        assert file_bytes(file_write_bytes(target, bytes=bytes)) == bytes
         assert file_open_bytes(target).read() == b'\x89PNG___'
 
 

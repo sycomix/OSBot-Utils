@@ -3,7 +3,7 @@ from http.server import SimpleHTTPRequestHandler
 from unittest import TestCase
 
 from osbot_utils.utils.Files import file_contents, file_contains, file_name, file_exists, parent_folder, folder_exists, \
-    file_not_exists, folder_not_exists
+    file_not_exists, folder_not_exists, current_temp_folder
 
 from osbot_utils.utils.Misc import random_text
 
@@ -24,12 +24,11 @@ class test_Temp_Web_Server(TestCase):
     def test__enter__leave__(self):
         host        = "127.0.0.1"
         port        = 20002
-        root_folder = '.'
+        root_folder = current_temp_folder()
         kwargs      = {  "host"       : host        ,
                          "port"       : port        ,
                          "root_folder": root_folder }
-        expected_content = ['<h1>Directory listing for /</h1>'                                      ,
-                            '<li><a href="test_Temp_Web_Server.py">test_Temp_Web_Server.py</a></li>']
+        expected_content = ['<h1>Directory listing for /</h1>']
         temp_web_server = Temp_Web_Server(**kwargs)
         with temp_web_server as web_server:
             assert web_server.server_port_open()             is True
