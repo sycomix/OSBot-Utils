@@ -1,10 +1,12 @@
 from pprint import pprint
 from unittest import TestCase
 
+from osbot_utils.utils import Http
+
 from osbot_utils.utils.Files import temp_file, file_not_exists, file_exists, file_bytes, file_size, file_create_bytes
 from osbot_utils.utils.Http import DELETE, POST, GET, GET_json, DELETE_json, GET_bytes, GET_bytes_to_file, \
     dns_ip_address, port_is_open, port_is_not_open, current_host_online, POST_json, OPTIONS, PUT_json, \
-    is_port_open
+    is_port_open, wait_for_port
 
 
 # using httpbin.org because it seems to be the best option
@@ -30,6 +32,10 @@ class test_Http(TestCase):
     def test_current_host_online(self):
         assert current_host_online() is True
         assert current_host_online(url_to_use='http://111-2222-3333-abc.com') is False
+
+    def test_wait_for_port(self):
+        assert wait_for_port('www.google.com', 443                ) is True
+        assert wait_for_port('bad-ip'        , 443, max_attempts=2) is False
 
     def test_DELETE_json(self):
         url = self.url_template.format(method="delete")

@@ -50,9 +50,26 @@ class Python_Logger:
 
     def setup(self):
         self.logger =  logging.getLogger(self.logger_name)
+        self.setup_log_methods(self)
         self.set_log_level()
         self.add_handler_memory()
         return self
+
+    def setup_log_methods(self, target):
+        # adds these helper methods like this so that the filename and function values are accurate
+        setattr(target, "debug"     , self.logger.debug     )
+        setattr(target, "info"      , self.logger.info      )
+        setattr(target, "warning"   , self.logger.warning   )
+        setattr(target, "error"     , self.logger.error     )
+        setattr(target, "exception" , self.logger.exception )
+        setattr(target, "critical"  , self.logger.critical  )
+
+        # self.info       = self.logger.info
+        # self.warning    = self.logger.warning
+        # self.error      = self.logger.error
+        # self.exception  = self.logger.exception
+        # self.critical   = self.logger.critical
+
 
     # Setters
     def set_config(self, config):
@@ -165,16 +182,16 @@ class Python_Logger:
 
     # Logging methods
 
-    def debug    (self, msg='', *args, **kwargs): return self.log('debug'     , msg, *args, **kwargs)
-    def info     (self, msg='', *args, **kwargs): return self.log('info'      , msg, *args, **kwargs)
-    def warning  (self, msg='', *args, **kwargs): return self.log('warning'   , msg, *args, **kwargs)
-    def error    (self, msg='', *args, **kwargs): return self.log('error'     , msg, *args, **kwargs)
-    def exception(self, msg='', *args, **kwargs): return self.log('exception' , msg, *args, **kwargs)
-    def critical (self, msg='', *args, **kwargs): return self.log('critical'  , msg, *args, **kwargs)
-
-    def log(self, level, msg, *args, **kwargs):
-        if self.logger:
-            log_method = getattr(self.logger, level)
-            log_method(msg, *args, **kwargs)
-            return True
-        return False
+    # def debug    (self, msg='', *args, **kwargs): return self._log('debug'     , msg, *args, **kwargs)
+    # #def info     (self, msg='', *args, **kwargs): return self.__log__('info'      , msg, *args, **kwargs)
+    # def warning  (self, msg='', *args, **kwargs): return self._log('warning'   , msg, *args, **kwargs)
+    # def error    (self, msg='', *args, **kwargs): return self._log('error'     , msg, *args, **kwargs)
+    # def exception(self, msg='', *args, **kwargs): return self._log('exception' , msg, *args, **kwargs)
+    # def critical (self, msg='', *args, **kwargs): return self._log('critical'  , msg, *args, **kwargs)
+    #
+    # def __log__(self, level, msg, *args, **kwargs):
+    #     if self.logger:
+    #         log_method = getattr(self.logger, level)
+    #         log_method(msg, *args, **kwargs)
+    #         return True
+    #     return False

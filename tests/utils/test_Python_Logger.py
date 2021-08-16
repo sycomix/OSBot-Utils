@@ -174,11 +174,18 @@ class test_Python_Logger(TestCase):
 
     def test_debug__info__warning__error__critical(self):
         self.logger.add_memory_logger()
-        assert self.logger.debug   ('debug message'    ) is True
-        assert self.logger.info    ('info message'     ) is True
-        assert self.logger.warning ('warning message'  ) is True
-        assert self.logger.error   ('error message'    ) is True
-        assert self.logger.critical('critical message' ) is True
+        assert self.logger.debug     == self.logger.logger.debug
+        assert self.logger.info      == self.logger.logger.info
+        assert self.logger.warning   == self.logger.logger.warning
+        assert self.logger.error     == self.logger.logger.error
+        assert self.logger.critical  == self.logger.logger.critical
+        assert self.logger.exception == self.logger.logger.exception
+
+        assert self.logger.debug   ('debug message'    ) is None
+        assert self.logger.info    ('info message'     ) is None
+        assert self.logger.warning ('warning message'  ) is None
+        assert self.logger.error   ('error message'    ) is None
+        assert self.logger.critical('critical message' ) is None
         assert self.logger.memory_handler_messages() == [ 'debug message'   ,
                                                           'info message'    ,
                                                           'warning message' ,
@@ -210,7 +217,7 @@ class test_Python_Logger(TestCase):
     def test_exception(self):
         self.logger.add_memory_logger()
         assert self.logger.memory_handler_exceptions() == {}
-        self.logger.exception()                                     # log with no params outside an exception
+        self.logger.exception('')                                     # log with no params outside an exception
         log_exception = self.logger.memory_handler_logs().pop()
         assert log_exception.get('exc_info' ) == (None, None, None)
         assert log_exception.get('exc_text' ) == 'NoneType: None'
