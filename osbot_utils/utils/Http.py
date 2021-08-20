@@ -28,7 +28,7 @@ def port_is_open(port : int , host='0.0.0.0', timeout=1.0):
         result = sock.connect_ex((host, port))
         return result == 0
     except:
-        logger.exception(f'port {port} was closed in server {host}')
+        logger.error(f'port {port} was closed in server {host}')
     return False
 
 
