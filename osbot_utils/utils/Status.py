@@ -1,8 +1,9 @@
 import logging
 
 # todo refactor into Status class
+from osbot_utils.utils.Python_Logger import Python_Logger
 
-logger = logging.getLogger()
+logger = Python_Logger().setup() # logging.getLogger()                # todo:
 
 def status_message(status, message:str=None, data=None, error=None):
     return  {  'data'   : data    ,
