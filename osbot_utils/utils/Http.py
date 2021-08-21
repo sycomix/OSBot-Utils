@@ -18,17 +18,18 @@ def current_host_online(url_to_use='http://www.google.com'):
 def dns_ip_address(host):
     return socket.gethostbyname(host)
 
-def is_port_open(host, port, timeout=0.5):
+def is_port_open(host, port, timeout=0.5, log_error=True):
     return port_is_open(host=host, port=port, timeout=timeout)
 
-def port_is_open(port : int , host='0.0.0.0', timeout=1.0):
+def port_is_open(port : int , host='0.0.0.0', timeout=1.0, log_error=True):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(timeout)
         result = sock.connect_ex((host, port))
         return result == 0
     except:
-        logger.error(f'port {port} was closed in server {host}')
+        if log_error:
+            logger.error(f'port {port} was closed in server {host}')
     return False
 
 
@@ -62,7 +63,7 @@ def wait_for_ssh(host, max_attempts=120, wait_for=0.5):
 
 def wait_for_port(host, port, max_attempts=20, wait_for=0.1):
     for i in range(max_attempts):
-        if is_port_open(host=host,port=port,timeout=wait_for):
+        if is_port_open(host=host,port=port,timeout=wait_for, log_error=False):
             return True
     return False
 
