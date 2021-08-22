@@ -269,6 +269,12 @@ def lower(target : str):
         return target.lower()
     return ""
 
+def obj_data(target=None):
+    data = {}
+    for key,value in obj_items(target):
+        data[key] = value
+    return data
+
 def obj_dict(target=None):
     if target and hasattr(target,'__dict__'):
         return target.__dict__
