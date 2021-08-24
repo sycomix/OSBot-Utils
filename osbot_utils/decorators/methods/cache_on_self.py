@@ -30,7 +30,7 @@ def cache_on_self(function):
         return getattr(self, cache_id)                              # return the return value
     return wrapper
 
-def cache_on_self_args_to_str(args):
+def cache_on_self__args_to_str(args):
     args_values_as_str = ''
     if args:
         for arg in args:
@@ -38,22 +38,32 @@ def cache_on_self_args_to_str(args):
                 args_values_as_str += str(arg)
     return args_values_as_str
 
+def cache_on_self__kwargs_to_str(kwargs):
+    kwargs_values_as_str = ''
+    if kwargs:
+        for key,value in kwargs.items():
+            if type(value) in CACHE_ON_SELF_TYPES:
+                kwargs_values_as_str += f'{key}:{value}|'
+    return kwargs_values_as_str
 
 def cache_on_self_get_cache_in_key(function, args=None, kwargs=None):
         key_name   = function.__name__
         args_md5   = ''
         kwargs_md5 = ''
-        args_values_as_str = cache_on_self_args_to_str(args)
+        args_values_as_str   = cache_on_self__args_to_str(args)
+        kwargs_values_as_str = cache_on_self__kwargs_to_str(kwargs)
         if args_values_as_str:
             args_md5 = str_md5(args_values_as_str)
+        if kwargs_values_as_str:
+            kwargs_md5 = str_md5(kwargs_values_as_str)
         return f'{CACHE_ON_SELF_KEY_PREFIX}_{key_name}_{args_md5}_{kwargs_md5}'
 
-        class_name = self_obj.__class__.__name__
-
-        function_name = function_obj.__name__
-        if params:
-            params_as_string = '_'.join(str(x) for x in params).replace('/',' ')
-            params_md5       = str_md5(params_as_string)
-            return f'{class_name}_{function_name}_{params_md5}.gz'
-        else:
-            return f'{class_name}_{function_name}.gz'
+        # class_name = self_obj.__class__.__name__
+        #
+        # function_name = function_obj.__name__
+        # if params:
+        #     params_as_string = '_'.join(str(x) for x in params).replace('/',' ')
+        #     params_md5       = str_md5(params_as_string)
+        #     return f'{class_name}_{function_name}_{params_md5}.gz'
+        # else:
+        #     return f'{class_name}_{function_name}.gz'

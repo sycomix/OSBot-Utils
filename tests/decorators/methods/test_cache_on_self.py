@@ -1,8 +1,9 @@
-from pprint import pprint
 from unittest import TestCase
 
+from osbot_utils.utils.Dev import pprint
+
 from osbot_utils.decorators.methods.cache_on_self import cache_on_self, cache_on_self_get_cache_in_key, \
-    CACHE_ON_SELF_KEY_PREFIX, cache_on_self_args_to_str
+    CACHE_ON_SELF_KEY_PREFIX, cache_on_self__args_to_str, cache_on_self__kwargs_to_str
 from osbot_utils.testing.Catch import Catch
 from osbot_utils.utils.Misc import obj_data
 
@@ -72,32 +73,38 @@ class test_cache_on_self(TestCase):
 
         # testing function that returns dynamic value (with kargs)
         assert an_class_1.echo(value=111) == 111                                                    # confirm returns echo value
-        assert an_class_1.echo(value=222) == 111                                                    # bug, should had returned 222
+        assert an_class_1.echo(value=222) == 222                                                    # confirms new value
 
         assert an_class_2.echo(value=333) == 333                                                    # confirm returns echo value
-        assert an_class_2.echo(value=444) == 333                                                    # bug, should had returned 444
+        assert an_class_2.echo(value=444) == 444                                                    # confirms new value
 
         assert an_class_3.echo(value=555) == 555                                                    # confirm returns echo value
-        assert an_class_3.echo(value=666) == 555                                                    # bug, should had returned 666
+        assert an_class_3.echo(value=666) == 666                                                    # confirms new value
 
     def test_cache_on_self__multiple_types_in_arg_cache(self):
         args      = ('a', 1, 1.0)
         an_class = An_Class()
         assert an_class.echo_args(*args) == args
-        assert cache_on_self_args_to_str(args) == "a11.0"
+        assert cache_on_self__args_to_str(args) == "a11.0"
 
         args = ('a', None, 'bbb', [], {})
         assert an_class.echo_args(*args) == args
-        assert cache_on_self_args_to_str(args) == "abbb"
+        assert cache_on_self__args_to_str(args) == "abbb"
 
         args = ('a', -1, ['a'], {'b':None})
         assert an_class.echo_args(*args) == args
-        assert cache_on_self_args_to_str(args) == "a-1"
+        assert cache_on_self__args_to_str(args) == "a-1"
 
         args = (1, int(1), float(1), bytearray(b'1'), bytes(b'1'), bool(True), complex(1), str('1'))
         assert an_class.echo_args(*args)        == args
         assert an_class.echo_args(*args)        == (1, 1, 1.0, bytearray(b'1'), b'1', True, (1 + 0j), '1')
-        assert cache_on_self_args_to_str(args)  == "111.0bytearray(b'1')b'1'True(1+0j)1"
+        assert cache_on_self__args_to_str(args) == "111.0bytearray(b'1')b'1'True(1+0j)1"
+
+    def test_cache_on_self__kwargs_to_str(self):
+        assert cache_on_self__kwargs_to_str({"an":"value"    }) == 'an:value|'
+        assert cache_on_self__kwargs_to_str({"a": "b","c":"d"}) == 'a:b|c:d|'
+        assert cache_on_self__kwargs_to_str({"an": None      }) == ''
+        assert cache_on_self__kwargs_to_str({"an": 1         }) == 'an:1|'
 
 
     def test_cache_on_self__outside_an_class(self):
