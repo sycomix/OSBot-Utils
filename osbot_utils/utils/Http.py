@@ -21,7 +21,7 @@ def dns_ip_address(host):
 def is_port_open(host, port, timeout=0.5, log_error=True):
     return port_is_open(host=host, port=port, timeout=timeout)
 
-def port_is_open(port : int , host='0.0.0.0', timeout=1.0, log_error=True):
+def port_is_open(port : int , host='0.0.0.0', timeout=1.0, log_error=False):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(timeout)
