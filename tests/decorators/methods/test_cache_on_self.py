@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from osbot_utils.utils.Dev import pprint
 
-from osbot_utils.decorators.methods.cache_on_self import cache_on_self, cache_on_self_get_cache_in_key, \
+from osbot_utils.decorators.methods.cache_on_self import cache_on_self, cache_on_self__get_cache_in_key, \
     CACHE_ON_SELF_KEY_PREFIX, cache_on_self__args_to_str, cache_on_self__kwargs_to_str
 from osbot_utils.testing.Catch import Catch
 from osbot_utils.utils.Misc import obj_data
@@ -26,7 +26,7 @@ class test_cache_on_self(TestCase):
     def test_cache_on_self(self):
 
         an_class_1                = An_Class()                                              # create 1st instance
-        cache_key                 = cache_on_self_get_cache_in_key(an_class_1.an_function)  # get key from self
+        cache_key                 = cache_on_self__get_cache_in_key(an_class_1.an_function)  # get key from self
         assert cache_key          == f'{CACHE_ON_SELF_KEY_PREFIX}_an_function__'            # confirm cache key value
         assert obj_data(an_class_1) == {}                                                   # confirm cache key has not been added to self
 

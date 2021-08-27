@@ -24,7 +24,7 @@ def cache_on_self(function):
             raise Exception("In Method_Wrappers.cache_on_self could not find self")
 
         self = args[0]                                              # get self
-        cache_id = cache_on_self_get_cache_in_key(function, args, kwargs)
+        cache_id = cache_on_self__get_cache_in_key(function, args, kwargs)
         if hasattr(self, cache_id) is False:                        # check if return_value has been set
             setattr(self, cache_id, function(*args, **kwargs))      # invoke function and capture the return value
         return getattr(self, cache_id)                              # return the return value
@@ -46,7 +46,7 @@ def cache_on_self__kwargs_to_str(kwargs):
                 kwargs_values_as_str += f'{key}:{value}|'
     return kwargs_values_as_str
 
-def cache_on_self_get_cache_in_key(function, args=None, kwargs=None):
+def cache_on_self__get_cache_in_key(function, args=None, kwargs=None):
         key_name   = function.__name__
         args_md5   = ''
         kwargs_md5 = ''
