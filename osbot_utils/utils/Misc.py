@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import inspect
 import logging
 import os
 import random
@@ -266,6 +267,9 @@ def str_index(target:str, source:str):
     except:
         return -1
 
+def sys_path_python(python_folder='lib/python'):
+    return list_contains(sys.path, python_folder)
+
 def str_md5(text : str):
     if text:
         return bytes_md5(text.encode())
@@ -279,6 +283,17 @@ def none_or_empty(target,field):
 
 def print_date_now(use_utc=True):
     print(date_time_now(use_utc=use_utc))
+
+def print_object_members(target, max_width=120, show_internals=False):
+    print()
+    print(f"Members for object: {target}"[:max_width])
+    print()
+    print(f"{'field':<20} | value")
+    print(f"{'-' * max_width}")
+    for name, val in inspect.getmembers(target):
+        if not show_internals and name.startswith("__"):
+            continue
+        print(f"{name:<20} | {val}"[:max_width])
 
 def print_time_now(use_utc=True):
     print(time_now(use_utc=use_utc))
@@ -359,13 +374,13 @@ def random_text(prefix=None,length=12):
 def random_uuid():
     return str(uuid.uuid4())
 
-def remove(target_string, string_to_remove):
+def remove(target_string, string_to_remove):                        # todo: refactor to str_*
     return replace(target_string, string_to_remove, '')
 
-def remove_multiple_spaces(target):
+def remove_multiple_spaces(target):                                 # todo: refactor to str_*
     return re.sub(' +', ' ', target)
 
-def replace(target_string, string_to_find, string_to_replace):
+def replace(target_string, string_to_find, string_to_replace):      # todo: refactor to str_*
     return target_string.replace(string_to_find, string_to_replace)
 
 def remove_html_tags(html):
@@ -434,6 +449,7 @@ datetime_now        = date_time_now
 list_contains       = list_filter_contains
 new_guid            = random_uuid
 str_lines           = split_lines
+str_remove          = remove
 random_id           = random_string
 wait_for            = wait
 

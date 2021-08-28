@@ -137,8 +137,37 @@ class Files:
         return folder_exists(path) is False
 
     @staticmethod
-    def path_combine(path1, path2):
-        return abspath(join(path1, path2))
+    def folder_sub_folders(path):
+        result = []
+        item: os.DirEntry
+        if Files.is_folder(path):
+            for item in os.scandir(path):
+                if item.is_dir():
+                    result.append(item.path)
+        return result
+
+    @staticmethod
+    def folders_names(folders : list):
+        result = []
+        for folder in folders:
+            if Files.is_folder(folder):
+                result.append(Files.file_name(folder))
+        return result
+
+    @staticmethod
+    def folders_sub_folders(folders : list):
+        result = []
+        for folder in folders:
+            result.extend(Files.folder_sub_folders(folder))
+        return result
+
+    @staticmethod
+    def is_file(target):
+        return os.path.isfile(target)
+
+    @staticmethod
+    def is_folder(target):
+        return os.path.isdir(target)
 
     @staticmethod
     def lines(path):
@@ -169,6 +198,10 @@ class Files:
         return Files.open(path, mode='rb')
 
     @staticmethod
+    def path_combine(path1, path2):
+        return abspath(join(path1, path2))
+
+    @staticmethod
     def parent_folder(path):
         return os.path.dirname(path)
 
@@ -182,6 +215,13 @@ class Files:
         file_create(path, contents)
         return path
 
+    @staticmethod
+    def sub_folders(target):
+        if type(target) is list:
+            return Files.folders_sub_folders(target)
+        if type(target) is str:
+            return Files.folder_sub_folders(target)
+        return []
 
     @staticmethod
     def save_bytes_as_file(bytes_to_save, path=None, extension=None):
@@ -328,7 +368,13 @@ folder_not_exists           = Files.folder_not_exists
 folder_name                 = Files.folder_name
 folder_temp                 = Files.temp_folder
 folder_files                = Files.files
+folder_sub_folders          = Files.folder_sub_folders
 folder_zip                  = Files.zip_folder
+
+folders_names               = Files.folders_names
+
+is_file                     = Files.is_file
+is_folder                   = Files.is_folder
 
 load_file                   = Files.contents
 load_file_gz                = Files.contents_gz
@@ -341,6 +387,7 @@ parent_folder_combine       = Files.parent_folder_combine
 
 save_bytes_as_file          = Files.save_bytes_as_file
 save_string_as_file         = Files.save
+sub_folders                 = Files.sub_folders
 
 temp_file                   = Files.temp_file
 temp_filename               = Files.temp_filename

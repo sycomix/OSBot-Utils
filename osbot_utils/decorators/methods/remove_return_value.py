@@ -19,4 +19,4 @@ class remove_return_value:
         return wrapper                                              # return wrapper function
 
 #todo: check usages and remove legacy method
-remove = remove_return_value
+remove      = remove_return_value
