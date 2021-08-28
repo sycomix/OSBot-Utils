@@ -1,5 +1,6 @@
 from unittest                import TestCase
 
+from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import Files, path_combine, parent_folder, path_current, save_bytes_as_file, file_bytes, \
     temp_file, file_create, file_delete, file_exists, file_contents, file_copy, file_contents_as_bytes, file_name, \
     folder_name, folder_files, file_not_exists, temp_folder, folder_copy, path_append, folder_exists, folder_create, \
@@ -7,7 +8,7 @@ from osbot_utils.utils.Files import Files, path_combine, parent_folder, path_cur
     zip_file_list, zip_files, save_string_as_file, file_write_gz, file_contents_gz, file_size, file_write, file_find, \
     file_lines, file_create_gz, file_lines_gz, parent_folder_combine, file_write_bytes, file_open_bytes, \
     file_contents_md5, \
-    file_contents_sha256, create_folder_in_parent
+    file_contents_sha256, create_folder_in_parent, sub_folders
 from osbot_utils.utils.Misc   import random_bytes, random_string, remove, bytes_md5, str_to_bytes, bytes_sha256
 
 
@@ -171,8 +172,6 @@ class test_Files(TestCase):
         assert path_combine(folder, 'test_Files.py') in folder_files(folder)
         assert path_combine(folder, 'test_Json.py' ) in folder_files(folder)
 
-
-
     def test_folder_zip(self):
         folder = temp_folder_with_temp_file(file_contents=random_string())
         print()
@@ -212,6 +211,8 @@ class test_Files(TestCase):
 
         assert file_contents(temp_file) == data
 
+    def test_sub_folders(self):
+        assert '/usr/bin' in sub_folders('/usr')
 
     def test_temp_folder(self):
         assert Files.exists(Files.temp_folder())
