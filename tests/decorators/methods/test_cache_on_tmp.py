@@ -1,6 +1,8 @@
 from pprint import pprint
 from unittest import TestCase
 
+from osbot_utils.utils.Misc import str_md5
+
 from osbot_utils.utils.Files import file_name
 
 from osbot_utils.utils.Json import json_load_file_gz
@@ -44,10 +46,16 @@ class test_cache_on_tmp(TestCase):
         cache_on_tmp_self.reload_data = True
         assert an_class.an_function() == 42
 
+        cache_on_tmp_self.return_cache_key = True
+
+        assert 'osbot_cache_on_tmp/An_Class_an_function.gz' in an_class.an_function()
+
     def test_cache_on_tmp__with_params(self):
+        param = 'aaaaa'
         with Profiler() as profiler:
-            assert An_Class().an_function_with_params('aaaaa') == 'aaaaa'
+            assert An_Class().an_function_with_params(param) == param
 
         cache_on_tmp_self = profiler.get_f_locals_variable('self')
 
-        assert file_name(cache_on_tmp_self.last_cache_path) == 'An_Class_an_function_with_params_aaaaa.gz'
+        temp_file_name= f'An_Class_an_function_with_params_{str_md5(param)}.gz'
+        assert file_name(cache_on_tmp_self.last_cache_path) == temp_file_name

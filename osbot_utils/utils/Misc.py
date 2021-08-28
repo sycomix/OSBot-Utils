@@ -13,6 +13,7 @@ import warnings
 from datetime   import datetime
 from secrets    import token_bytes
 from time import sleep
+from urllib.parse import urlencode, quote_plus, unquote_plus
 
 from dotenv     import load_dotenv
 
@@ -143,8 +144,9 @@ def get_missing_fields(target,field):
 
 def is_number(value):
     try:
-        int(value)
-        return True
+        if type(value) is int or type(value) is float :
+            int(value)
+            return True
     except:
         pass
     return False
@@ -152,9 +154,13 @@ def is_number(value):
 def ignore_warning__unclosed_ssl():
     warnings.filterwarnings("ignore", category=ResourceWarning, message="unclosed.*<ssl.SSLSocket.*>")
 
+
 def last_letter(text):
     if text and (type(text) is str) and len(text) > 0:
         return text[-1]
+
+def len_list(target):
+    return len(list(target))
 
 def list_add(array : list, value):
     if value is not None:
@@ -206,6 +212,9 @@ def list_pop_and_trim(array, position=None):
 
 def list_set(target):
     return sorted(list(set(target)))
+
+def list_set_dict(target):
+    return sorted(list(set(obj_dict(target))))
 
 def list_filter(target_list, filter_function):
     return list(filter(filter_function, target_list))
@@ -260,6 +269,35 @@ def lower(target : str):
     if target:
         return target.lower()
     return ""
+
+def obj_data(target=None):
+    data = {}
+    for key,value in obj_items(target):
+        data[key] = value
+    return data
+
+def obj_dict(target=None):
+    if target and hasattr(target,'__dict__'):
+        return target.__dict__
+    return {}
+
+def obj_items(target=None):
+    return list(obj_dict(target).items())
+
+def obj_keys(target=None):
+    return list(obj_dict(target).keys())
+
+def obj_get_value(target=None, key=None, default=None):
+    return get_field(target=target, field=key, default=default)
+
+def obj_values(target=None):
+    return list(obj_dict(target).values())
+
+
+def size(target=None):
+    if target and hasattr(target, '__len__'):
+        return len(target)
+    return 0
 
 def str_index(target:str, source:str):
     try:
@@ -353,8 +391,8 @@ def random_password(length=24, prefix=''):
                                                string.punctuation     +
                                                string.digits          ,
                                                k=length))
-    # replace these chars with _  (to make prevent errors in command prompts)
-    items = ['"', '\'', '`','\\','}']
+    # replace these chars with _  (to make prevent errors in command prompts and urls)
+    items = ['"', '\'', '`','\\','/','}','?','#',';',':']
     for item in items:
         password = password.replace(item, '_')
     return password
@@ -421,6 +459,17 @@ def trim(target):
 
 def under_debugger():
     return 'pydevd' in sys.modules
+
+def unique(target):
+    return list_set(target)
+
+def url_encode(data):
+    if type(data) is str:
+        return quote_plus(data)
+
+def url_decode(data):
+    if type(data) is str:
+        return unquote_plus(data)
 
 def upper(target : str):
     if target:

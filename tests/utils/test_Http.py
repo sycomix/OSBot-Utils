@@ -1,9 +1,12 @@
 from pprint import pprint
 from unittest import TestCase
 
+from osbot_utils.utils import Http
+
 from osbot_utils.utils.Files import temp_file, file_not_exists, file_exists, file_bytes, file_size, file_create_bytes
 from osbot_utils.utils.Http import DELETE, POST, GET, GET_json, DELETE_json, GET_bytes, GET_bytes_to_file, \
-    dns_ip_address, port_is_open, port_is_not_open, current_host_online, POST_json, OPTIONS, PUT_json
+    dns_ip_address, port_is_open, port_is_not_open, current_host_online, POST_json, OPTIONS, PUT_json, \
+    is_port_open, wait_for_port
 
 
 # using httpbin.org because it seems to be the best option
@@ -23,12 +26,16 @@ class test_Http(TestCase):
         self.headers      = {"Accept": "application/json"}
         self.data         = "aaa=42&bbb=123"
         self.data_json    = { "aaa":42 , "bbb":"123"}
-        self.url_png      = 'https://via.placeholder.com/1.png'
+        self.url_png      = 'https://avatars.githubusercontent.com/u/52993993?s=200&v=4'
         self.url_template = "https://httpbin.org/{method}?ddd=1&eee=2"
 
     def test_current_host_online(self):
         assert current_host_online() is True
         assert current_host_online(url_to_use='http://111-2222-3333-abc.com') is False
+
+    def test_wait_for_port(self):
+        assert wait_for_port('www.google.com', 443                ) is True
+        assert wait_for_port('bad-ip'        , 443, max_attempts=2) is False
 
     def test_DELETE_json(self):
         url = self.url_template.format(method="delete")
@@ -37,7 +44,7 @@ class test_Http(TestCase):
 
     def test_GET_bytes(self):
         bytes = GET_bytes(self.url_png)
-        assert len(bytes) == 106
+        assert len(bytes) == 17575
         assert bytes[:4] == b"\x89PNG"
 
     def test_GET_bytes_to_file(self):
@@ -45,7 +52,7 @@ class test_Http(TestCase):
         assert file_not_exists(target)
         assert GET_bytes_to_file(self.url_png, target)
         assert file_exists(target)
-        assert file_size(target) == 106
+        assert file_size(target) == 17575
         assert file_bytes(target)[:4] == b"\x89PNG"
 
     def test_GET_json(self):
@@ -109,17 +116,23 @@ class test_Http(TestCase):
 
         assert response['form'] == {'aaa': '42', 'bbb': '123'}
 
-    def test_port_is_open__port_is_not_open(self):
+    def test_is_port_open__port_is_open__port_is_not_open(self):
         host    = "www.google.com"
         port    = 443
         host_ip = dns_ip_address(host)
-        timeout = 0.10                          # note: some cases when it failed locally
+        timeout = 0.10
+
+        assert is_port_open(host=host   , port=port  , timeout=timeout) is True
+        assert is_port_open(host=host_ip, port=port  , timeout=timeout) is True
+        assert is_port_open(host=host   , port=port+1, timeout=timeout) is False
+        assert is_port_open(host=host_ip, port=port+1, timeout=timeout) is False
+
         assert port_is_open(host=host   , port=port  , timeout=timeout) is True
         assert port_is_open(host=host_ip, port=port  , timeout=timeout) is True
-        #assert port_is_open(host=host   , port=port+1, timeout=timeout) is False
+        assert port_is_open(host=host   , port=port+1, timeout=timeout) is False
         assert port_is_open(host=host_ip, port=port+1, timeout=timeout) is False
 
         assert port_is_not_open(host=host   , port=port  , timeout=timeout) is False
         assert port_is_not_open(host=host_ip, port=port  , timeout=timeout) is False
-        #assert port_is_not_open(host=host   , port=port+1, timeout=timeout) is True
+        assert port_is_not_open(host=host   , port=port+1, timeout=timeout) is True
         assert port_is_not_open(host=host_ip, port=port+1, timeout=timeout) is True

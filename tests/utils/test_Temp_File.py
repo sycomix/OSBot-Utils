@@ -1,5 +1,5 @@
 from unittest import TestCase
-from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Files import Files, file_exists, folder_exists, file_not_exists, folder_not_exists
 from osbot_utils.utils.Temp_File import Temp_File
 
 class test_Temp_File(TestCase):
@@ -11,6 +11,13 @@ class test_Temp_File(TestCase):
         assert Files.not_exists(temp_file.file_path)
         assert temp_file.tmp_folder in temp_file.file_path
         assert '/' == temp_file.file_path.replace(temp_file.tmp_folder,'').replace(temp_file.tmp_file,'')
+
+    def test__confirm_file_and_folder_creation_and_deletion(self):
+        with Temp_File() as _:
+            assert file_exists   (_.file_path)
+            assert folder_exists (_.tmp_folder)
+        assert file_not_exists   (_.file_path)
+        assert folder_not_exists (_.tmp_folder)
 
     def test__using_with__no_params(self):
         with Temp_File() as temp:
