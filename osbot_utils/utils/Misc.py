@@ -49,6 +49,15 @@ def class_name(target):
     if target:
         return type(target).__name__
 
+def class_functions(target):
+    functions = {}
+    for function_name, function_ref in inspect.getmembers(type(target), predicate=inspect.isfunction):
+        functions[function_name] = function_ref
+    return functions
+
+def class_functions_names(target):
+    return list_set(class_functions(target))
+
 def convert_to_number(value):
     if value:
         try:
@@ -172,6 +181,9 @@ def list_find(array:list, item):
         return array.index(item)
     return -1
 
+def list_get_field(values, field):
+    return [item.get(field) for item in values]
+
 def list_index_by(values, index_by):
     from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
     results = {}
@@ -282,10 +294,10 @@ def obj_dict(target=None):
     return {}
 
 def obj_items(target=None):
-    return list(obj_dict(target).items())
+    return sorted(list(obj_dict(target).items()))
 
 def obj_keys(target=None):
-    return list(obj_dict(target).keys())
+    return sorted(list(obj_dict(target).keys()))
 
 def obj_get_value(target=None, key=None, default=None):
     return get_field(target=target, field=key, default=default)
@@ -497,6 +509,7 @@ convert_to_float    = convert_to_number
 datetime_now        = date_time_now
 list_contains       = list_filter_contains
 new_guid            = random_uuid
+obj_list_set        = obj_keys
 str_lines           = split_lines
 str_remove          = remove
 random_id           = random_string
