@@ -224,7 +224,13 @@ def list_pop_and_trim(array, position=None):
     return value
 
 def list_set(target):
-    return sorted(list(set(target)))
+    if target:
+        return sorted(list(set(target)))
+    return []
+
+def list_zip(*args):
+    return list(zip(*args))
+
 
 def list_set_dict(target):
     return sorted(list(set(obj_dict(target))))
