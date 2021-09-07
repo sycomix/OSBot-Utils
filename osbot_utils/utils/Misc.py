@@ -187,8 +187,9 @@ def list_get_field(values, field):
 def list_index_by(values, index_by):
     from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
     results = {}
-    for item in values:
-        results[item.get(index_by)] = item
+    if values and index_by:
+        for item in values:
+            results[item.get(index_by)] = item
     return Fluent_Dict(results)
 
 def list_group_by(values, group_by):
@@ -230,6 +231,9 @@ def list_set_dict(target):
 
 def list_filter(target_list, filter_function):
     return list(filter(filter_function, target_list))
+
+def list_sorted(target_list, key, descending=False):
+    return list(sorted(target_list, key= lambda x:x.get(key,None) ,reverse=descending))
 
 def list_filter_starts_with(target_list, prefix):
     return list_filter(target_list, lambda x: x.startswith(prefix))
