@@ -176,6 +176,15 @@ def list_add(array : list, value):
         array.append(value)
     return value
 
+def list_contains_list(array : list, values):
+    if array is not None:
+        if type(values) is list:
+            for item in values:
+                if item in array is False:
+                    return False
+            return True
+    return False
+
 def list_find(array:list, item):
     if item in array:
         return array.index(item)
