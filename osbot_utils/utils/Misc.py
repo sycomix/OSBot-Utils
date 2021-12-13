@@ -428,15 +428,15 @@ def random_password(length=24, prefix=''):
         password = password.replace(item, '_')
     return password
 
-def random_string(length=8,prefix=''):
+def random_string(length:int=8,prefix:str=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
 
-def random_string_and_numbers(length=6,prefix=''):
+def random_string_and_numbers(length:int=6,prefix:str=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
-def random_text(prefix=None,length=12):
+def random_text(prefix:str=None,length:int=12):
     if prefix is None: prefix = 'text_'
-    if last_letter(prefix) != '_':
+    if last_letter(prefix) not in ['_','/']:
         prefix += '_'
     return random_string_and_numbers(length=length, prefix=prefix)
 
