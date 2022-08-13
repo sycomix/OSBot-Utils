@@ -1,3 +1,5 @@
+from osbot_utils.utils.Misc import str_md5
+
 from osbot_utils.utils.Files import temp_folder_current, path_combine, folder_create
 
 from osbot_utils.utils.Json import json_load_file_gz, json_save_file_gz
@@ -41,7 +43,8 @@ class cache_on_tmp:
         function_name = function_obj.__name__
         if params:
             params_as_string = '_'.join(str(x) for x in params).replace('/',' ')
-            return f'{class_name}_{function_name}_{params_as_string}.gz'
+            params_md5       = str_md5(params_as_string)
+            return f'{class_name}_{function_name}_{params_md5}.gz'
         else:
             return f'{class_name}_{function_name}.gz'
 
@@ -52,9 +55,11 @@ class cache_on_tmp:
         return cache_path
         #return '/tmp/cache_in_tmp_{0}.gz'.format(cache_key)
 
+    # todo: refactor to use pickle for data load
     def get_cache_in_tmp_data(self, cache_path):
         return json_load_file_gz(path=cache_path)
 
+    # todo: refactor to use pickle for data save
     def save_cache_in_tmp_data(self, cache_path, data):
         json_save_file_gz(path=cache_path, python_object=data)
         return data

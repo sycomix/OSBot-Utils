@@ -98,6 +98,7 @@ class Json:
     def json_save_tmp_file(python_object, pretty=True):
         return Json.save_file(python_object=python_object, pretty=pretty, path=None)
 
+json_dump                    = Json.dumps
 json_dumps                   = Json.dumps
 json_format                  = Json.dumps
 json_load_file               = Json.load_file

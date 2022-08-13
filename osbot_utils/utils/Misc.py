@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import inspect
 import logging
 import os
 import random
@@ -12,6 +13,7 @@ import warnings
 from datetime   import datetime
 from secrets    import token_bytes
 from time import sleep
+from urllib.parse import urlencode, quote_plus, unquote_plus
 
 from dotenv     import load_dotenv
 
@@ -46,6 +48,15 @@ def chunks(items:list, split: int):
 def class_name(target):
     if target:
         return type(target).__name__
+
+def class_functions(target):
+    functions = {}
+    for function_name, function_ref in inspect.getmembers(type(target), predicate=inspect.isfunction):
+        functions[function_name] = function_ref
+    return functions
+
+def class_functions_names(target):
+    return list_set(class_functions(target))
 
 def convert_to_number(value):
     if value:
@@ -152,25 +163,42 @@ def is_number(value):
 def ignore_warning__unclosed_ssl():
     warnings.filterwarnings("ignore", category=ResourceWarning, message="unclosed.*<ssl.SSLSocket.*>")
 
+
 def last_letter(text):
     if text and (type(text) is str) and len(text) > 0:
         return text[-1]
+
+def len_list(target):
+    return len(list(target))
 
 def list_add(array : list, value):
     if value is not None:
         array.append(value)
     return value
 
+def list_contains_list(array : list, values):
+    if array is not None:
+        if type(values) is list:
+            for item in values:
+                if item in array is False:
+                    return False
+            return True
+    return False
+
 def list_find(array:list, item):
     if item in array:
         return array.index(item)
     return -1
 
+def list_get_field(values, field):
+    return [item.get(field) for item in values]
+
 def list_index_by(values, index_by):
     from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
     results = {}
-    for item in values:
-        results[item.get(index_by)] = item
+    if values and index_by:
+        for item in values:
+            results[item.get(index_by)] = item
     return Fluent_Dict(results)
 
 def list_group_by(values, group_by):
@@ -205,10 +233,22 @@ def list_pop_and_trim(array, position=None):
     return value
 
 def list_set(target):
-    return sorted(list(set(target)))
+    if target:
+        return sorted(list(set(target)))
+    return []
+
+def list_zip(*args):
+    return list(zip(*args))
+
+
+def list_set_dict(target):
+    return sorted(list(set(obj_dict(target))))
 
 def list_filter(target_list, filter_function):
     return list(filter(filter_function, target_list))
+
+def list_sorted(target_list, key, descending=False):
+    return list(sorted(target_list, key= lambda x:x.get(key,None) ,reverse=descending))
 
 def list_filter_starts_with(target_list, prefix):
     return list_filter(target_list, lambda x: x.startswith(prefix))
@@ -261,11 +301,43 @@ def lower(target : str):
         return target.lower()
     return ""
 
+def obj_data(target=None):
+    data = {}
+    for key,value in obj_items(target):
+        data[key] = value
+    return data
+
+def obj_dict(target=None):
+    if target and hasattr(target,'__dict__'):
+        return target.__dict__
+    return {}
+
+def obj_items(target=None):
+    return sorted(list(obj_dict(target).items()))
+
+def obj_keys(target=None):
+    return sorted(list(obj_dict(target).keys()))
+
+def obj_get_value(target=None, key=None, default=None):
+    return get_field(target=target, field=key, default=default)
+
+def obj_values(target=None):
+    return list(obj_dict(target).values())
+
+
+def size(target=None):
+    if target and hasattr(target, '__len__'):
+        return len(target)
+    return 0
+
 def str_index(target:str, source:str):
     try:
         return target.index(source)
     except:
         return -1
+
+def sys_path_python(python_folder='lib/python'):
+    return list_contains(sys.path, python_folder)
 
 def str_md5(text : str):
     if text:
@@ -280,6 +352,17 @@ def none_or_empty(target,field):
 
 def print_date_now(use_utc=True):
     print(date_time_now(use_utc=use_utc))
+
+def print_object_members(target, max_width=120, show_internals=False):
+    print()
+    print(f"Members for object: {target}"[:max_width])
+    print()
+    print(f"{'field':<20} | value")
+    print(f"{'-' * max_width}")
+    for name, val in inspect.getmembers(target):
+        if not show_internals and name.startswith("__"):
+            continue
+        print(f"{name:<20} | {val}"[:max_width])
 
 def print_time_now(use_utc=True):
     print(time_now(use_utc=use_utc))
@@ -339,34 +422,34 @@ def random_password(length=24, prefix=''):
                                                string.punctuation     +
                                                string.digits          ,
                                                k=length))
-    # replace these chars with _  (to make prevent errors in command prompts)
-    items = ['"', '\'', '`','\\','}']
+    # replace these chars with _  (to make prevent errors in command prompts and urls)
+    items = ['"', '\'', '`','\\','/','}','?','#',';',':']
     for item in items:
         password = password.replace(item, '_')
     return password
 
-def random_string(length=8,prefix=''):
+def random_string(length:int=8,prefix:str=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
 
-def random_string_and_numbers(length=6,prefix=''):
+def random_string_and_numbers(length:int=6,prefix:str=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
-def random_text(prefix=None,length=12):
+def random_text(prefix:str=None,length:int=12):
     if prefix is None: prefix = 'text_'
-    if last_letter(prefix) != '_':
+    if last_letter(prefix) not in ['_','/']:
         prefix += '_'
     return random_string_and_numbers(length=length, prefix=prefix)
 
 def random_uuid():
     return str(uuid.uuid4())
 
-def remove(target_string, string_to_remove):
+def remove(target_string, string_to_remove):                        # todo: refactor to str_*
     return replace(target_string, string_to_remove, '')
 
-def remove_multiple_spaces(target):
+def remove_multiple_spaces(target):                                 # todo: refactor to str_*
     return re.sub(' +', ' ', target)
 
-def replace(target_string, string_to_find, string_to_replace):
+def replace(target_string, string_to_find, string_to_replace):      # todo: refactor to str_*
     return target_string.replace(string_to_find, string_to_replace)
 
 def remove_html_tags(html):
@@ -408,6 +491,17 @@ def trim(target):
 def under_debugger():
     return 'pydevd' in sys.modules
 
+def unique(target):
+    return list_set(target)
+
+def url_encode(data):
+    if type(data) is str:
+        return quote_plus(data)
+
+def url_decode(data):
+    if type(data) is str:
+        return unquote_plus(data)
+
 def upper(target : str):
     if target:
         return target.upper()
@@ -434,7 +528,9 @@ convert_to_float    = convert_to_number
 datetime_now        = date_time_now
 list_contains       = list_filter_contains
 new_guid            = random_uuid
+obj_list_set        = obj_keys
 str_lines           = split_lines
+str_remove          = remove
 random_id           = random_string
 wait_for            = wait
 

@@ -1,4 +1,4 @@
-from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Files import Files, file_delete, folder_delete_all, files_list
 from osbot_utils.utils.Misc import random_filename
 
 
@@ -14,4 +14,8 @@ class Temp_File:
         return self
 
     def __exit__(self, type, value, traceback):
-        Files.delete(self.file_path)
+        file_delete      (self.file_path)
+        folder_delete_all(self.tmp_folder)
+
+    def files_in_folder(self):
+        return files_list(self.tmp_folder)

@@ -1,11 +1,14 @@
 import gzip
 import os
 import glob
+import pickle
 import shutil
 import tempfile
 import zipfile
 from   os.path import abspath, join
 from pathlib import Path
+
+from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes
 
 
 class Files:
@@ -20,6 +23,16 @@ class Files:
             parent_folder = Files.folder_name(destination)          # get target parent folder
             folder_create(parent_folder)                            # ensure targer folder exists
             return shutil.copy(source, destination)                 # copy file and returns file destination
+
+    @staticmethod
+    def contains(path, content):
+        text = Files.contents(path)
+        if type(content) is list:
+            for item in content:
+                if item not in text:
+                    return False
+            return True
+        return content in text
 
     @staticmethod
     def contents(path, mode='rt'):
@@ -70,6 +83,12 @@ class Files:
             result.append(str(file))                        # todo: see if there is a better way to do this conversion to string
         return sorted(result)
 
+    @staticmethod
+    def file_create_all_parent_folders(file_path):
+        parent_path = parent_folder(file_path)
+        path = Path(parent_path)
+        path.mkdir(parents=True, exist_ok=True)
+        return parent_path
 
     @staticmethod
     def file_name(path):
@@ -88,6 +107,15 @@ class Files:
         if extension[0] != '.':                             # make sure that the extension starts with a dot
             return '.' + extension
         return extension
+
+    @staticmethod
+    def file_to_base64(path):
+        return bytes_to_base64(file_bytes(path))
+
+    @staticmethod
+    def file_from_base64(bytes_base64, path=None, extension=None):
+        bytes_ = base64_to_bytes(bytes_base64)
+        return file_create_bytes(bytes=bytes_, path=path, extension=None)
 
     @staticmethod
     def file_size(path):
@@ -137,8 +165,37 @@ class Files:
         return folder_exists(path) is False
 
     @staticmethod
-    def path_combine(path1, path2):
-        return abspath(join(path1, path2))
+    def folder_sub_folders(path):
+        result = []
+        item: os.DirEntry
+        if Files.is_folder(path):
+            for item in os.scandir(path):
+                if item.is_dir():
+                    result.append(item.path)
+        return result
+
+    @staticmethod
+    def folders_names(folders : list):
+        result = []
+        for folder in folders:
+            if Files.is_folder(folder):
+                result.append(Files.file_name(folder))
+        return result
+
+    @staticmethod
+    def folders_sub_folders(folders : list):
+        result = []
+        for folder in folders:
+            result.extend(Files.folder_sub_folders(folder))
+        return result
+
+    @staticmethod
+    def is_file(target):
+        return os.path.isfile(target)
+
+    @staticmethod
+    def is_folder(target):
+        return os.path.isdir(target)
 
     @staticmethod
     def lines(path):
@@ -169,6 +226,10 @@ class Files:
         return Files.open(path, mode='rb')
 
     @staticmethod
+    def path_combine(path1, path2):
+        return abspath(join(path1, path2))
+
+    @staticmethod
     def parent_folder(path):
         return os.path.dirname(path)
 
@@ -177,11 +238,33 @@ class Files:
         return Files.path_combine(os.path.dirname(file),path)
 
     @staticmethod
+    def pickle_save_to_file(object_to_save, path=None):
+        path = path or temp_file(extension=".pickle")
+        file_to_store = open(path, "wb")
+        pickle.dump(object_to_save, file_to_store)
+        file_to_store.close()
+        return path
+
+    @staticmethod
+    def pickle_load_from_file(path=None):
+        file_to_read = open(path, "rb")
+        loaded_object = pickle.load(file_to_read)
+        file_to_read.close()
+        return loaded_object
+
+    @staticmethod
     def save(contents, path=None, extension=None):
         path = path or temp_file(extension=extension)
         file_create(path, contents)
         return path
 
+    @staticmethod
+    def sub_folders(target):
+        if type(target) is list:
+            return Files.folders_sub_folders(target)
+        if type(target) is str:
+            return Files.folder_sub_folders(target)
+        return []
 
     @staticmethod
     def save_bytes_as_file(bytes_to_save, path=None, extension=None):
@@ -231,8 +314,8 @@ class Files:
         return path
 
     @staticmethod
-    def write_bytes(path=None, contents=None, extension=None):
-        return Files.write(path=path, contents=contents, extension=extension, mode='wb')
+    def write_bytes(path=None, bytes=None, extension=None):
+        return Files.write(path=path, contents=bytes, extension=extension, mode='wb')
 
     @staticmethod
     def write_gz(path=None, contents=None):
@@ -278,57 +361,67 @@ class Files:
 # helper methods
 # todo: all all methods above (including the duplicated mappings at the top)
 
-create_folder               = Files.folder_create
-create_folder_in_parent     = Files.folder_create_in_parent
-create_temp_file            = Files.write
-current_folder              = Files.current_folder
-current_temp_folder         = Files.temp_folder_current
+create_folder                  = Files.folder_create
+create_folder_in_parent        = Files.folder_create_in_parent
+create_temp_file               = Files.write
+current_folder                 = Files.current_folder
+current_temp_folder            = Files.temp_folder_current
 
-file_bytes                  = Files.bytes
-file_contents               = Files.contents
-file_contents_gz            = Files.contents_gz
-file_contents_md5           = Files.contents_md5
-file_contents_sha256        = Files.contents_sha256
-file_contents_as_bytes      = Files.bytes
-file_copy                   = Files.copy
-file_delete                 = Files.delete
-file_create                 = Files.write
-file_create_bytes           = Files.write_bytes
-file_create_gz              = Files.write_gz
-file_exists                 = Files.exists
-file_extension              = Files.file_extension
-file_extension_fix          = Files.file_extension_fix
-file_find                   = Files.find
-file_lines                  = Files.lines
-file_lines_gz               = Files.lines_gz
-file_md5                    = Files.contents_md5
-file_name                   = Files.file_name
-file_not_exists             = Files.not_exists
-file_open                   = Files.open
-file_open_gz                = Files.open_gz
-file_open_bytes             = Files.open_bytes
-file_save                   = Files.save
-file_sha256                 = Files.contents_sha256
-file_size                   = Files.file_size
-file_stats                  = Files.file_stats
-file_write                  = Files.write
-file_write_bytes            = Files.write_bytes
-file_write_gz               = Files.write_gz
-file_unzip                  = Files.unzip_file
-files_list                  = Files.files
+file_bytes                     = Files.bytes
+file_contains                  = Files.contains
+file_contents                  = Files.contents
+file_contents_gz               = Files.contents_gz
+file_contents_md5              = Files.contents_md5
+file_contents_sha256           = Files.contents_sha256
+file_contents_as_bytes         = Files.bytes
+file_create_all_parent_folders = Files.file_create_all_parent_folders
+file_copy                      = Files.copy
+file_delete                    = Files.delete
+file_create                    = Files.write
+file_create_bytes              = Files.write_bytes
+file_create_from_bytes         = Files.write_bytes
+file_create_gz                 = Files.write_gz
+file_exists                    = Files.exists
+file_extension                 = Files.file_extension
+file_extension_fix             = Files.file_extension_fix
+file_find                      = Files.find
+file_lines                     = Files.lines
+file_lines_gz                  = Files.lines_gz
+file_md5                       = Files.contents_md5
+file_name                      = Files.file_name
+file_not_exists                = Files.not_exists
+file_open                      = Files.open
+file_open_gz                   = Files.open_gz
+file_open_bytes                = Files.open_bytes
+file_to_base64                 = Files.file_to_base64
+file_from_base64               = Files.file_from_base64
+file_save                      = Files.save
+file_sha256                    = Files.contents_sha256
+file_size                      = Files.file_size
+file_stats                     = Files.file_stats
+file_write                     = Files.write
+file_write_bytes               = Files.write_bytes
+file_write_gz                  = Files.write_gz
+file_unzip                     = Files.unzip_file
+files_list                     = Files.files
 
-folder_create               = Files.folder_create
-folder_create_in_parent     = Files.folder_create_in_parent
-folder_create_temp          = Files.temp_folder
-folder_copy                 = Files.folder_copy
-folder_copy_except          = Files.folder_copy
-folder_delete_all           = Files.folder_delete_all
-folder_exists               = Files.folder_exists
-folder_not_exists           = Files.folder_not_exists
-folder_name                 = Files.folder_name
-folder_temp                 = Files.temp_folder
-folder_files                = Files.files
-folder_zip                  = Files.zip_folder
+folder_create                  = Files.folder_create
+folder_create_in_parent        = Files.folder_create_in_parent
+folder_create_temp             = Files.temp_folder
+folder_copy                    = Files.folder_copy
+folder_copy_except             = Files.folder_copy
+folder_delete_all              = Files.folder_delete_all
+folder_exists                  = Files.folder_exists
+folder_not_exists              = Files.folder_not_exists
+folder_name                    = Files.folder_name
+folder_temp                    = Files.temp_folder
+folder_files                   = Files.files
+folder_zip                     = Files.zip_folder
+
+folders_names               = Files.folders_names
+
+is_file                     = Files.is_file
+is_folder                   = Files.is_folder
 
 load_file                   = Files.contents
 load_file_gz                = Files.contents_gz
@@ -338,9 +431,12 @@ path_combine                = Files.path_combine
 path_current                = Files.current_folder
 parent_folder               = Files.parent_folder
 parent_folder_combine       = Files.parent_folder_combine
+pickle_load_from_file       = Files.pickle_load_from_file
+pickle_save_to_file         = Files.pickle_save_to_file
 
 save_bytes_as_file          = Files.save_bytes_as_file
 save_string_as_file         = Files.save
+sub_folders                 = Files.sub_folders
 
 temp_file                   = Files.temp_file
 temp_filename               = Files.temp_filename

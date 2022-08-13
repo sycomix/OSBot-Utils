@@ -14,10 +14,12 @@ from osbot_utils.utils.Files import Files, file_extension, file_contents
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
     random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, \
-    convert_to_number, remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, under_debugger, base64_to_str, \
+    convert_to_number, remove_html_tags, get_field, last_letter, random_text, random_password, split_lines, \
+    under_debugger, base64_to_str, \
     str_sha256, str_to_base64, env_vars_list, env_vars, env_value, flist, ignore_warning__unclosed_ssl, list_set, \
     lower, remove_multiple_spaces, split_spaces, sorted_set, upper, log_to_file, log_debug, log_error, \
-    log_info, time_now, str_index, time_str_milliseconds
+    log_info, time_now, str_index, time_str_milliseconds, url_encode, url_decode, obj_dict, obj_items, obj_keys, \
+    obj_values, obj_get_value, size
 
 
 class test_Misc(TestCase):
@@ -139,7 +141,35 @@ class test_Misc(TestCase):
         log_info ('info')
         assert file_contents(log_file) == 'error\ninfo\n'
 
+    def test_obj_dict(self):
+        class Target:
+            def __init__(self):
+                self.var_1 = 'the answer'
+                self.var_2 = 'is'
+                self.var_3 = 42
+        assert obj_dict  (Target()) == {'var_1': 'the answer', 'var_2': 'is', 'var_3': 42}
+        assert obj_items (Target()) == [('var_1', 'the answer'), ('var_2', 'is'), ('var_3', 42)]
+        assert obj_keys  (Target()) == ['var_1', 'var_2', 'var_3']
+        assert obj_values(Target()) == ['the answer', 'is', 42]
+        target = Target()
+        for key,value in obj_items(target):
+            assert obj_get_value(target, key          ) == value
+            assert obj_get_value(target, key    , 'aa') == value
+            assert obj_get_value(target, key+'a', 'aa') == 'aa'
 
+        # check cases when bad data is submitted
+        assert obj_dict  ()   == {}
+        assert obj_items ()   == []
+        assert obj_keys  ()   == []
+        assert obj_values()   == []
+        assert obj_dict  (42) == {}
+        assert obj_items (42) == []
+        assert obj_keys  (42) == []
+        assert obj_values({}) == []
+        assert obj_dict  ({}) == {}
+        assert obj_items ({}) == []
+        assert obj_keys  ({}) == []
+        assert obj_values({}) == []
 
     def test_none_or_empty(self):
         assert none_or_empty(None, None) is True
@@ -148,6 +178,24 @@ class test_Misc(TestCase):
         assert none_or_empty({}  , 'aa') is True
         assert none_or_empty({'a': 42}, 'b') is True
         assert none_or_empty({'a': 42}, 'a') is False
+
+    def test_size(self):
+        assert size(    ) == 0
+        assert size(0   ) == 0
+        assert size(''  ) == 0
+        assert size(None) == 0
+        assert size('1' ) == 1
+        assert size(1   ) == 0
+        assert size('2' ) == 1
+        assert size(2   ) == 0
+        assert size('22') == 2
+
+        assert size([]   ) == 0
+        assert size([0]  ) == 1
+        assert size([0,1]) == 2
+
+        assert size({}     ) == 0
+        assert size({'a':0}) == 1
 
     def test_random_filename(self):
         result = random_filename()
@@ -349,6 +397,11 @@ aliqua."""
     def test_sorted_set(self):
         assert sorted_set({})              == []
         assert sorted_set({"b", "a", "c"}) == ["a", "b", "c"]
+
+    def test_url_encode(self):
+        data = "https://aaa.com?aaaa=bbb&cccc=ddd+eee fff ;/n!@£$%"
+        assert url_encode(data) == 'https%3A%2F%2Faaa.com%3Faaaa%3Dbbb%26cccc%3Dddd%2Beee+fff+%3B%2Fn%21%40%C2%A3%24%25'
+        assert url_decode(url_encode(data)) == data             # confirm round trip
 
     def test_upper(self):
         assert upper("abc$#4ABC") == "ABC$#4ABC"
