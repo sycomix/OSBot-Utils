@@ -103,11 +103,13 @@ def time_str_milliseconds(datetime_str, datetime_format, milliseconds_numbers=0)
 def env_value(var_name):
     return env_vars().get(var_name, None)
 
-def env_vars():
+def env_vars(reload_vars=False):
     """
-    reload data from .env file and return dictionary with current environment variables
+    if reload_vars reload data from .env file
+    then return dictionary with current environment variables
     """
-    load_dotenv()
+    if reload_vars:
+        load_dotenv()
     vars = os.environ
     data = {}
     for key in vars:
