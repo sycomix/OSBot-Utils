@@ -411,6 +411,7 @@ folder_create_temp             = Files.temp_folder
 folder_copy                    = Files.folder_copy
 folder_copy_except             = Files.folder_copy
 folder_delete_all              = Files.folder_delete_all
+folder_delete_recursively      = Files.folder_delete_all
 folder_exists                  = Files.folder_exists
 folder_not_exists              = Files.folder_not_exists
 folder_name                    = Files.folder_name
