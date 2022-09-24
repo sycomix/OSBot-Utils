@@ -27,7 +27,7 @@ class cache_on_tmp:
             if target_self:
                 self_obj = self
             elif len(params) > 0:
-                self_obj   = params.pop(0)       
+                self_obj   = params.pop(0)
             else:
                 self_obj = self                  # has the side effect that the cache key is only locked to the method name
             cache_path = self.get_cache_in_tmp_path(self_obj, function, params)
