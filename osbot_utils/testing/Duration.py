@@ -7,9 +7,10 @@ class Duration:
     """
     Helper class for to capture time duration
     """
-    def __init__(self, use_utc=True, print_result=True):
+    def __init__(self, use_utc=True, print_result=True, prefix="\nDuration..."):
         self.use_utc            = use_utc
         self.print_result       = print_result
+        self.prefix             = prefix
         self.start_time         = None
         self.end_time           = None
         self.duration           = None
@@ -28,7 +29,7 @@ class Duration:
         self.end_time = date_time_now(use_utc=self.use_utc, return_str=False)
         self.duration = self.end_time - self.start_time
         if self.print_result:
-            print(f"\nDuration: {time_delta_to_str(self.duration)}\n")
+            print(f"{self.prefix} {time_delta_to_str(self.duration)}\n")
 
     def seconds(self):
         return self.duration.total_seconds()
