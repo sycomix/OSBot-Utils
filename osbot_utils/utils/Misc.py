@@ -479,6 +479,9 @@ def str_to_bytes(target):
 def str_to_date(str_date, format='%Y-%m-%d %H:%M:%S.%f'):
     return datetime.strptime(str_date,format)
 
+def str_to_date_time(str_date, format='%Y-%m-%d %H:%M:%S'):
+    return datetime.strptime(str_date,format)
+
 def to_int(value, default=0):
     try:
         return int(value)

@@ -3,7 +3,7 @@ import socket
 import ssl
 from   urllib.request import Request, urlopen
 
-from osbot_utils.utils.Files import save_bytes_as_file, file_size, file_bytes, file_open_bytes
+from osbot_utils.utils.Files import save_bytes_as_file, file_size, file_bytes, file_open_bytes, file_create
 from osbot_utils.utils.Python_Logger import Python_Logger
 
 logger = Python_Logger('OSBot-utils').setup()
@@ -75,6 +75,10 @@ def DELETE_json(*args, **kwargs):
 
 def GET(url,headers = None, encoding='utf-8'):
     return Http_Request(url, headers=headers, method='GET', encoding=encoding)
+
+def GET_to_file(url,path=None, headers = None, extension=None):
+    contents = GET(url, headers)
+    return file_create(path=path, contents=contents,extension=extension)
 
 def GET_bytes(url, headers=None):
     return GET(url, headers=headers, encoding=None)

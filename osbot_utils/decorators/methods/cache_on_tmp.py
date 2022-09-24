@@ -4,6 +4,8 @@ from osbot_utils.utils.Files import temp_folder_current, path_combine, folder_cr
 
 from osbot_utils.utils.Json import json_load_file_gz, json_save_file_gz
 
+#todo: add feature to only cache for some time (for example 2 minutes or 2 hours)
+#      this will solve a number of probs with the current usability of this data
 
 class cache_on_tmp:
     """
