@@ -10,7 +10,7 @@ import textwrap
 import re
 import uuid
 import warnings
-from datetime   import datetime
+from datetime import datetime, timedelta
 from secrets    import token_bytes
 from time import sleep
 from urllib.parse import urlencode, quote_plus, unquote_plus
@@ -70,24 +70,31 @@ def convert_to_number(value):
     else:
         return 0
 
+def date_time_to_str(date_time, date_time_format='%Y-%m-%d %H:%M:%S.%f', milliseconds_numbers=3):
+    date_time_str = date_time.strftime(date_time_format)
+    return time_str_milliseconds(datetime_str=date_time_str, datetime_format=date_time_format, milliseconds_numbers=milliseconds_numbers)
+
 def date_now(use_utc=True, return_str=True):
     value = date_time_now(use_utc=use_utc, return_str=False)
     if return_str:
         return date_to_str(date=value)
     return value
 
-def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0):
+def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0, date_time_format='%Y-%m-%d %H:%M:%S'):
     if use_utc:
         value = datetime.utcnow()
     else:
         value = datetime.now()
     if return_str:
-        return date_time_to_str(value, milliseconds_numbers=milliseconds_numbers)
+        return date_time_to_str(value, milliseconds_numbers=milliseconds_numbers, date_time_format=date_time_format)
     return value
 
-def date_time_to_str(date_time, date_time_format='%Y-%m-%d %H:%M:%S.%f', milliseconds_numbers=3):
-    date_time_str = date_time.strftime(date_time_format)
-    return time_str_milliseconds(datetime_str=date_time_str, datetime_format=date_time_format, milliseconds_numbers=milliseconds_numbers)
+def date_time_less_time_delta(date_time, days=0, hours=0, minutes=0, seconds=0, date_time_format='%Y-%m-%d %H:%M:%S'):
+    new_date_time = date_time - timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+    return date_time_to_str(new_date_time, date_time_format=date_time_format)
+
+def date_time_now_less_time_delta(days=0,hours=0, minutes=0, seconds=0, date_time_format='%Y-%m-%d %H:%M:%S'):
+    return date_time_less_time_delta(datetime.utcnow(),days=days, hours=hours, minutes=minutes, seconds=seconds,date_time_format=date_time_format)
 
 def date_to_str(date, date_format='%Y-%m-%d'):
     return date.strftime(date_format)
