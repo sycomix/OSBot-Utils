@@ -523,7 +523,9 @@ def wait(seconds):
     sleep(seconds)
 
 def word_wrap(text,length = 40):
-    return '\n'.join(textwrap.wrap(text, length))
+    if text:
+        return '\n'.join(textwrap.wrap(text, length))
+    return ''
 
 def word_wrap_escaped(text,length = 40):
     if text:

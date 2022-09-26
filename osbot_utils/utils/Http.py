@@ -8,7 +8,7 @@ from osbot_utils.utils.Python_Logger import Python_Logger
 
 logger = Python_Logger('OSBot-utils').setup()
 
-def current_host_online(url_to_use='http://www.google.com'):
+def current_host_online(url_to_use='https://www.google.com'):
     try:
         Http_Request(url_to_use, method='HEAD')
         return True
