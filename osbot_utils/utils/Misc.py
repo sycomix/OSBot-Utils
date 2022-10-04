@@ -8,6 +8,7 @@ import string
 import sys
 import textwrap
 import re
+import types
 import uuid
 import warnings
 from datetime import datetime, timedelta
@@ -327,6 +328,11 @@ def obj_items(target=None):
 def obj_keys(target=None):
     return sorted(list(obj_dict(target).keys()))
 
+def obj_full_name(target):
+    module = target.__class__.__module__
+    name   = target.__class__.__qualname__
+    return f"{module}.{name}"
+
 def obj_get_value(target=None, key=None, default=None):
     return get_field(target=target, field=key, default=default)
 
@@ -345,6 +351,9 @@ def str_index(target:str, source:str):
     except:
         return -1
 
+def str_max_width(target, value):
+    return str(target)[:value]
+
 def sys_path_python(python_folder='lib/python'):
     return list_contains(sys.path, python_folder)
 
@@ -362,16 +371,49 @@ def none_or_empty(target,field):
 def print_date_now(use_utc=True):
     print(date_time_now(use_utc=use_utc))
 
-def print_object_members(target, max_width=120, show_internals=False):
+def print_object_methods(target, name_width=30, value_width=100, show_private=False, show_internals=False):
+    print_object_members(target, name_width=name_width, value_width=value_width,show_private=show_private,show_internals=show_internals, only_show_methods=True)
+
+# todo: add option to not show class methods that are not bultin types
+def print_object_members(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, hide_methods=False, only_show_methods=False):
+    max_width = name_width + value_width
     print()
-    print(f"Members for object: {target}"[:max_width])
+    print(f"Members for object:\n\t {target} of type:{type(target)}")
+    print(f"Settings:\n\t name_width: {name_width} | value_width: {value_width} | show_private: {show_private} | show_internals: {show_internals}")
     print()
-    print(f"{'field':<20} | value")
+    if only_show_methods:
+        print(f"{'method':<{name_width}} (params)")
+    else:
+        if show_value_class:
+            print(f"{'field':<{name_width}} | {'type':<{name_width}} |value")
+        else:
+            print(f"{'field':<{name_width}} | value")
+
     print(f"{'-' * max_width}")
-    for name, val in inspect.getmembers(target):
+    for name, value in inspect.getmembers(target):
+        if hide_methods and type(value) is types.MethodType:
+            continue
+        if only_show_methods and type(value) is not types.MethodType:
+            continue
+        if not show_private and name.startswith("_"):
+            continue
         if not show_internals and name.startswith("__"):
             continue
-        print(f"{name:<20} | {val}"[:max_width])
+        if only_show_methods:
+            value = inspect.signature(value)
+
+        value_class = obj_full_name(value)
+        value       = str(value).encode('unicode_escape').decode("utf-8")
+        value       = str_unicode_escape(value)
+        value       = str_max_width(value, value_width)
+        name        = str_max_width(name, name_width)
+        if only_show_methods:
+            print(f"{name:<{name_width}} {value}"[:max_width])
+        else:
+            if show_value_class:
+                print(f"{name:<{name_width}} | {value_class:{name_width}} | {value}"[:max_width])
+            else:
+                print(f"{name:<{name_width}} | {value}"[:max_width])
 
 def print_time_now(use_utc=True):
     print(time_now(use_utc=use_utc))
@@ -489,6 +531,9 @@ def str_to_date(str_date, format='%Y-%m-%d %H:%M:%S.%f'):
 def str_to_date_time(str_date, format='%Y-%m-%d %H:%M:%S'):
     return datetime.strptime(str_date,format)
 
+def str_unicode_escape(target):
+    return str(target).encode('unicode_escape').decode("utf-8")
+
 def to_int(value, default=0):
     try:
         return int(value)
@@ -537,14 +582,25 @@ array_get           = list_get
 array_pop           = list_pop
 array_pop_and_trim  = list_pop_and_trim
 array_add           = list_add
+
 bytes_to_string     = bytes_to_str
+
 convert_to_float    = convert_to_number
+
 datetime_now        = date_time_now
+
 list_contains       = list_filter_contains
+
 new_guid            = random_uuid
+
 obj_list_set        = obj_keys
+obj_info            = print_object_members
+obj_methods         = print_object_methods
+
 str_lines           = split_lines
 str_remove          = remove
+
 random_id           = random_string
+
 wait_for            = wait
 
