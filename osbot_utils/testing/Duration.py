@@ -7,7 +7,7 @@ class Duration:
     """
     Helper class for to capture time duration
     """
-    def __init__(self, use_utc=True, print_result=True, prefix="\nDuration..."):
+    def __init__(self, use_utc=True, print_result=False, prefix="\nDuration..."):
         self.use_utc            = use_utc
         self.print_result       = print_result
         self.prefix             = prefix

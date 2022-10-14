@@ -375,7 +375,7 @@ def print_object_methods(target, name_width=30, value_width=100, show_private=Fa
     print_object_members(target, name_width=name_width, value_width=value_width,show_private=show_private,show_internals=show_internals, only_show_methods=True)
 
 # todo: add option to not show class methods that are not bultin types
-def print_object_members(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, hide_methods=False, only_show_methods=False):
+def print_object_members(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, show_methods=False, only_show_methods=False):
     max_width = name_width + value_width
     print()
     print(f"Members for object:\n\t {target} of type:{type(target)}")
@@ -391,7 +391,7 @@ def print_object_members(target, name_width=30, value_width=100, show_private=Fa
 
     print(f"{'-' * max_width}")
     for name, value in inspect.getmembers(target):
-        if hide_methods and type(value) is types.MethodType:
+        if show_methods is False and type(value) is types.MethodType:
             continue
         if only_show_methods and type(value) is not types.MethodType:
             continue
