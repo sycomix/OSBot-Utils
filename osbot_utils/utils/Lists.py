@@ -6,6 +6,12 @@ class Lists:
         return (list[i:i + n] for i in range(0, len(list), n))
 
     @staticmethod
+    def delete(list, item):
+        if item in list:
+            list.remove(item)
+        return list
+
+    @staticmethod
     def first(list, strip=False):
         if Lists.not_empty(list):
             value = list[0]
@@ -39,6 +45,7 @@ class Lists:
             return tuple(target)
 
 list_chunks            = Lists.chunks
+list_del               = Lists.delete
 list_empty             = Lists.empty
 list_first             = Lists.first
 list_not_empty         = Lists.not_empty
