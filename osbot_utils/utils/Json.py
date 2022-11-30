@@ -13,14 +13,15 @@ from osbot_utils.utils.Files import file_exists, temp_file, file_create_gz, file
 class Json:
 
     @staticmethod
-    def dumps(python_object, indent=4, pretty=True,sort_keys=False):
+    def dumps(python_object, indent=4, pretty=True,sort_keys=False, default=str):
         if python_object:
             try:
                 if pretty:
-                    return json.dumps(python_object, indent=indent,sort_keys=sort_keys)
-                return json.dumps(python_object)
-            except:
-                logger_json.exception('Error in load_json')
+                    return json.dumps(python_object, indent=indent,sort_keys=sort_keys, default=default)
+                return json.dumps(python_object, default=default)
+            except Exception as error:
+                error_message = f'Error in load_json: {error}'
+                logger_json.exception(error_message)
 
     @staticmethod
     def load_file(path):
