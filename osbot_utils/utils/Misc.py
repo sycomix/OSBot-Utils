@@ -601,6 +601,7 @@ str_lines           = split_lines
 str_remove          = remove
 
 random_id           = random_string
+random_guid         = random_uuid
 
 wait_for            = wait
 

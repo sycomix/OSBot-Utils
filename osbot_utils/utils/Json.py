@@ -3,7 +3,7 @@ import gzip
 import logging
 import os
 
-from osbot_utils.utils.Misc import str_lines
+from osbot_utils.utils.Misc import str_lines, str_md5
 
 logger_json = logging.getLogger()   # todo: start using this API for capturing error messages from methods bellow
 
@@ -71,6 +71,9 @@ class Json:
         json_data = '[' + ','.join(str_lines(json_lines.strip())) + ']'
         return json_loads(json_data)
 
+    @staticmethod
+    def md5(data):
+        return str_md5(json_dump(data))
 
     @staticmethod
     def round_trip(data):
@@ -104,6 +107,7 @@ file_create_json             = Json.save_file_pretty
 json_dump                    = Json.dumps
 json_dumps                   = Json.dumps
 json_format                  = Json.dumps
+json_file_create             = Json.save_file
 json_file_contents           = Json.load_file
 json_load_file               = Json.load_file
 json_load_file_and_delete    = Json.load_file_and_delete
@@ -111,6 +115,7 @@ json_load_file_gz            = Json.load_file_gz
 json_load_file_gz_and_delete = Json.load_file_gz_and_delete
 json_from_string             = Json.loads
 json_loads                   = Json.loads
+json_md5                     = Json.md5
 json_lines_loads             = Json.loads_json_lines
 json_parse                   = Json.loads
 json_lines_parse             = Json.loads_json_lines
