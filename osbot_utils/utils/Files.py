@@ -2,6 +2,7 @@ import gzip
 import os
 import glob
 import pickle
+import re
 import shutil
 import tempfile
 import zipfile
@@ -253,6 +254,10 @@ class Files:
         return loaded_object
 
     @staticmethod
+    def safe_file_name(file_name):
+        return re.sub(r'[^a-zA-Z0-9_.]', '_',file_name)
+
+    @staticmethod
     def save(contents, path=None, extension=None):
         path = path or temp_file(extension=extension)
         file_create(path, contents)
@@ -435,6 +440,7 @@ parent_folder_combine       = Files.parent_folder_combine
 pickle_load_from_file       = Files.pickle_load_from_file
 pickle_save_to_file         = Files.pickle_save_to_file
 
+safe_file_name              = Files.safe_file_name
 save_bytes_as_file          = Files.save_bytes_as_file
 save_string_as_file         = Files.save
 sub_folders                 = Files.sub_folders

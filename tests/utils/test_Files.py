@@ -8,7 +8,7 @@ from osbot_utils.utils.Files import Files, path_combine, parent_folder, path_cur
     zip_file_list, zip_files, save_string_as_file, file_write_gz, file_contents_gz, file_size, file_write, file_find, \
     file_lines, file_create_gz, file_lines_gz, parent_folder_combine, file_write_bytes, file_open_bytes, \
     file_contents_md5, \
-    file_contents_sha256, create_folder_in_parent, sub_folders
+    file_contents_sha256, create_folder_in_parent, sub_folders, safe_file_name
 from osbot_utils.utils.Misc   import random_bytes, random_string, remove, bytes_md5, str_to_bytes, bytes_sha256
 
 
@@ -204,6 +204,18 @@ class test_Files(TestCase):
         pickled_file = Files.pickle_save_to_file(an_object)
         pickle_data = Files.pickle_load_from_file(pickled_file)
         assert pickle_data == an_object
+
+    def test_safe_file_name(self):
+        assert safe_file_name('aaaabbb') == 'aaaabbb'
+        assert safe_file_name('aaa_bbb') == 'aaa_bbb'
+        assert safe_file_name('aaa.bbb') == 'aaa.bbb'
+        assert safe_file_name('AAA.bbb') == 'AAA.bbb'
+        assert safe_file_name('Abb.123') == 'Abb.123'
+        assert safe_file_name('aaa bbb') == 'aaa_bbb'
+        assert safe_file_name('a!@£$b' ) == 'a____b'
+        assert safe_file_name('aaa/../') == 'aaa_.._'
+        assert safe_file_name('a\n\t\r') == 'a___'
+
 
     def test_save_string_as_file(self):
         data      = random_string()
