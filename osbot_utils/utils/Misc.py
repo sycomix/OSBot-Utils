@@ -565,7 +565,8 @@ def upper(target : str):
     return ""
 
 def wait(seconds):
-    sleep(seconds)
+    if seconds and seconds > 0:
+        sleep(seconds)
 
 def word_wrap(text,length = 40):
     if text:
