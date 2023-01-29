@@ -531,6 +531,9 @@ def str_to_date(str_date, format='%Y-%m-%d %H:%M:%S.%f'):
 def str_to_date_time(str_date, format='%Y-%m-%d %H:%M:%S'):
     return datetime.strptime(str_date,format)
 
+def str_to_int(str_data):
+    return int(float(str_data))
+
 def str_unicode_escape(target):
     return str(target).encode('unicode_escape').decode("utf-8")
 
