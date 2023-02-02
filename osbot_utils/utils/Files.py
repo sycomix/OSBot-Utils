@@ -255,7 +255,7 @@ class Files:
 
     @staticmethod
     def safe_file_name(file_name):
-        return re.sub(r'[^a-zA-Z0-9_.]', '_',file_name)
+        return re.sub(r'[^a-zA-Z0-9_.]', '_',file_name or '')
 
     @staticmethod
     def save(contents, path=None, extension=None):
