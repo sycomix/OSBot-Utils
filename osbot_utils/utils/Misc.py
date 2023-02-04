@@ -571,6 +571,9 @@ def url_decode(data):
     if type(data) is str:
         return unquote_plus(data)
 
+def utc_now():
+    return datetime.utcnow()
+
 def upper(target : str):
     if target:
         return target.upper()
@@ -601,6 +604,7 @@ bytes_to_string     = bytes_to_str
 convert_to_float    = convert_to_number
 
 datetime_now        = date_time_now
+datetime_to_str     = date_time_to_str
 
 list_contains       = list_filter_contains
 
