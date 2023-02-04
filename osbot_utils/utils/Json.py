@@ -108,7 +108,9 @@ json_dump                    = Json.dumps
 json_dumps                   = Json.dumps
 json_format                  = Json.dumps
 json_file_create             = Json.save_file
+json_file_create_gz          = Json.save_file_gz
 json_file_contents           = Json.load_file
+json_file_contents_gz        = Json.load_file_gz
 json_load_file               = Json.load_file
 json_load_file_and_delete    = Json.load_file_and_delete
 json_load_file_gz            = Json.load_file_gz
@@ -128,3 +130,6 @@ json_save_file_gz            = Json.save_file_gz
 json_save_file_pretty_gz     = Json.save_file_pretty_gz
 json_save_tmp_file           = Json.json_save_tmp_file
 str_to_json                  = Json.loads
+
+load_file_json               = json_load_file
+load_file_json_gz            = json_load_file_gz

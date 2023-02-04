@@ -90,12 +90,14 @@ def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0, date_ti
         return date_time_to_str(value, milliseconds_numbers=milliseconds_numbers, date_time_format=date_time_format)
     return value
 
-def date_time_less_time_delta(date_time, days=0, hours=0, minutes=0, seconds=0, date_time_format='%Y-%m-%d %H:%M:%S'):
+def date_time_less_time_delta(date_time, days=0, hours=0, minutes=0, seconds=0, date_time_format='%Y-%m-%d %H:%M:%S' , return_str=True):
     new_date_time = date_time - timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
-    return date_time_to_str(new_date_time, date_time_format=date_time_format)
+    if return_str:
+        return date_time_to_str(new_date_time, date_time_format=date_time_format)
+    return new_date_time
 
-def date_time_now_less_time_delta(days=0,hours=0, minutes=0, seconds=0, date_time_format='%Y-%m-%d %H:%M:%S'):
-    return date_time_less_time_delta(datetime.utcnow(),days=days, hours=hours, minutes=minutes, seconds=seconds,date_time_format=date_time_format)
+def date_time_now_less_time_delta(days=0,hours=0, minutes=0, seconds=0, date_time_format='%Y-%m-%d %H:%M:%S', return_str=True):
+    return date_time_less_time_delta(datetime.utcnow(),days=days, hours=hours, minutes=minutes, seconds=seconds,date_time_format=date_time_format, return_str=return_str)
 
 def date_to_str(date, date_format='%Y-%m-%d'):
     return date.strftime(date_format)
@@ -443,7 +445,14 @@ def time_to_str(datetime_value, time_format='%H:%M:%S.%f', milliseconds_numbers=
 
 def timestamp_utc_now():
     return int(datetime.utcnow().timestamp() * 1000)
-    return int(datetime.utcnow().strftime('%s')) * 1000
+    #return int(datetime.utcnow().strftime('%s')) * 1000
+
+def timestamp_utc_now_less_delta(days=0,hours=0, minutes=0, seconds=0):
+    date_time = date_time_now_less_time_delta(days=days,hours=hours, minutes=minutes, seconds=seconds, return_str=False)
+    return datetime_to_timestamp(date_time)
+
+def datetime_to_timestamp(datetime):
+    return int(datetime.timestamp() * 1000)
 
 def timestamp_to_datetime(timestamp):
     return datetime.fromtimestamp(timestamp/1000)
