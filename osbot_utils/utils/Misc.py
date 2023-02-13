@@ -362,7 +362,7 @@ def sys_path_python(python_folder='lib/python'):
 def str_md5(text : str):
     if text:
         return bytes_md5(text.encode())
-    return None
+    return ''
 
 def none_or_empty(target,field):
     if target and field:
@@ -603,10 +603,11 @@ bytes_to_string     = bytes_to_str
 
 convert_to_float    = convert_to_number
 
-datetime_now        = date_time_now
-datetime_to_str     = date_time_to_str
+datetime_now            = date_time_now
+datetime_to_str         = date_time_to_str
+date_time_to_timestamp  = datetime_to_timestamp
 
-list_contains       = list_filter_contains
+list_contains           = list_filter_contains
 
 new_guid            = random_uuid
 

@@ -103,6 +103,7 @@ class Json:
         return Json.save_file(python_object=python_object, pretty=pretty, path=None)
 
 file_create_json             = Json.save_file_pretty
+file_contents_json           = Json.load_file
 
 json_dump                    = Json.dumps
 json_dumps                   = Json.dumps

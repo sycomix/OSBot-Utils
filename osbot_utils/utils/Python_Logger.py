@@ -195,3 +195,8 @@ class Python_Logger:
     #         log_method(msg, *args, **kwargs)
     #         return True
     #     return False
+
+
+def logger_info():
+    python_logger = Python_Logger().setup()
+    return python_logger.logger.info

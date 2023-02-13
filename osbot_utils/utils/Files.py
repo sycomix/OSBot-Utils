@@ -1,3 +1,4 @@
+import fnmatch
 import gzip
 import os
 import glob
@@ -65,7 +66,8 @@ class Files:
     def delete(path):
         if Files.exists(path):
             os.remove(path)
-        return Files.exists(path) is False
+            return Files.exists(path) is False
+        return False
 
     @staticmethod
     def exists(path):                           # todo: add check to see if it is a file (vs being a folder)_
@@ -189,6 +191,18 @@ class Files:
         for folder in folders:
             result.extend(Files.folder_sub_folders(folder))
         return result
+
+    @staticmethod
+    def folders_recursive(parent_dir, pattern='*'):
+        subdirectories = []
+        for item in os.listdir(parent_dir):
+            item_path = os.path.join(parent_dir, item)
+            if os.path.isdir(item_path):
+                subdirectories.append(item_path)
+                subdirectories.extend(folders_recursive(item_path))
+
+        return subdirectories
+
 
     @staticmethod
     def is_file(target):
@@ -423,8 +437,10 @@ folder_name                    = Files.folder_name
 folder_temp                    = Files.temp_folder
 folder_files                   = Files.files
 folder_zip                     = Files.zip_folder
+folder_sub_folders             = Files.folder_sub_folders
 
-folders_names               = Files.folders_names
+folders_names                  = Files.folders_names
+folders_recursive              = Files.folders_recursive
 
 is_file                     = Files.is_file
 is_folder                   = Files.is_folder
