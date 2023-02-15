@@ -102,6 +102,18 @@ def date_time_now_less_time_delta(days=0,hours=0, minutes=0, seconds=0, date_tim
 def date_to_str(date, date_format='%Y-%m-%d'):
     return date.strftime(date_format)
 
+def dict_remove(data, target):
+    if type(data) is dict:
+        if type(target) is list:
+            for key in list(data.keys()):
+                if key in target:
+                    del data[key]
+        else:
+            if target in data:
+                del data[target]
+    return data
+
+
 def time_str_milliseconds(datetime_str, datetime_format, milliseconds_numbers=0):
     if '.%f' in datetime_format and -1 < milliseconds_numbers < 6:
         chars_to_remove = milliseconds_numbers-6
@@ -243,6 +255,20 @@ def list_pop_and_trim(array, position=None):
     if type(value) is str:
         return trim(value)
     return value
+
+def list_remove(array, item):
+    if type(item) is list:
+        result = []
+        for element in array:
+            if element not in item:
+                result.append(element)
+        return result
+
+    return [element for element in array if element != item]
+
+
+def list_remove_empty(array):
+    return [element for element in array if element]
 
 def list_set(target):
     if target:
