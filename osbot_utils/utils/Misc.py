@@ -14,6 +14,7 @@ import warnings
 from datetime import datetime, timedelta
 from secrets    import token_bytes
 from time import sleep
+from typing import List
 from urllib.parse import urlencode, quote_plus, unquote_plus
 
 from dotenv     import load_dotenv
@@ -72,8 +73,11 @@ def convert_to_number(value):
         return 0
 
 def date_time_to_str(date_time, date_time_format='%Y-%m-%d %H:%M:%S.%f', milliseconds_numbers=3):
-    date_time_str = date_time.strftime(date_time_format)
-    return time_str_milliseconds(datetime_str=date_time_str, datetime_format=date_time_format, milliseconds_numbers=milliseconds_numbers)
+    if date_time:
+        date_time_str = date_time.strftime(date_time_format)
+        return time_str_milliseconds(datetime_str=date_time_str, datetime_format=date_time_format, milliseconds_numbers=milliseconds_numbers)
+    else:
+        return ''
 
 def date_now(use_utc=True, return_str=True):
     value = date_time_now(use_utc=use_utc, return_str=False)
@@ -254,6 +258,20 @@ def list_get(array, position=None, default=None):
             if  len(array) > position:
                 return array[position]
     return default
+
+def list_order_by(urls: List[dict], key: str, reverse: bool=False) -> List[dict]:
+    """
+    Sorts a list of dictionaries containing URLs by a specified key.
+
+    Args:
+        urls (List[dict]): A list of dictionaries containing URLs.
+        key (str): The key to sort the URLs by.
+        reverse (bool): Whether to sort the URLs in reverse order.
+
+    Returns:
+        List[dict]: The sorted list of URLs.
+    """
+    return sorted(urls, key=lambda x: x[key], reverse=reverse)
 
 def list_pop(array:list, position=None, default=None):
     if array:
@@ -472,6 +490,21 @@ def time_delta_to_str(time_delta):
     milliseconds  = int(microseconds / 1000)
     total_seconds = int(time_delta.total_seconds())
     return f'{total_seconds}s {milliseconds}ms'
+
+def time_delta_in_days_hours_or_minutes(time_delta):
+    total_seconds = int(time_delta.total_seconds())
+    days   , seconds = divmod(total_seconds, 86400)
+    hours  , seconds = divmod(seconds      , 3600 )
+    minutes, seconds = divmod(seconds      , 60   )
+    if days > 0:
+        return f"{days}d {hours}h {minutes}m"
+    elif hours > 0:
+        return f"{hours:4}h {minutes}m"
+    elif minutes >0:
+        return f"{minutes}m"
+    elif seconds >0:
+        return f"{seconds}s"
+
 
 def time_now(use_utc=True, milliseconds_numbers=1):
     if use_utc:

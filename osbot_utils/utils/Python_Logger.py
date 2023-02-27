@@ -200,3 +200,7 @@ class Python_Logger:
 def logger_info():
     python_logger = Python_Logger().setup()
     return python_logger.logger.info
+
+def logger_error():
+    python_logger = Python_Logger().setup()
+    return python_logger.logger.error
