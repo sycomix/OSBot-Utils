@@ -15,5 +15,11 @@ def str_join(delimiter, values):
 def str_safe(value):
     return safe_file_name(value)
 
+def str_starts_with(source, prefix):
+    if source is None or prefix is None:
+        return False
+    else:
+        return source.startswith(prefix)
+
 html_encode = html_escape
 html_decode = html_unescape
