@@ -155,7 +155,7 @@ class test_Files(TestCase):
                                                       remove(file_c, folder_a + '/')])
 
         path_pattern = f'{folder_a}/**/*.*'
-        assert len(file_find(path_pattern)) == 8
+        assert len(files_find(path_pattern)) == 8
 
     def test_folder_create(self):
         tmp_folder = '_tmp_folder'

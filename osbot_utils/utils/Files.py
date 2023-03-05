@@ -193,7 +193,7 @@ class Files:
         return result
 
     @staticmethod
-    def folders_recursive(parent_dir, pattern='*'):
+    def folders_recursive(parent_dir):
         subdirectories = []
         for item in os.listdir(parent_dir):
             item_path = os.path.join(parent_dir, item)
@@ -403,7 +403,6 @@ file_create_gz                 = Files.write_gz
 file_exists                    = Files.exists
 file_extension                 = Files.file_extension
 file_extension_fix             = Files.file_extension_fix
-file_find                      = Files.find
 file_lines                     = Files.lines
 file_lines_gz                  = Files.lines_gz
 file_md5                       = Files.contents_md5
@@ -422,7 +421,10 @@ file_write                     = Files.write
 file_write_bytes               = Files.write_bytes
 file_write_gz                  = Files.write_gz
 file_unzip                     = Files.unzip_file
+files_find                     = Files.find
 files_list                     = Files.files
+
+find_files                     = Files.files
 
 folder_create                  = Files.folder_create
 folder_create_in_parent        = Files.folder_create_in_parent
@@ -441,6 +443,7 @@ folder_sub_folders             = Files.folder_sub_folders
 
 folders_names                  = Files.folders_names
 folders_recursive              = Files.folders_recursive
+folders_sub_folders            = Files.folders_sub_folders
 
 is_file                     = Files.is_file
 is_folder                   = Files.is_folder

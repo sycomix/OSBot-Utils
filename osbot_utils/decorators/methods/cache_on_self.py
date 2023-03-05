@@ -22,11 +22,16 @@ def cache_on_self(function):
     def wrapper(*args, **kwargs):
         if len(args) == 0 or inspect.isclass(type(args[0])) is False:
             raise Exception("In Method_Wrappers.cache_on_self could not find self")
-
+        if 'reload' in kwargs:                                      # if the reload parameter is set to True
+            reload = True                                           # set reload to True
+            del kwargs['reload']                                    # remove the reload parameter from the kwargs
+        else:
+            reload = False                                          # otherwise set reload to False
         self = args[0]                                              # get self
         cache_id = cache_on_self__get_cache_in_key(function, args, kwargs)
-        if hasattr(self, cache_id) is False:                        # check if return_value has been set
-            setattr(self, cache_id, function(*args, **kwargs))      # invoke function and capture the return value
+        if reload is True or hasattr(self, cache_id) is False:      # check if return_value has been set or if reload is True
+            return_value = function(*args, **kwargs)                # invoke function and capture the return value
+            setattr(self, cache_id,return_value)                    # set the return value
         return getattr(self, cache_id)                              # return the return value
     return wrapper
 

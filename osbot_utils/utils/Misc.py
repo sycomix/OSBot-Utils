@@ -531,6 +531,10 @@ def datetime_to_timestamp(datetime):
 def timestamp_to_datetime(timestamp):
     return datetime.fromtimestamp(timestamp/1000)
 
+def timestamp_to_str(timestamp):
+    date_time = timestamp_to_datetime(timestamp)
+    return datetime_to_str(date_time)
+
 def to_string(target):
     if target:
         return str(target)
@@ -677,11 +681,15 @@ bytes_to_string     = bytes_to_str
 
 convert_to_float    = convert_to_number
 
-datetime_now            = date_time_now
-datetime_to_str         = date_time_to_str
-date_time_to_timestamp  = datetime_to_timestamp
+datetime_now               = date_time_now
+datetime_to_str            = date_time_to_str
+datetime_from_timestamp    = timestamp_to_datetime
+date_time_to_timestamp     = datetime_to_timestamp
+date_time_from_timestamp   = timestamp_to_datetime
+date_time_from_time_stamp  = timestamp_to_datetime
 
 list_contains           = list_filter_contains
+list_sort_by            = list_sorted
 
 new_guid            = random_uuid
 
