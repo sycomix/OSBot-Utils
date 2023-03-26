@@ -112,6 +112,15 @@ def date_time_now_less_time_delta(days=0,hours=0, minutes=0, seconds=0, date_tim
 def date_to_str(date, date_format='%Y-%m-%d'):
     return date.strftime(date_format)
 
+def dict_insert_field(target, new_key, position_to_insert, new_value=None):
+    if type(target) is dict:
+        new_dict = {}
+        for i, (key, value) in enumerate(target.items()):
+            if i == position_to_insert:
+                new_dict[new_key] = new_value
+            new_dict[key] = value
+        return new_dict
+
 def dict_remove(data, target):
     if type(data) is dict:
         if type(target) is list:

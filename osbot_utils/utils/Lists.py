@@ -1,3 +1,6 @@
+from osbot_utils.utils.Misc import dict_insert_field
+
+
 class Lists:
 
     @staticmethod
@@ -29,10 +32,12 @@ class Lists:
     def empty(list):
         return not Lists.not_empty(list)
 
+    @staticmethod
     def tuple_to_list(target:tuple):
             if type(target) is tuple:
                 return list(target)
 
+    @staticmethod
     def tuple_replace_position(target:tuple, position,value):
         tuple_as_list = tuple_to_list(target)
         if len(tuple_as_list) > position:
@@ -40,11 +45,21 @@ class Lists:
         list_as_tuple = list_to_tuple(tuple_as_list)
         return list_as_tuple
 
+    @staticmethod
     def list_to_tuple(target: list):
         if type(target) is list:
             return tuple(target)
 
+    @staticmethod
+    def list_dict_insert_field(target_list, target_dict, new_key, position_to_insert, new_value=None):
+        new_list = []
+        for item in target_list:
+            new_dict = dict_insert_field(target_dict, new_key, new_value)
+            new_list.append(new_dict)
+        return new_list
+
 list_chunks            = Lists.chunks
+list_dict_insert_field = Lists.list_dict_insert_field
 list_del               = Lists.delete
 list_empty             = Lists.empty
 list_first             = Lists.first
