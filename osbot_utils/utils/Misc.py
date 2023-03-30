@@ -112,11 +112,11 @@ def date_time_now_less_time_delta(days=0,hours=0, minutes=0, seconds=0, date_tim
 def date_to_str(date, date_format='%Y-%m-%d'):
     return date.strftime(date_format)
 
-def dict_insert_field(target, new_key, position_to_insert, new_value=None):
-    if type(target) is dict:
+def dict_insert_field(target_dict, new_key, insert_at, new_value=None):
+    if type(target_dict) is dict:
         new_dict = {}
-        for i, (key, value) in enumerate(target.items()):
-            if i == position_to_insert:
+        for i, (key, value) in enumerate(target_dict.items()):
+            if i == insert_at:
                 new_dict[new_key] = new_value
             new_dict[key] = value
         return new_dict
@@ -319,7 +319,7 @@ def list_remove_empty(array):
     return [element for element in array if element]
 
 def list_set(target):
-    if target:
+    if hasattr(target, '__iter__'):
         return sorted(list(set(target)))
     return []
 

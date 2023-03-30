@@ -51,10 +51,14 @@ class Lists:
             return tuple(target)
 
     @staticmethod
-    def list_dict_insert_field(target_list, target_dict, new_key, position_to_insert, new_value=None):
+    def list_dict_insert_field(target_list, new_key, insert_at, new_value=None):
         new_list = []
-        for item in target_list:
-            new_dict = dict_insert_field(target_dict, new_key, new_value)
+        for target_dict in target_list:
+            kvwargs = dict(target_dict = target_dict,
+                           new_key     = new_key    ,
+                           insert_at   = insert_at  ,
+                           new_value   = new_value  )
+            new_dict = dict_insert_field(**kvwargs)
             new_list.append(new_dict)
         return new_list
 
