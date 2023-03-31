@@ -2,6 +2,7 @@ import os
 from functools import wraps
 
 from osbot_utils.utils.Files import path_combine, folder_create, temp_folder_current, file_exists, pickle_load_from_file, pickle_save_to_file
+from osbot_utils.utils.Python_Logger import logger_info
 
 FOLDER_CACHE_ROOT_FOLDER = '_cache_pickle'
 
@@ -9,17 +10,19 @@ class Cache_Pickle:
 
     def __init__(self):
         self.cache_enabled = True
+        self.log_info      = logger_info()
         self.cache_setup()              # make sure the cache folder exists
+
 
     def __getattribute__(self, name):
         if name.startswith('cache_') or name.startswith('__'):
             return super().__getattribute__(name)
 
-        target_method = super().__getattribute__(name)
-        if not callable(target_method):
-            raise AttributeError(f"{name} is not a callable method")
+        target = super().__getattribute__(name)
+        if not callable(target):
+            return target
 
-        return self.cache_data(target_method)
+        return self.cache_data(target)
 
     def cache_clear(self):
         cache_dir = self.cache_path()
@@ -51,6 +54,7 @@ class Cache_Pickle:
             else:
                 data = func(*args, **kwargs)
                 if data and use_cache is True:
+                    self.log_info(f"Saving cache file data for: {caller_name}")
                     pickle_save_to_file(data, path_file)
                 return data
         return wrapper
