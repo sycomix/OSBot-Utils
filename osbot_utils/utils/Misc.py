@@ -238,7 +238,7 @@ def list_contains_list(array : list, values):
     if array is not None:
         if type(values) is list:
             for item in values:
-                if item in array is False:
+                if (item in array) is False:
                     return False
             return True
     return False
