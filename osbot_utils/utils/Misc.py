@@ -243,6 +243,12 @@ def list_contains_list(array : list, values):
             return True
     return False
 
+def list_remove_list(source: list, target: list):
+    if type(source) is list and type(target) is list:
+        for item in target:
+            if item in source:
+                source.remove(item)
+
 def list_find(array:list, item):
     if item in array:
         return array.index(item)
