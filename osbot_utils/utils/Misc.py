@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import importlib
 import inspect
 import logging
 import os
@@ -22,6 +23,12 @@ from dotenv     import load_dotenv
 
 def append_random_string(target, length=6, prefix='-'):
     return f'{target}{random_string(length, prefix)}'
+
+def attr_value_from_module_name(module_name, attr_name, default_value=None):
+    module = importlib.import_module(module_name)
+    if hasattr(module, attr_name):
+        return getattr(module, attr_name)
+    return default_value
 
 def bytes_md5(bytes : bytes):
     return hashlib.md5(bytes).hexdigest()
@@ -420,6 +427,8 @@ def obj_get_value(target=None, key=None, default=None):
 
 def obj_values(target=None):
     return list(obj_dict(target).values())
+
+
 
 
 def size(target=None):
