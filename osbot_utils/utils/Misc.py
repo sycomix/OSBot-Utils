@@ -18,7 +18,7 @@ from time import sleep
 from typing import List
 from urllib.parse import urlencode, quote_plus, unquote_plus
 
-from dateutil import parser
+#from dateutil import parser
 from dotenv     import load_dotenv
 
 def append_random_string(target, length=6, prefix='-'):
@@ -102,10 +102,10 @@ def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0, date_ti
         return date_time_to_str(value, milliseconds_numbers=milliseconds_numbers, date_time_format=date_time_format)
     return value
 
-def date_time_parse(value):
-    if type(value) is datetime:
-        return value
-    return parser.parse(value)
+# def date_time_parse(value):
+#     if type(value) is datetime:
+#         return value
+#     return parser.parse(value)
 
 def date_time_less_time_delta(date_time, days=0, hours=0, minutes=0, seconds=0, date_time_format='%Y-%m-%d %H:%M:%S' , return_str=True):
     new_date_time = date_time - timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
@@ -200,6 +200,9 @@ def get_missing_fields(target,field):
         if get_field(target, field) is None:
             missing_fields.append(field)
     return missing_fields
+
+def is_debugging():
+    return sys.gettrace() is not None
 
 def is_number(value):
     try:
