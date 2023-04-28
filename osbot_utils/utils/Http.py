@@ -1,6 +1,7 @@
 import json
 import socket
 import ssl
+from time import sleep
 from   urllib.request import Request, urlopen
 
 from osbot_utils.utils.Files import save_bytes_as_file, file_size, file_bytes, file_open_bytes, file_create
@@ -65,6 +66,7 @@ def wait_for_port(host, port, max_attempts=20, wait_for=0.1):
     for i in range(max_attempts):
         if is_port_open(host=host,port=port,timeout=wait_for, log_error=False):
             return True
+        sleep(wait_for)
     return False
 
 def DELETE(url, data=None, headers=None):
