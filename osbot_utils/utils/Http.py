@@ -69,6 +69,13 @@ def wait_for_port(host, port, max_attempts=20, wait_for=0.1):
         sleep(wait_for)
     return False
 
+def wait_for_port_closed(host, port, max_attempts=20, wait_for=0.1):
+    for i in range(max_attempts):
+        if is_port_open(host=host,port=port,timeout=wait_for, log_error=False) is False:
+            return True
+        sleep(wait_for)
+    return False
+
 def DELETE(url, data=None, headers=None):
     return Http_Request(url, data, headers, 'DELETE')
 
