@@ -41,8 +41,8 @@ def base64_to_bytes(bytes_base64):
         bytes_base64 = bytes_base64.encode()
     return base64.decodebytes(bytes_base64)
 
-def base64_to_str(target):
-    return bytes_to_str(base64_to_bytes(target))
+def base64_to_str(target, encoding='ascii'):
+    return bytes_to_str(base64_to_bytes(target), encoding=encoding)
 
 def bytes_to_base64(bytes):
     return base64.b64encode(bytes).decode()
