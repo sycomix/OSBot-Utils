@@ -135,7 +135,7 @@ class Files:
     @staticmethod
     def folder_copy(source, destination, ignore_pattern=None):
         if ignore_pattern:
-            ignore = shutil.ignore_patterns(ignore_pattern)
+            ignore = shutil.ignore_patterns(*ignore_pattern)            # for example ignore_pattern = ['*.pyc','.DS_Store']
         else:
             ignore = None
         return shutil.copytree(src=source, dst=destination, ignore=ignore)
