@@ -113,6 +113,7 @@ json_file_create_gz          = Json.save_file_gz
 json_file_contents           = Json.load_file
 json_file_contents_gz        = Json.load_file_gz
 json_file_load               = Json.load_file
+json_file_safe               = Json.save_file
 json_load_file               = Json.load_file
 json_load_file_and_delete    = Json.load_file_and_delete
 json_load_file_gz            = Json.load_file_gz
