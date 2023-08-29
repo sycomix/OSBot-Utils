@@ -468,6 +468,27 @@ def print_date_now(use_utc=True):
 def print_object_methods(target, name_width=30, value_width=100, show_private=False, show_internals=False):
     print_object_members(target, name_width=name_width, value_width=value_width,show_private=show_private,show_internals=show_internals, only_show_methods=True)
 
+def obj_data(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, show_methods=False, only_show_methods=False):
+    result = {}
+    for name, value in inspect.getmembers(target):
+        if show_methods is False and type(value) is types.MethodType:
+            continue
+        if only_show_methods and type(value) is not types.MethodType:
+            continue
+        if not show_private and name.startswith("_"):
+            continue
+        if not show_internals and name.startswith("__"):
+            continue
+        if only_show_methods:
+            value = inspect.signature(value)
+
+        value       = str(value).encode('unicode_escape').decode("utf-8")
+        value       = str_unicode_escape(value)
+        value       = str_max_width(value, value_width)
+        name        = str_max_width(name, name_width)
+        result[name] = value
+    return result
+
 # todo: add option to not show class methods that are not bultin types
 def print_object_members(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, show_methods=False, only_show_methods=False):
     max_width = name_width + value_width
@@ -484,27 +505,12 @@ def print_object_members(target, name_width=30, value_width=100, show_private=Fa
             print(f"{'field':<{name_width}} | value")
 
     print(f"{'-' * max_width}")
-    for name, value in inspect.getmembers(target):
-        if show_methods is False and type(value) is types.MethodType:
-            continue
-        if only_show_methods and type(value) is not types.MethodType:
-            continue
-        if not show_private and name.startswith("_"):
-            continue
-        if not show_internals and name.startswith("__"):
-            continue
-        if only_show_methods:
-            value = inspect.signature(value)
-
-        value_class = obj_full_name(value)
-        value       = str(value).encode('unicode_escape').decode("utf-8")
-        value       = str_unicode_escape(value)
-        value       = str_max_width(value, value_width)
-        name        = str_max_width(name, name_width)
+    for name, value in obj_data(target, name_width=name_width, value_width=value_width, show_private=show_private, show_internals=show_internals, show_value_class=show_value_class, show_methods=show_methods, only_show_methods=only_show_methods).items():
         if only_show_methods:
             print(f"{name:<{name_width}} {value}"[:max_width])
         else:
             if show_value_class:
+                value_class = obj_full_name(value)
                 print(f"{name:<{name_width}} | {value_class:{name_width}} | {value}"[:max_width])
             else:
                 print(f"{name:<{name_width}} | {value}"[:max_width])
