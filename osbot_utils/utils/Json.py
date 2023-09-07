@@ -119,6 +119,7 @@ json_load_file_and_delete    = Json.load_file_and_delete
 json_load_file_gz            = Json.load_file_gz
 json_load_file_gz_and_delete = Json.load_file_gz_and_delete
 json_from_string             = Json.loads
+json_load                    = Json.loads
 json_loads                   = Json.loads
 json_md5                     = Json.md5
 json_lines_loads             = Json.loads_json_lines
