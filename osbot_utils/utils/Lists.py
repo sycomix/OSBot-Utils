@@ -33,6 +33,10 @@ class Lists:
         return not Lists.not_empty(list)
 
     @staticmethod
+    def lower(input_list):
+        return [item.lower() for item in input_list]
+
+    @staticmethod
     def tuple_to_list(target:tuple):
             if type(target) is tuple:
                 return list(target)
@@ -67,6 +71,7 @@ list_dict_insert_field = Lists.list_dict_insert_field
 list_del               = Lists.delete
 list_empty             = Lists.empty
 list_first             = Lists.first
+list_lower             = Lists.lower
 list_not_empty         = Lists.not_empty
 list_to_tuple          = Lists.list_to_tuple
 
