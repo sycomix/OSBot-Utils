@@ -278,7 +278,7 @@ def list_index_by(values, index_by):
 def list_group_by(values, group_by):
     results = {}
     for item in values:
-        value = item.get(group_by)
+        value = str(item.get(group_by))
         if results.get(value) is None: results[value] = []
         results[value].append(item)
     return results
