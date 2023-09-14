@@ -35,8 +35,8 @@ def port_is_open(port : int , host='0.0.0.0', timeout=1.0, log_error=False):
 
 
 def Http_Request(url, data=None, headers=None, method='GET', encoding = 'utf-8', return_response_object=False):
+    ssl_request = url.startswith('https://')
     headers = headers or {}
-    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
     if data:
         print()
         if type(data) is not str:                                   # if the data object is not a string
@@ -46,7 +46,12 @@ def Http_Request(url, data=None, headers=None, method='GET', encoding = 'utf-8',
             data = data.encode()
     request  = Request(url, data=data, headers=headers)
     request.get_method = lambda: method
-    response = urlopen(request, context=gcontext)
+
+    if ssl_request:
+        gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        response = urlopen(request, context=gcontext)
+    else:
+        response = urlopen(request)
 
     if return_response_object:
         return response
