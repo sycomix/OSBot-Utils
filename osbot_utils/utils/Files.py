@@ -87,6 +87,14 @@ class Files:
         return sorted(result)
 
     @staticmethod
+    def files_names(files : list):
+        result = []
+        for file in files:
+            if Files.is_file(file):
+                result.append(Files.file_name(file))
+        return result
+
+    @staticmethod
     def file_create_all_parent_folders(file_path):
         parent_path = parent_folder(file_path)
         path = Path(parent_path)
@@ -425,6 +433,7 @@ file_write_gz                  = Files.write_gz
 file_unzip                     = Files.unzip_file
 files_find                     = Files.find
 files_list                     = Files.files
+files_names                    = Files.files_names
 
 find_files                     = Files.files
 
