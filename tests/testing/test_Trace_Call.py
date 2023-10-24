@@ -1,8 +1,5 @@
 from unittest import TestCase
-
-from osbot_playwritght.html_parser.Html_Parser import Html_Parser
 from osbot_utils.testing.Trace_Call import Trace_Call
-
 
 
 def dummy_function():
@@ -47,13 +44,13 @@ class test_Trace_Call(TestCase):
         trace_call.fix_view_mode()
         assert trace_call.view_model[-1]['prefix'] == '└───', "Last node prefix should be updated"
 
-
-    def test_trace_calls(self):
-        with Trace_Call('trace 123') as trace_call:
-            trace_call.trace_ignore_start_with = ['cbr_website_beta.flask', 'cbr_website_beta.apps.dev']
-            html = Html_Parser('<div id=132> some div</div>')
-            assert html.with_id('132') == ' some div'
-
-        assert len(trace_call.view_model) > 0
-
-        trace_call.print_traces()
+    # todo: refactor to remove dependency on Html_Parser
+    # def test_trace_calls(self):
+    #     with Trace_Call('trace 123') as trace_call:
+    #         trace_call.trace_ignore_start_with = ['cbr_website_beta.flask', 'cbr_website_beta.apps.dev']
+    #         html = Html_Parser('<div id=132> some div</div>')
+    #         assert html.with_id('132') == ' some div'
+    #
+    #     assert len(trace_call.view_model) > 0
+    #
+    #     trace_call.print_traces()
