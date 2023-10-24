@@ -191,7 +191,7 @@ class Files:
         for folder in folders:
             if Files.is_folder(folder):
                 result.append(Files.file_name(folder))
-        return result
+        return sorted(result)
 
     @staticmethod
     def folders_sub_folders(folders : list):
@@ -452,6 +452,7 @@ folder_files                   = Files.files
 folder_zip                     = Files.zip_folder
 folder_sub_folders             = Files.folder_sub_folders
 
+folders_in_folder              = Files.folder_sub_folders
 folders_names                  = Files.folders_names
 folders_recursive              = Files.folders_recursive
 folders_sub_folders            = Files.folders_sub_folders

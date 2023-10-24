@@ -80,6 +80,16 @@ def convert_to_number(value):
     else:
         return 0
 
+def date_time_from_to_str(date_time_str, format_from, format_to, print_conversion_error=False):
+    try:
+        date_time = datetime.strptime(date_time_str, format_from)
+        return date_time.strftime(format_to)
+    except ValueError as value_error:
+        if print_conversion_error:
+            print(f"[date_time_from_to_str]: Error: {value_error}")          # todo: use log handler
+        return None
+
+
 def date_time_to_str(date_time, date_time_format='%Y-%m-%d %H:%M:%S.%f', milliseconds_numbers=3):
     if date_time:
         date_time_str = date_time.strftime(date_time_format)
