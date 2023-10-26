@@ -4,7 +4,7 @@ import shutil
 import zipfile
 from os.path import abspath
 
-from osbot_utils.utils.Files import temp_folder, folder_files, temp_file
+from osbot_utils.utils.Files import temp_folder, folder_files, temp_file, is_file
 
 
 def unzip_file(zip_file, target_folder=None, format='zip'):
@@ -26,8 +26,10 @@ def zip_folder_to_bytes(root_dir):
     zip_buffer.seek(0)                                                          # Reset buffer position
 
 def zip_file_list(path):
-    with zipfile.ZipFile(path) as zip_file:
-        return sorted(zip_file.namelist())
+    if is_file(path):
+        with zipfile.ZipFile(path) as zip_file:
+            return sorted(zip_file.namelist())
+    return []
 
 def zip_files(base_folder, file_pattern="*.*", target_file=None):
     base_folder = abspath(base_folder)

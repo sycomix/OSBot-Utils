@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from osbot_utils.fluent import Fluent_List
 from osbot_utils.utils import Misc
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import Files, file_extension, file_contents
+from osbot_utils.utils.Files import Files, file_extension, file_contents, current_folder, folder_exists
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_now, class_name, str_to_date, get_value, \
     get_random_color, is_number, none_or_empty, random_filename, random_port, random_number, random_string, \
     random_string_and_numbers, str_md5, random_uuid, trim, to_int, wait, word_wrap, word_wrap_escaped, \
@@ -217,11 +217,6 @@ class test_Misc(TestCase):
         assert len(random_text(length=37)) == 42
         assert random_text(prefix='abc_')[:4] == "abc_"
         assert random_text(prefix='abc' )[:4] == "abc_"
-
-    def test_exists(self):
-        assert Files.exists(Files.current_folder()) is True
-        assert Files.exists('aaaa_bbb_ccc'        ) is False
-        assert Files.exists(None                  ) is False
 
     def test_split_lines(self):
         text="aaa\nbbbbb\r\ncccc"

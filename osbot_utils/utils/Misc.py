@@ -478,6 +478,15 @@ def print_date_now(use_utc=True):
 def print_object_methods(target, name_width=30, value_width=100, show_private=False, show_internals=False):
     print_object_members(target, name_width=name_width, value_width=value_width,show_private=show_private,show_internals=show_internals, only_show_methods=True)
 
+def print_obj_data_as_dict(target, **kwargs):
+    data = obj_data(target, **kwargs)
+    max_key_length = max(len(k) for k in data.keys())                                 # Find the maximum key length
+    items          = [f"{k:<{max_key_length}} = {v!r:6}," for k, v in data.items()]   # Format each key-value pair
+    items[-1]      = items[-1][:-2]                                                   # Remove comma from the last item
+    indented_items = '\n     '.join(items)                                            # Join the items with newline and four-space indentation
+    print("dict(" + indented_items + " )")
+    return data
+
 def obj_data(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, show_methods=False, only_show_methods=False):
     result = {}
     for name, value in inspect.getmembers(target):
@@ -491,13 +500,14 @@ def obj_data(target, name_width=30, value_width=100, show_private=False, show_in
             continue
         if only_show_methods:
             value = inspect.signature(value)
-
-        value       = str(value).encode('unicode_escape').decode("utf-8")
-        value       = str_unicode_escape(value)
-        value       = str_max_width(value, value_width)
-        name        = str_max_width(name, name_width)
+        if value !=None and type(value) not in [bool, int, float]:
+            value       = str(value).encode('unicode_escape').decode("utf-8")
+            value       = str_unicode_escape(value)
+            value       = str_max_width(value, value_width)
+            name        = str_max_width(name, name_width)
         result[name] = value
     return result
+
 
 # todo: add option to not show class methods that are not bultin types
 def print_object_members(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, show_methods=False, only_show_methods=False):
@@ -615,8 +625,12 @@ def random_password(length=24, prefix=''):
         password = password.replace(item, '_')
     return password
 
-def random_string(length:int=8,prefix:str=''):
-    return prefix + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
+def random_string(length:int=8,prefix:str=None):
+    length -= 1                                                 # so that we get the exact length when the value is provided
+    postfix = '_' + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
+    if prefix:
+        return prefix + postfix
+    return postfix
 
 def random_string_and_numbers(length:int=6,prefix:str=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))

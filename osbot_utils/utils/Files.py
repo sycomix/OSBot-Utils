@@ -20,8 +20,8 @@ class Files:
     @staticmethod
     def copy(source:str, destination:str) -> str:
         if file_exists(source):                                     # make sure source file exists
-            parent_folder = Files.folder_name(destination)          # get target parent folder
-            folder_create(parent_folder)                            # ensure targer folder exists       # todo: check if this is still needed (we should be using a copy method that creates the required fodlers)
+            destination_parent_folder = parent_folder(destination)  # get target parent folder
+            folder_create(destination_parent_folder)                # ensure targer folder exists       # todo: check if this is still needed (we should be using a copy method that creates the required fodlers)
             return shutil.copy(source, destination)                 # copy file and returns file destination
 
     @staticmethod
@@ -68,10 +68,11 @@ class Files:
         return False
 
     @staticmethod
-    def exists(path):                           # todo: add check to see if it is a file (vs being a folder)_
-        if path:
-            return os.path.exists(path)
-        return False
+    def exists(path):
+        return is_file(path)
+        # if path and is_file(path):
+        #     return os.path.exists(path)
+        # return False
 
     @staticmethod
     def find(path_pattern, recursive=True):
@@ -88,20 +89,23 @@ class Files:
     def files_names(files : list):
         result = []
         for file in files:
-            if Files.is_file(file):
-                result.append(Files.file_name(file))
+            if is_file(file):
+                result.append(file_name(file))
         return result
 
     @staticmethod
     def file_create_all_parent_folders(file_path):
-        parent_path = parent_folder(file_path)
-        path = Path(parent_path)
-        path.mkdir(parents=True, exist_ok=True)
-        return parent_path
+        if file_path:
+            parent_path = parent_folder(file_path)
+            if parent_path:
+                path        = Path(parent_path)
+                path.mkdir(parents=True, exist_ok=True)
+                return parent_path
 
     @staticmethod
-    def file_name(path):
-        return os.path.basename(path)
+    def file_name(path, check_if_exists=True):
+        if is_file(path) or check_if_exists is False:
+            return os.path.basename(path)
 
     @staticmethod
     def file_extension(path):
@@ -135,8 +139,24 @@ class Files:
         return os.stat(path)
 
     @staticmethod
-    def folder_exists(path):          # todo: add check to see if it is a folder
-        return Files.exists(path)
+    def files_recursive(parent_dir, include_folders=False):
+        all_files = []
+        if os.path.isdir(parent_dir):
+            for item in os.listdir(parent_dir):
+                item_path = os.path.join(parent_dir, item)
+                if os.path.isfile(item_path):
+                    all_files.append(item_path)
+                elif os.path.isdir(item_path):
+                    if include_folders:
+                        all_files.append(item_path + '/')
+                    all_files.extend(files_recursive(item_path,include_folders=include_folders))
+
+
+        return sorted(all_files)
+
+    @staticmethod
+    def folder_exists(path):
+        return is_folder(path)
 
     @staticmethod
     def folder_copy(source, destination, ignore_pattern=None):
@@ -165,11 +185,13 @@ class Files:
     def folder_delete_all(path):                # this will remove recursively
         if folder_exists(path):
             shutil.rmtree(path)
-        return folder_exists(path) is False
+            return folder_exists(path) is False
+        return False
 
     @staticmethod
     def folder_name(path):
-        return os.path.dirname(path)
+        if path:
+            return os.path.basename(path)
 
     @staticmethod
     def folder_not_exists(path):
@@ -189,8 +211,8 @@ class Files:
     def folders_names(folders : list):
         result = []
         for folder in folders:
-            if Files.is_folder(folder):
-                result.append(Files.file_name(folder))
+            if folder:
+                result.append(folder_name(folder))
         return sorted(result)
 
     @staticmethod
@@ -209,16 +231,20 @@ class Files:
                 subdirectories.append(item_path)
                 subdirectories.extend(folders_recursive(item_path))
 
-        return subdirectories
+        return sorted(subdirectories)
 
 
     @staticmethod
     def is_file(target):
-        return os.path.isfile(target)
+        if type(target) is str:
+            return os.path.isfile(target)
+        return False
 
     @staticmethod
     def is_folder(target):
-        return os.path.isdir(target)
+        if type(target) is str:
+            return os.path.isdir(target)
+        return False
 
     @staticmethod
     def lines(path):
@@ -250,11 +276,13 @@ class Files:
 
     @staticmethod
     def path_combine(path1, path2):
-        return abspath(join(path1, path2))
+        if type(path1) is str and type(path2) is str:
+            return abspath(join(path1, path2))
 
     @staticmethod
     def parent_folder(path):
-        return os.path.dirname(path)
+        if path:
+            return os.path.dirname(path)
 
     @staticmethod
     def parent_folder_combine(file, path):
@@ -304,13 +332,13 @@ class Files:
         return path
 
     @staticmethod
-    def temp_file(extension = '.tmp', contents=None, parent_folder=None):
+    def temp_file(extension = '.tmp', contents=None, target_folder=None):
         extension = file_extension_fix(extension)
-        if parent_folder is None:
+        if target_folder is None:
             (fd, tmp_file) = tempfile.mkstemp(extension)
             file_delete(tmp_file)
         else:
-            tmp_file = path_combine(parent_folder, temp_filename(extension))
+            tmp_file = path_combine(target_folder, temp_filename(extension))
 
         if contents:
             file_create(tmp_file, contents)
@@ -318,11 +346,11 @@ class Files:
 
     @staticmethod
     def temp_filename(extension='.tmp'):
-        return Files.file_name(Files.temp_file(extension))
+        return file_name(temp_file(extension), check_if_exists=False)
 
     @staticmethod
-    def temp_folder(prefix=None, suffix=None,parent_folder=None):
-        return tempfile.mkdtemp(suffix, prefix, parent_folder)
+    def temp_folder(prefix=None, suffix=None,target_folder=None):
+        return tempfile.mkdtemp(suffix, prefix, target_folder)
 
     @staticmethod
     def temp_folder_current():
@@ -403,6 +431,7 @@ file_write                     = Files.write
 file_write_bytes               = Files.write_bytes
 file_write_gz                  = Files.write_gz
 files_find                     = Files.find
+files_recursive                = Files.files_recursive
 files_list                     = Files.files
 files_names                    = Files.files_names
 
