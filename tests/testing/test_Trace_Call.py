@@ -2,7 +2,6 @@ from unittest import TestCase
 from osbot_utils.testing.Trace_Call import Trace_Call
 
 
-
 def dummy_function():
     pass
 
@@ -44,5 +43,3 @@ class test_Trace_Call(TestCase):
         trace_call.view_model = view_model
         trace_call.fix_view_mode()
         assert trace_call.view_model[-1]['prefix'] == '└───', "Last node prefix should be updated"
-
-
