@@ -1,15 +1,13 @@
-import fnmatch
 import gzip
+
 import os
 import glob
 import pickle
 import re
 import shutil
 import tempfile
-import zipfile
-from   os.path import abspath, join
-from pathlib import Path
-
+from   os.path              import abspath, join
+from   pathlib              import Path
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes
 
 
@@ -23,7 +21,7 @@ class Files:
     def copy(source:str, destination:str) -> str:
         if file_exists(source):                                     # make sure source file exists
             parent_folder = Files.folder_name(destination)          # get target parent folder
-            folder_create(parent_folder)                            # ensure targer folder exists
+            folder_create(parent_folder)                            # ensure targer folder exists       # todo: check if this is still needed (we should be using a copy method that creates the required fodlers)
             return shutil.copy(source, destination)                 # copy file and returns file destination
 
     @staticmethod
@@ -143,6 +141,8 @@ class Files:
     @staticmethod
     def folder_copy(source, destination, ignore_pattern=None):
         if ignore_pattern:
+            if type(ignore_pattern) is str:
+                ignore_pattern = [ignore_pattern]
             ignore = shutil.ignore_patterns(*ignore_pattern)            # for example ignore_pattern = ['*.pyc','.DS_Store']
         else:
             ignore = None
@@ -356,34 +356,6 @@ class Files:
             file.write(contents)
         return path
 
-    @staticmethod
-    def unzip_file(zip_file, target_folder=None, format='zip'):
-        target_folder = target_folder or temp_folder()
-        shutil.unpack_archive(zip_file, extract_dir=target_folder, format=format)
-        return target_folder
-
-    @staticmethod
-    def zip_folder(root_dir, format='zip'):
-        return shutil.make_archive(base_name=root_dir, format=format, root_dir=root_dir)
-
-    @staticmethod
-    def zip_file_list(path):
-        with zipfile.ZipFile(path) as zip_file:
-            return sorted(zip_file.namelist())
-
-    @staticmethod
-    def zip_files(base_folder, file_pattern="*.*", target_file=None):
-        base_folder = abspath(base_folder)
-        file_list   = folder_files(base_folder, file_pattern)
-
-        if len(file_list):                                                  # if there were files found
-            target_file = target_file or temp_file(extension='zip')
-            with zipfile.ZipFile(target_file,'w') as zip:
-                for file_name in file_list:
-                    zip_file_path = file_name.replace(base_folder,'')
-                    zip.write(file_name, zip_file_path)
-
-            return target_file
 
 
 
@@ -430,7 +402,6 @@ file_stats                     = Files.file_stats
 file_write                     = Files.write
 file_write_bytes               = Files.write_bytes
 file_write_gz                  = Files.write_gz
-file_unzip                     = Files.unzip_file
 files_find                     = Files.find
 files_list                     = Files.files
 files_names                    = Files.files_names
@@ -449,7 +420,6 @@ folder_not_exists              = Files.folder_not_exists
 folder_name                    = Files.folder_name
 folder_temp                    = Files.temp_folder
 folder_files                   = Files.files
-folder_zip                     = Files.zip_folder
 folder_sub_folders             = Files.folder_sub_folders
 
 folders_in_folder              = Files.folder_sub_folders
@@ -482,7 +452,3 @@ temp_folder                 = Files.temp_folder
 temp_folder_current         = Files.temp_folder_current
 temp_folder_with_temp_file  = Files.temp_folder_with_temp_file
 
-zip_files                   = Files.zip_files
-zip_folder                  = Files.zip_folder
-zip_file_list               = Files.zip_file_list
-unzip_file                  = Files.unzip_file

@@ -103,7 +103,7 @@ def date_now(use_utc=True, return_str=True):
         return date_to_str(date=value)
     return value
 
-def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0, date_time_format='%Y-%m-%d %H:%M:%S'):
+def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0, date_time_format='%Y-%m-%d %H:%M:%S.%f'):
     if use_utc:
         value = datetime.utcnow()
     else:

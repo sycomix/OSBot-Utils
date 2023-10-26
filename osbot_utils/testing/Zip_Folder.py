@@ -1,4 +1,5 @@
 from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Zip import zip_folder
 
 
 class Zip_Folder():
@@ -9,7 +10,7 @@ class Zip_Folder():
 
     def __enter__(self):
         if Files.exists(self.target_folder):
-            self.zip_file = Files.zip_folder(self.target_folder)
+            self.zip_file = zip_folder(self.target_folder)
         return self.zip_file
 
     def __exit__(self, type, value, traceback):

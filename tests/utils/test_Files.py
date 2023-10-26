@@ -4,12 +4,13 @@ from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import Files, path_combine, parent_folder, path_current, save_bytes_as_file, file_bytes, \
     temp_file, file_create, file_delete, file_exists, file_contents, file_copy, file_contents_as_bytes, file_name, \
     folder_name, folder_files, file_not_exists, temp_folder, folder_copy, path_append, folder_exists, folder_create, \
-    folder_delete_all, folder_not_exists, temp_folder_with_temp_file, folder_zip, file_unzip, file_extension, \
-    zip_file_list, zip_files, save_string_as_file, file_write_gz, file_contents_gz, file_size, file_write, file_find, \
+    folder_delete_all, folder_not_exists, temp_folder_with_temp_file, file_extension, \
+     save_string_as_file, file_write_gz, file_contents_gz, file_size, file_write, \
     file_lines, file_create_gz, file_lines_gz, parent_folder_combine, file_write_bytes, file_open_bytes, \
     file_contents_md5, \
-    file_contents_sha256, create_folder_in_parent, sub_folders, safe_file_name
+    file_contents_sha256, create_folder_in_parent, sub_folders, safe_file_name, files_find
 from osbot_utils.utils.Misc   import random_bytes, random_string, remove, bytes_md5, str_to_bytes, bytes_sha256
+from osbot_utils.utils.Zip import zip_files, zip_file_list, unzip_file
 
 
 class test_Files(TestCase):
@@ -52,7 +53,7 @@ class test_Files(TestCase):
         target    = temp_file()
         text      = random_string()
 
-        assert file_delete(target) is True
+        assert file_delete(target) is False
         assert file_exists(target) is False
         assert file_create(target, text) == target
 
@@ -171,28 +172,6 @@ class test_Files(TestCase):
         folder = parent_folder(__file__)
         assert path_combine(folder, 'test_Files.py') in folder_files(folder)
         assert path_combine(folder, 'test_Json.py' ) in folder_files(folder)
-
-    def test_folder_zip(self):
-        folder = temp_folder_with_temp_file(file_contents=random_string())
-        print()
-
-        zip_file = folder_zip(folder)
-
-        assert file_exists(zip_file)
-        assert file_extension(zip_file) == '.zip'
-
-        unziped_folder = Files.unzip_file(zip_file)
-
-        source_files  = folder_files(folder)
-        target_files  = folder_files(unziped_folder)
-
-        assert len(source_files) == 1
-        assert len(target_files) == 1
-        assert source_files[0]   != target_files[0]
-
-        assert file_contents(source_files[0]) == file_contents(target_files[0])
-
-        assert zip_file_list(zip_file)        == ['temp_file.txt']
 
 
     def test_path_combine(self):

@@ -1,7 +1,7 @@
 import sys
 from unittest import TestCase
 
-from osbot_utils.utils.Temp_Sys_Path import Temp_Sys_Path
+from osbot_utils.testing.Temp_Sys_Path import Temp_Sys_Path
 
 
 class test_Temp_Sys_Path(TestCase):

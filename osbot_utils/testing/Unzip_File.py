@@ -1,4 +1,5 @@
 from osbot_utils.utils.Files import Files
+from osbot_utils.utils.Zip import unzip_file
 
 
 class Unzip_File():
@@ -10,7 +11,7 @@ class Unzip_File():
     def __enter__(self):
         if Files.exists(self.zip_file):
             if self.target_folder is None: self.target_folder = Files.temp_folder("unzipped_")
-            return Files.unzip_file(self.zip_file, self.target_folder)
+            return unzip_file(self.zip_file, self.target_folder)
         return None
 
     def __exit__(self, type, value, traceback):

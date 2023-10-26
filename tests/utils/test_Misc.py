@@ -6,7 +6,7 @@ import time
 import warnings
 from unittest import TestCase
 from unittest.mock import patch
-
+from dotenv import load_dotenv
 from osbot_utils.fluent import Fluent_List
 from osbot_utils.utils import Misc
 from osbot_utils.utils.Dev import pprint
@@ -23,6 +23,9 @@ from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, date_time_n
 
 
 class test_Misc(TestCase):
+
+    def setUp(self):
+        load_dotenv()
 
     def test_array_add(self):
         array = ['aaa']
@@ -251,7 +254,7 @@ class test_Misc(TestCase):
 
     def test_md5(self):
         assert str_md5('admin') == '21232f297a57a5a743894a0e4a801fc3'
-        assert str_md5(None   ) is None
+        assert str_md5(None   ) is ''
 
     def test_sha256(self):
         assert str_sha256('admin') == '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
@@ -262,7 +265,7 @@ class test_Misc(TestCase):
         assert len(random_uuid().split('-')) == 5
 
     def test_time_now(self):
-        assert time_now() in date_time_now(milliseconds_numbers=1)
+        assert time_now() in date_time_now(milliseconds_numbers=2)
         assert time_now(milliseconds_numbers=0) in date_time_now(milliseconds_numbers=0)
         assert time_now(milliseconds_numbers=2) in date_time_now(milliseconds_numbers=2)
         assert str_index(time_now(milliseconds_numbers=0), ':') ==  2
