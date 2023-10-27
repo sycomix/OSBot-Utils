@@ -72,7 +72,7 @@ runs:
     - name: Commit and push changes
       shell: bash
       run: |
-        git add README.md ./${{ inputs.package_name }}/version
+        git add README.md ./${{ inputs.package_name }}/version setup.py
         git commit -m "Update release badge and version file"
         git push origin dev     # Push to the 'dev' branch
 
