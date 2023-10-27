@@ -38,6 +38,11 @@ def zip_folder_to_bytes(root_dir):      # todo add unit test
     zip_buffer.seek(0)                                                          # Reset buffer position
     return zip_buffer
 
+def zip_bytes_file_list(zip_bytes):
+    zip_buffer_from_bytes = io.BytesIO(zip_bytes)
+    with zipfile.ZipFile(zip_buffer_from_bytes, 'r') as zf:
+        return sorted(zf.namelist())
+
 def zip_file_list(path):
     if is_file(path):
         with zipfile.ZipFile(path) as zip_file:

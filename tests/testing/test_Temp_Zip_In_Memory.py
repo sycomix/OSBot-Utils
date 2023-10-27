@@ -6,7 +6,7 @@ from osbot_utils.utils.Dev import pprint
 
 from osbot_utils.testing.Temp_Folder import Temp_Folder
 from osbot_utils.testing.Temp_Zip_In_Memory import Temp_Zip_In_Memory
-from osbot_utils.utils.Zip import zip_files_to_bytes, zip_file_list
+from osbot_utils.utils.Zip import zip_files_to_bytes, zip_file_list, zip_bytes_file_list
 
 
 class test_Temp_Zip_In_Memory(TestCase):
@@ -20,12 +20,15 @@ class test_Temp_Zip_In_Memory(TestCase):
             max_total_files = 30
             temp_folder.add_temp_files_and_folders(max_total_files=max_total_files)
             assert len(temp_folder.files()) == max_total_files
-            with Temp_Zip_In_Memory() as temp_zip_in_memory:
-                temp_zip_in_memory.add_folder(temp_folder)
-                target_files_to_zip = temp_zip_in_memory.all_source_files()
+            with Temp_Zip_In_Memory() as _:
+                _.add_folder(temp_folder)
+                _.set_root_path(temp_folder)
+                assert temp_folder.files(show_parent_folder=True) == _.all_source_files()
+                zip_bytes = _.zip_bytes()
+                assert len(zip_bytes) > 5000
+                assert zip_bytes_file_list(zip_bytes) == temp_folder.files()
 
-                assert temp_folder.files(show_parent_folder=True) == target_files_to_zip
-                assert len(temp_zip_in_memory.zip_bytes()) > 5000
+
 
     def test_create_zip_file(self):
         with Temp_Folder(temp_files_to_add=3) as temp_folder:
