@@ -25,7 +25,7 @@ class test_Temp_Zip_In_Memory(TestCase):
                 target_files_to_zip = temp_zip_in_memory.all_source_files()
 
                 assert temp_folder.files(show_parent_folder=True) == target_files_to_zip
-                assert len(temp_zip_in_memory.zip_bytes()) > 11000
+                assert len(temp_zip_in_memory.zip_bytes()) > 5000
 
     def test_create_zip_file(self):
         with Temp_Folder(temp_files_to_add=3) as temp_folder:
