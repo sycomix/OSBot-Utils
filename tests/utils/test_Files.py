@@ -11,7 +11,7 @@ from osbot_utils.utils.Files import Files, path_combine, parent_folder, path_cur
     file_lines, file_create_gz, file_lines_gz, parent_folder_combine, file_write_bytes, file_open_bytes, \
     file_contents_md5, \
     file_contents_sha256, create_folder_in_parent, sub_folders, safe_file_name, files_find, is_file, is_folder, \
-    temp_filename, current_folder
+    temp_filename, current_folder, folder_delete
 from osbot_utils.utils.Misc   import random_bytes, random_string, remove, bytes_md5, str_to_bytes, bytes_sha256
 from osbot_utils.utils.Zip import zip_files, zip_file_list, unzip_file
 

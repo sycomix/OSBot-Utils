@@ -190,7 +190,7 @@ class Files:
             except OSError:
                 pass
         return False
-    
+
     @staticmethod
     def folder_delete_all(path):                # this will remove recursively
         if folder_exists(path):
