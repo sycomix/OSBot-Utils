@@ -182,6 +182,16 @@ class Files:
         return folder_create(folder_path)
 
     @staticmethod
+    def folder_delete(target_folder):
+        if folder_exists(target_folder):
+            try:
+                os.rmdir(target_folder)
+                return True
+            except OSError:
+                pass
+        return False
+    
+    @staticmethod
     def folder_delete_all(path):                # this will remove recursively
         if folder_exists(path):
             shutil.rmtree(path)
@@ -442,6 +452,7 @@ folder_create_in_parent        = Files.folder_create_in_parent
 folder_create_temp             = Files.temp_folder
 folder_copy                    = Files.folder_copy
 folder_copy_except             = Files.folder_copy
+folder_delete                  = Files.folder_delete
 folder_delete_all              = Files.folder_delete_all
 folder_delete_recursively      = Files.folder_delete_all
 folder_exists                  = Files.folder_exists

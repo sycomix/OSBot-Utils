@@ -1,6 +1,5 @@
 from unittest                import TestCase
 
-from osbot_jira._extra_osbot_methods import folder_delete
 from osbot_utils.testing.Temp_File import Temp_File
 from osbot_utils.testing.Temp_Folder import Temp_Folder
 from osbot_utils.utils.Dev import pprint
