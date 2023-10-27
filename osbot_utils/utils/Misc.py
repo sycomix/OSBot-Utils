@@ -625,12 +625,13 @@ def random_password(length=24, prefix=''):
         password = password.replace(item, '_')
     return password
 
-def random_string(length:int=8,prefix:str=None):
-    length -= 1                                                 # so that we get the exact length when the value is provided
-    postfix = '_' + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
-    if prefix:
-        return prefix + postfix
-    return postfix
+def random_string(length:int=8, prefix:str='', postfix:str=''):
+    if is_int(length):
+        length -= 1                                                 # so that we get the exact length when the value is provided
+    else:
+        length = 7                                                  # default length
+    value   = '_' + ''.join(random.choices(string.ascii_uppercase, k=length)).lower()
+    return f"{prefix}{value}{postfix}"
 
 def random_string_and_numbers(length:int=6,prefix:str=''):
     return prefix + ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))

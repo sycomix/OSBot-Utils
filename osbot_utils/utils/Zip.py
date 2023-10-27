@@ -12,10 +12,22 @@ def unzip_file(zip_file, target_folder=None, format='zip'):
     shutil.unpack_archive(zip_file, extract_dir=target_folder, format=format)
     return target_folder
 
+def zip_files_to_bytes(file_paths, root_path=None):
+    zip_buffer = io.BytesIO()                                                   # Create a BytesIO buffer to hold the zipped file
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:          # Create a ZipFile object with the buffer as the target
+        for file_path in file_paths:
+            if root_path:
+                arcname = file_path.replace(root_path,'')                       # Define the arcname, which is the name inside the zip file
+            else:
+                arcname = file_path                                             # if root_path is not provided, use the full file path
+            zf.write(file_path, arcname)                                        # Add the file to the zip file
+    zip_buffer.seek(0)
+    return zip_buffer
+
 def zip_folder(root_dir, format='zip'):
     return shutil.make_archive(base_name=root_dir, format=format, root_dir=root_dir)
 
-def zip_folder_to_bytes(root_dir):
+def zip_folder_to_bytes(root_dir):      # todo add unit test
     zip_buffer = io.BytesIO()                                                   # Create a BytesIO buffer to hold the zipped file
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:          # Create a ZipFile object with the buffer as the target
         for foldername, subfolders, filenames in os.walk(root_dir):             # Walk the root_dir and add all files and folders to the zip file
@@ -24,6 +36,7 @@ def zip_folder_to_bytes(root_dir):
                 arcname = os.path.relpath(absolute_path, root_dir)              # Define the arcname, which is the name inside the zip file
                 zf.write(absolute_path, arcname)                                # Add the file to the zip file
     zip_buffer.seek(0)                                                          # Reset buffer position
+    return zip_buffer
 
 def zip_file_list(path):
     if is_file(path):

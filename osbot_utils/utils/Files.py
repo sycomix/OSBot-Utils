@@ -8,7 +8,7 @@ import shutil
 import tempfile
 from   os.path              import abspath, join
 from   pathlib              import Path
-from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes
+from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, random_string
 
 
 class Files:
@@ -139,6 +139,13 @@ class Files:
         return os.stat(path)
 
     @staticmethod
+    def filter_parent_folder(items, folder):
+        all_relative_items = []
+        for item in items:
+            all_relative_items.append(item.replace(folder, '')[1:])
+        return sorted(all_relative_items)
+
+    @staticmethod
     def files_recursive(parent_dir, include_folders=False):
         all_files = []
         if os.path.isdir(parent_dir):
@@ -153,6 +160,7 @@ class Files:
 
 
         return sorted(all_files)
+
 
     @staticmethod
     def folder_exists(path):
@@ -355,6 +363,15 @@ class Files:
         return tmp_file
 
     @staticmethod
+    def temp_file_in_folder(target_folder, prefix="temp_file_", postfix='.txt'):
+        if is_folder(target_folder):
+            path_to_file = path_combine(target_folder, random_string(prefix=prefix, postfix=postfix))
+            file_create(path_to_file, random_string())
+            return path_to_file
+
+        
+
+    @staticmethod
     def temp_filename(extension='.tmp'):
         return file_name(temp_file(extension), check_if_exists=False)
 
@@ -440,6 +457,7 @@ file_stats                     = Files.file_stats
 file_write                     = Files.write
 file_write_bytes               = Files.write_bytes
 file_write_gz                  = Files.write_gz
+filter_parent_folder           = Files.filter_parent_folder
 files_find                     = Files.find
 files_recursive                = Files.files_recursive
 files_list                     = Files.files
@@ -487,6 +505,7 @@ save_string_as_file         = Files.save
 sub_folders                 = Files.sub_folders
 
 temp_file                   = Files.temp_file
+temp_file_in_folder         = Files.temp_file_in_folder
 temp_filename               = Files.temp_filename
 temp_folder                 = Files.temp_folder
 temp_folder_current         = Files.temp_folder_current

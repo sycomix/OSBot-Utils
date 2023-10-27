@@ -20,8 +20,7 @@ class test_Zip_Folder(TestCase):
                                        target_zip_file = None  ,
                                        target_zipped   = False ,
                                        zip_bytes       = None  ,
-                                       zip_file        = None  ,
-                                       zip_to_memory   = False )
+                                       zip_file        = None  )
 
 
     def test__using_folder(self):

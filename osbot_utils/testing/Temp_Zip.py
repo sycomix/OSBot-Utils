@@ -4,13 +4,12 @@ from osbot_utils.utils.Zip import zip_folder, zip_file_list
 
 
 class Temp_Zip():
-    def __init__(self, target=None, target_zip_file=None, zip_to_memory=False, delete_zip_file=True):
+    def __init__(self, target=None, target_zip_file=None, delete_zip_file=True):
         if type(target) is Temp_Folder:
             target = target.path()
         self.target          = target
         self.delete_zip_file = delete_zip_file
         self.target_zip_file = target_zip_file
-        self.zip_to_memory   = zip_to_memory
         self.zip_file        = None
         self.zip_bytes       = None
         self.target_zipped   = False
