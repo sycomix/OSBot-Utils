@@ -12,15 +12,54 @@ def unzip_file(zip_file, target_folder=None, format='zip'):
     shutil.unpack_archive(zip_file, extract_dir=target_folder, format=format)
     return target_folder
 
-def zip_files_to_bytes(file_paths, root_path=None):
+def zip_bytes_add_file(zip_bytes, zip_file_path, file_contents):
+    if type(file_contents) is str:
+        file_contents = file_contents.encode('utf-8')
+    elif type(file_contents) is not bytes:
+        return None
+    zip_buffer = io.BytesIO(zip_bytes)
+    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr(zip_file_path, file_contents)
+
+    return zip_buffer.getvalue()
+
+def zip_bytes_get_file(zip_bytes, zip_file_path):
+    zip_buffer = io.BytesIO(zip_bytes)
+    with zipfile.ZipFile(zip_buffer, 'r') as zf:
+        return zf.read(zip_file_path)
+
+# def retrieve_file_from_zip_bytes(zip_bytes, target_file_name):
+#     zip_buffer = io.BytesIO(zip_bytes)
+#     with zipfile.ZipFile(zip_buffer, 'r') as zf:
+#         with zf.open(target_file_name, 'r') as file:
+#             return file.read()
+def zip_bytes_file_list(zip_bytes):
+    zip_buffer_from_bytes = io.BytesIO(zip_bytes)
+    with zipfile.ZipFile(zip_buffer_from_bytes, 'r') as zf:
+        return sorted(zf.namelist())
+
+def zip_bytes_to_file(zip_bytes, target_file=None):
+    if target_file is None:
+        target_file = temp_file(extension='.zip')
+    with open(target_file, 'wb') as f:
+        f.write(zip_bytes)
+    return target_file
+
+def zip_files_to_bytes(target_files, root_folder=None):
     zip_buffer = io.BytesIO()                                                   # Create a BytesIO buffer to hold the zipped file
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:          # Create a ZipFile object with the buffer as the target
-        for file_path in file_paths:
-            if root_path:
-                arcname = file_path.replace(root_path,'')                       # Define the arcname, which is the name inside the zip file
+        for entry in target_files:
+            if type(entry) is str:                                              # if entry is a string, assume it's a file path
+                file_path = entry
+                file_root_folder = root_folder
             else:
-                arcname = file_path                                             # if root_path is not provided, use the full file path
-            zf.write(file_path, arcname)                                        # Add the file to the zip file
+                file_path = entry.get('file')
+                file_root_folder = entry.get('root_folder') or root_folder
+            if file_root_folder:
+                arcname = file_path.replace(file_root_folder,'')                      # Define the arcname, which is the name inside the zip file
+            else:
+                arcname = file_path                                                 # if root_path is not provided, use the full file path
+            zf.write(file_path, arcname)                                            # Add the file to the zip file
     zip_buffer.seek(0)
     return zip_buffer
 
@@ -37,11 +76,6 @@ def zip_folder_to_bytes(root_dir):      # todo add unit test
                 zf.write(absolute_path, arcname)                                # Add the file to the zip file
     zip_buffer.seek(0)                                                          # Reset buffer position
     return zip_buffer
-
-def zip_bytes_file_list(zip_bytes):
-    zip_buffer_from_bytes = io.BytesIO(zip_bytes)
-    with zipfile.ZipFile(zip_buffer_from_bytes, 'r') as zf:
-        return sorted(zf.namelist())
 
 def zip_file_list(path):
     if is_file(path):

@@ -29,6 +29,9 @@ class Temp_Folder:
         if self.delete_on_exit:
             folder_delete_recursively(self.full_path)
 
+    def __repr__(self):
+        return f"<Temp_Folder: {self.full_path}>"
+
     def add_temp_files(self, count=0):
         if count is None: count = 1
         for i in range(count):

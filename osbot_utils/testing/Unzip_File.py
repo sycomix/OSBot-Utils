@@ -2,7 +2,7 @@ from osbot_utils.utils.Files import Files, folder_exists, folder_delete_all, tem
 from osbot_utils.utils.Zip import unzip_file
 
 
-class Unzip_File():
+class Unzip_File:
     def __init__(self, zip_file=None, target_folder=None, delete_target_folder=True):
         self.target_folder          = target_folder
         self.zip_file               = zip_file

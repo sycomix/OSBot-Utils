@@ -84,10 +84,10 @@ class test_Files(TestCase):
         assert file_exists({}             ) == False
         assert file_exists(None           ) == False
         with Temp_File() as _:
-            assert file_exists  (_.file()) is True
-            assert is_file      (_.file()) is True
-            assert folder_exists(_.file()) is False
-            assert is_folder    (_.file()) is False
+            assert file_exists  (_.path()) is True
+            assert is_file      (_.path()) is True
+            assert folder_exists(_.path()) is False
+            assert is_folder    (_.path()) is False
 
     def test_file_lines(self):
         contents = """1st line
