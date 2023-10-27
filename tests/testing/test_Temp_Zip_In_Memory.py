@@ -20,6 +20,13 @@ class test_Temp_Zip_In_Memory(TestCase):
         with Temp_Zip_In_Memory() as _:
             assert _.targets == []
 
+    def test_add_file_from_content(self):
+        with Temp_Zip_In_Memory() as _:
+            assert _.zip_bytes_files() == []
+            _.add_file_from_content('file_1.txt', 'file_1 contents')
+            assert _.zip_bytes_files() == ['file_1.txt']
+            assert _.zip_bytes_file_content('file_1.txt') == b'file_1 contents'
+
     def test_all_source_files(self):
         with Temp_Folder() as temp_folder:
             max_total_files = 30
@@ -72,13 +79,6 @@ class test_Temp_Zip_In_Memory(TestCase):
 
                 file_contents_from_bytes = zip_bytes_get_file(_.zip_bytes(), new_file_name)
                 assert file_contents_from_bytes.decode() == new_file_contents
-
-
-
-
-
-
-
 
     def test_create_zip_file(self):
         with Temp_Folder(temp_files_to_add=3) as temp_folder:

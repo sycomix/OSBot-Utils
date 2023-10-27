@@ -28,11 +28,6 @@ def zip_bytes_get_file(zip_bytes, zip_file_path):
     with zipfile.ZipFile(zip_buffer, 'r') as zf:
         return zf.read(zip_file_path)
 
-# def retrieve_file_from_zip_bytes(zip_bytes, target_file_name):
-#     zip_buffer = io.BytesIO(zip_bytes)
-#     with zipfile.ZipFile(zip_buffer, 'r') as zf:
-#         with zf.open(target_file_name, 'r') as file:
-#             return file.read()
 def zip_bytes_file_list(zip_bytes):
     zip_buffer_from_bytes = io.BytesIO(zip_bytes)
     with zipfile.ZipFile(zip_buffer_from_bytes, 'r') as zf:
