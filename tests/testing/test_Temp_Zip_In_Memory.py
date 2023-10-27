@@ -37,5 +37,5 @@ class test_Temp_Zip_In_Memory(TestCase):
                 assert file_extension(target_zip_file) == '.zip'                # make sure it has the right extension
                 assert temp_folder.files() == zip_file_list(target_zip_file)    # confirm that all files inside temp_folder are inside the in memory zip file
 
-        assert file_delete(target_zip_file) is True
+        assert file_delete(target_zip_file) is True                             # delete the zip file
 
