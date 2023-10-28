@@ -24,6 +24,9 @@ class Temp_Zip():
         if Files.exists(self.zip_file) and self.delete_zip_file:
             Files.delete(self.zip_file)
 
+    def __repr__(self):
+        return f"<Temp_Zip: {self.path()}>"
+
     def path(self):
         return self.zip_file
 

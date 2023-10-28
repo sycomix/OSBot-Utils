@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    version = "v0.8.3"               , # change this on every release
+    version = "v0.8.5"               , # change this on every release
     name                          = "osbot_utils"  ,
     author                        = "Dinis Cruz",
     author_email                  = "dinis.cruz@owasp.org",
