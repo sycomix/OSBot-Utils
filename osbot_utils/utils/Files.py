@@ -7,7 +7,7 @@ import re
 import shutil
 import tempfile
 from   os.path              import abspath, join
-from   pathlib              import Path
+from pathlib import Path, PosixPath
 from osbot_utils.utils.Misc import bytes_to_base64, base64_to_bytes, random_string
 
 
@@ -254,12 +254,16 @@ class Files:
 
     @staticmethod
     def is_file(target):
+        if isinstance(target, Path):
+            return target.is_file()
         if type(target) is str:
             return os.path.isfile(target)
         return False
 
     @staticmethod
     def is_folder(target):
+        if isinstance(target, Path):
+            return target.is_dir()
         if type(target) is str:
             return os.path.isdir(target)
         return False
