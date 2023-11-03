@@ -95,7 +95,7 @@ class test_cache_on_self(TestCase):
         assert an_class.echo_args(*args) == args
         assert cache_on_self__args_to_str(args) == "a-1"
 
-        args = (1, int(1), float(1), bytearray(b'1'), bytes(b'1'), bool(True), complex(1), str('1'))
+        args = 1, 1, float(1), bytearray(b'1'), bytes(b'1'), True, complex(1), '1'
         assert an_class.echo_args(*args)        == args
         assert an_class.echo_args(*args)        == (1, 1, 1.0, bytearray(b'1'), b'1', True, (1 + 0j), '1')
         assert cache_on_self__args_to_str(args) == "111.0bytearray(b'1')b'1'True(1+0j)1"

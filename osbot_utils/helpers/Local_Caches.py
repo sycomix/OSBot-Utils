@@ -14,10 +14,7 @@ class Local_Caches:
 
     def caches(self) -> Dict[str, Local_Cache]:
         cache_names = self.existing_cache_names()
-        caches = {}
-        for cache_name in cache_names:
-            caches[cache_name] = self.cache(cache_name)
-        return caches
+        return {cache_name: self.cache(cache_name) for cache_name in cache_names}
 
     def delete(self) -> bool:
         for cache_name, cache in self.caches().items():

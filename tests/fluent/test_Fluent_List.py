@@ -32,7 +32,7 @@ class test_Fluent_List(TestCase):
         assert self.fluent_list.size() == 1
         assert self.fluent_list.pop() == 'a'
         assert self.fluent_list.size() == 0
-        assert self.fluent_list.pop() == None           #
+        assert self.fluent_list.pop() is None
         assert self.fluent_list.size() == 0
 
     def test_push(self):

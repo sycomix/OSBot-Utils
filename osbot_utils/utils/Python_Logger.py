@@ -94,15 +94,17 @@ class Python_Logger:
 
     # Getters
     def log_handlers(self):
-        if self.logger:
-            return self.logger.handlers
-        return []
+        return self.logger.handlers if self.logger else []
 
     def log_handler(self, handler_type):
-        for handler in self.log_handlers():
-            if type(handler) is handler_type:
-                return handler
-        return None
+        return next(
+            (
+                handler
+                for handler in self.log_handlers()
+                if type(handler) is handler_type
+            ),
+            None,
+        )
 
     def log_handler_console(self):
         return self.log_handler(StreamHandler)
@@ -173,10 +175,8 @@ class Python_Logger:
     @group_by
     def memory_handler_logs(self):
         logs           = []
-        memory_handler = self.log_handler_memory()
-        if memory_handler:
-            for log_record in memory_handler.buffer:
-                logs.append(obj_dict(log_record))
+        if memory_handler := self.log_handler_memory():
+            logs.extend(obj_dict(log_record) for log_record in memory_handler.buffer)
         return logs
 
     def memory_handler_messages(self):

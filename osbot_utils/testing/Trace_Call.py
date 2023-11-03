@@ -100,25 +100,17 @@ class Trace_Call:
         if view_model is None:
             view_model = []                                                                 # Initialize view model if None
 
-        for idx, node in enumerate(json_list):                                              # Iterate over each node in the JSON list to populate the view model
+        for idx, node in enumerate(json_list):                                          # Iterate over each node in the JSON list to populate the view model
             components           = node["name"].split('.')
             locals               = node.get('locals')
             source_code          = node.get('source_code'         )
             source_code_caller   = node.get('source_code_caller'  )
             source_code_location = node.get('source_code_location')
             method_name          = components[-1]
-            if len(components) > 1:
-                method_parent  = f"{components[-2]}"
-            else:
-                method_parent  = ""
-            if method_name == "__init__":                                                   # Adjust the method_name based on special method names like __init__ and __call__
+            method_parent = f"{components[-2]}" if len(components) > 1 else ""
+            if method_name in ["__init__", "__call__", "<module>"]:                                                   # Adjust the method_name based on special method names like __init__ and __call__
                 method_name = f"{method_parent}.{method_name}"
-            elif method_name == "__call__":
-                method_name = f"{method_parent}.{method_name}"
-            elif method_name == "<module>":
-                method_name = f"{method_parent}.{method_name}"
-
-            pruned_parents = [comp for comp in components] #if comp not in self.view_parents_to_prune]    # Remove the parents that are in the prune list
+            pruned_parents = list(components)
             parent_info = '.'.join(pruned_parents[:-1])
 
             if level == 0:                                                                  # Handle tree representation at level 0
@@ -153,41 +145,42 @@ class Trace_Call:
 
 
     def formatted_local_data(self, local_data, formatted_line):
-        if local_data:
-            formatted_data = {}
-            max_key_length = 0  # Variable to store the length of the longest key
+        if not local_data:
+            return
+        formatted_data = {}
+        max_key_length = 0  # Variable to store the length of the longest key
 
             # First pass to format data and find the length of the longest key
-            for key, value in local_data.items():
-                if key.startswith('_'):                                                 # don't show internal methods
-                    continue
-                # Convert objects to their type name
-                if isinstance(value, dict):
-                    value = pformat(value)                                                  # convert dicts to string (so that they are impacted by self.self.print_max_string_length)
-                if not isinstance(value, (int, float, bool, str, dict)):
-                    formatted_data[key] = (type(value).__name__, BLUE)
-                elif isinstance(value, str) and len(value) > self.print_max_string_length:
-                    formatted_data[key] = (value[:self.print_max_string_length] + "...", GREEN)    # Trim large strings
-                else:
-                    formatted_data[key] = (value, GREEN)
+        for key, value in local_data.items():
+            if key.startswith('_'):                                                 # don't show internal methods
+                continue
+            # Convert objects to their type name
+            if isinstance(value, dict):
+                value = pformat(value)                                                  # convert dicts to string (so that they are impacted by self.self.print_max_string_length)
+            if not isinstance(value, (int, float, bool, str, dict)):
+                formatted_data[key] = (type(value).__name__, BLUE)
+            elif isinstance(value, str) and len(value) > self.print_max_string_length:
+                formatted_data[key] = f"{value[:self.print_max_string_length]}...", GREEN
+            else:
+                formatted_data[key] = (value, GREEN)
 
-                # Update the maximum key length
-                if len(key) > max_key_length:
-                    max_key_length = len(key)
+            # Update the maximum key length
+            if len(key) > max_key_length:
+                max_key_length = len(key)
 
-            def format_multiline(value, left_padding):
-                lines = str(value).split('\n')
-                indented_lines = [lines[0]] + [" " * (left_padding +1) + line for line in lines[1:]]
-                return '\n'.join(indented_lines)
+        def format_multiline(value, left_padding):
+            lines = str(value).split('\n')
+            indented_lines = [lines[0]] + [" " * (left_padding +1) + line for line in lines[1:]]
+            return '\n'.join(indented_lines)
 
-            # Second pass to print the keys and values aligned
-            padding = " " * len(formatted_line)
-            for key, (value, color) in formatted_data.items():
-                # Calculate the number of spaces needed for alignment
-                spaces = " " * (max_key_length - len(key))
-                var_name = f"{padding}       🔖 {key}{spaces} = "
-                value = format_multiline(value, len(var_name))
-                print(f'{var_name}{color}{value}{RESET}')
+        # Second pass to print the keys and values aligned
+        padding = " " * len(formatted_line)
+        for key, (value, color) in formatted_data.items():
+            # Calculate the number of spaces needed for alignment
+            spaces = " " * (max_key_length - len(key))
+            var_name = f"{padding}       🔖 {key}{spaces} = "
+            value = format_multiline(value, len(var_name))
+            print(f'{var_name}{color}{value}{RESET}')
 
     def print_traces(self):
         print()
@@ -223,16 +216,10 @@ class Trace_Call:
                 if self.print_show_source_code_path:
 
                     raise Exception("to implement path_source_code_root")
-                    path_source_code_root = ...
-
-                    print(f" " * len(prefix), end="         ")
-                    fixed_source_code_location = source_code_location.replace(path_source_code_root, '')
-                    print(fixed_source_code_location)
+            elif idx == 0 or self.print_show_parent_info is False:                            # Handle the first line and conditional parent info differently
+                print(f"{text_bold(formatted_line)}")                                                  # Don't add "|" to the first line
             else:
-                if idx == 0 or self.print_show_parent_info is False:                            # Handle the first line and conditional parent info differently
-                    print(f"{text_bold(formatted_line)}")                                                  # Don't add "|" to the first line
-                else:
-                    print(f"{text_bold(formatted_line)}{padding} {parent_info}")
+                print(f"{text_bold(formatted_line)}{padding} {parent_info}")
 
             if self.print_show_locals:
             #     formatted_line = formatted_line.replace('│', ' ')

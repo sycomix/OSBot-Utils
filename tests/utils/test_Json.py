@@ -18,7 +18,7 @@ class test_Json(TestCase):
         expected_message = "TypeError: Object of type datetime is not JSON serializable"
 
         with Log_To_String(logger_json) as log_to_string:
-            assert json_dumps(bad_obj) == None
+            assert json_dumps(bad_obj) is None
             assert expected_message in log_to_string.contents()
 
     def test_json_parse__json_format__json_dumps__json_loads(self):

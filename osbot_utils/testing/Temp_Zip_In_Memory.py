@@ -67,8 +67,10 @@ class Temp_Zip_In_Memory:
             if is_file(target):
                 all_files.append({'file': target, 'root_folder': root_folder})
             elif is_folder(target):
-                for file in files_recursive(target):
-                    all_files.append({'file': file, 'root_folder': root_folder})
+                all_files.extend(
+                    {'file': file, 'root_folder': root_folder}
+                    for file in files_recursive(target)
+                )
         return all_files
 
     def zip_bytes(self):

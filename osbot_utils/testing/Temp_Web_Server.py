@@ -50,10 +50,7 @@ class Temp_Web_Server:
     def GET_contains(self, content, path=''):
         page_html = self.GET(path=path)
         if type(content) is list:
-            for item in content:
-                if item not in page_html:
-                    return False
-            return True
+            return all(item in page_html for item in content)
         return content in page_html
 
     def server_port_open(self):

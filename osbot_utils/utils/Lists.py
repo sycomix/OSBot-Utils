@@ -24,9 +24,7 @@ class Lists:
 
     @staticmethod
     def not_empty(list):
-        if list and type(list).__name__ == 'list' and len(list) >0:
-            return True
-        return False
+        return bool(list and type(list).__name__ == 'list' and len(list) >0)
 
     @staticmethod
     def empty(list):
@@ -46,8 +44,7 @@ class Lists:
         tuple_as_list = tuple_to_list(target)
         if len(tuple_as_list) > position:
             tuple_as_list[position] = value
-        list_as_tuple = list_to_tuple(tuple_as_list)
-        return list_as_tuple
+        return list_to_tuple(tuple_as_list)
 
     @staticmethod
     def list_to_tuple(target: list):

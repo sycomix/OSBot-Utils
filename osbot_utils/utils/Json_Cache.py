@@ -50,11 +50,12 @@ class Json_Cache:
         return path_cache
 
     def path_cache_file(self):
-        tmp_file_name = ""#str_safe(str(self.cache_type))
-        for cache_key in  self.cache_keys:
-            tmp_file_name += f"--{str_safe(str(cache_key))}"
-        tmp_file_name += ".json"
+        tmp_file_name = (
+            "".join(
+                f"--{str_safe(str(cache_key))}" for cache_key in self.cache_keys
+            )
+            + ".json"
+        )
         if self.save_as_gz:
             tmp_file_name += ".gz"
-        file_path = path_combine(self.path_cache_folder(), tmp_file_name)
-        return file_path
+        return path_combine(self.path_cache_folder(), tmp_file_name)

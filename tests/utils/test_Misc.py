@@ -85,10 +85,10 @@ class test_Misc(TestCase):
         array = ['1',2,'3',4 ,'5']
         assert list(Misc.chunks(array,  2  )) == [['1', 2    ], ['3', 4], ['5']]
         assert list(Misc.chunks(array,  3  )) == [['1', 2,'3'], [ 4 , '5'     ]]
-        assert list(Misc.chunks(array,  0  )) == []
-        assert list(Misc.chunks(array, None)) == []
+        assert not list(Misc.chunks(array,  0  ))
+        assert not list(Misc.chunks(array, None))
         assert type(Misc.chunks(None , 0)).__name__ == 'generator'
-        assert list(Misc.chunks(None , 0)) == []
+        assert not list(Misc.chunks(None , 0))
 
     def test_class_name(self):
         assert class_name(TestCase)   == "type"
@@ -102,7 +102,7 @@ class test_Misc(TestCase):
         print()
         print(self.__module__)
         assert str(get_field(self, '__module__')) == "test_Misc"
-        assert get_field({}, None               ) == None
+        assert get_field({}, None               ) is None
         assert get_field({}, None, default=42   ) == 42
 
     def test_get_value(self):
@@ -111,7 +111,7 @@ class test_Misc(TestCase):
         assert get_value({}, None , 'd'    ) == 'd'
         assert get_value({}, None          ) is None
         assert get_value({'a': 42}, 'a'    ) == 42
-        assert get_value(None, 'a'         ) == None
+        assert get_value(None, 'a'         ) is None
 
     def test_get_random_color(self):
         assert get_random_color() in ['skyblue', 'darkseagreen', 'palevioletred', 'coral', 'darkgray']
@@ -134,8 +134,8 @@ class test_Misc(TestCase):
 
     def test_last_letter(self):
         assert last_letter("abc") == "c"
-        assert last_letter(""   ) == None
-        assert last_letter(None ) == None
+        assert last_letter(""   ) is None
+        assert last_letter(None ) is None
 
     def test_logger_add_handler__file(self):
         log_file = log_to_file()
@@ -145,6 +145,7 @@ class test_Misc(TestCase):
         assert file_contents(log_file) == 'error\ninfo\n'
 
     def test_obj_dict(self):
+
         class Target:
             def __init__(self):
                 self.var_1 = 'the answer'
@@ -158,7 +159,7 @@ class test_Misc(TestCase):
         for key,value in obj_items(target):
             assert obj_get_value(target, key          ) == value
             assert obj_get_value(target, key    , 'aa') == value
-            assert obj_get_value(target, key+'a', 'aa') == 'aa'
+            assert obj_get_value(target, f'{key}a', 'aa') == 'aa'
 
         # check cases when bad data is submitted
         assert obj_dict  ()   == {}

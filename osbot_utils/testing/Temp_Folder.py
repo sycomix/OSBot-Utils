@@ -34,7 +34,7 @@ class Temp_Folder:
 
     def add_temp_files(self, count=0):
         if count is None: count = 1
-        for i in range(count):
+        for _ in range(count):
             self.add_file()
 
     def add_temp_files_and_folders(self, target_folder=None, max_depth_param=5, max_files_per_folder=4, max_total_files=20, current_depth=0):
@@ -59,7 +59,7 @@ class Temp_Folder:
         current_depth +=1
         # Recursively create subfolders and their contents
         for _ in range(0, num_subfolders):
-            subfolder_name = f"_[{current_depth}]_temp_folder_{str(random.randint(0, 512))}_"
+            subfolder_name = f"_[{current_depth}]_temp_folder_{random.randint(0, 512)}_"
             subfolder_path = path_combine(target_folder, subfolder_name)
             create_folder(subfolder_path)
 

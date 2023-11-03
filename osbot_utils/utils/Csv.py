@@ -10,7 +10,7 @@ from osbot_utils.decorators.lists.index_by  import index_by
 @group_by
 def load_csv_from_iterable(iterable, delimiter=','):
     csv_reader = csv.DictReader(iterable, delimiter=delimiter)
-    return [row for row in csv_reader]
+    return list(csv_reader)
 
 @index_by
 @group_by

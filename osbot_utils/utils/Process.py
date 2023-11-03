@@ -24,7 +24,7 @@ class Process:
                    'stdout' : subprocess.PIPE ,
                    'stderr' : subprocess.PIPE ,
                    'timeout': None }
-        kwargs = { **kwargs , **run_kwargs }                 # merge dictionaries with run_kwargs taking precedence
+        kwargs = kwargs | run_kwargs
         try:
             result      = subprocess.run(run_params, **kwargs)
             stderr      = result.stderr.decode()
