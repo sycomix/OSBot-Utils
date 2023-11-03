@@ -28,10 +28,7 @@ class Files:
     def contains(path, content):
         text = Files.contents(path)
         if type(content) is list:
-            for item in content:
-                if item not in text:
-                    return False
-            return True
+            return all(item in text for item in content)
         return content in text
 
     @staticmethod
@@ -80,24 +77,17 @@ class Files:
 
     @staticmethod
     def files(path, pattern= '*.*'):                        # todo: check behaviour and improve ability to detect file (vs folders)
-        result = []
-        for file in Path(path).rglob(pattern):
-            result.append(str(file))                        # todo: see if there is a better way to do this conversion to string
+        result = [str(file) for file in Path(path).rglob(pattern)]
         return sorted(result)
 
     @staticmethod
     def files_names(files : list):
-        result = []
-        for file in files:
-            if is_file(file):
-                result.append(file_name(file))
-        return result
+        return [file_name(file) for file in files if is_file(file)]
 
     @staticmethod
     def file_create_all_parent_folders(file_path):
         if file_path:
-            parent_path = parent_folder(file_path)
-            if parent_path:
+            if parent_path := parent_folder(file_path):
                 path        = Path(parent_path)
                 path.mkdir(parents=True, exist_ok=True)
                 return parent_path
@@ -109,17 +99,13 @@ class Files:
 
     @staticmethod
     def file_extension(path):
-        if path:
-            return os.path.splitext(path)[1]
-        return ''
+        return os.path.splitext(path)[1] if path else ''
 
     @staticmethod
     def file_extension_fix(extension):
         if extension is None or len(extension) == 0:        # if it None or empty return default .tmp extension
             return '.tmp'
-        if extension[0] != '.':                             # make sure that the extension starts with a dot
-            return '.' + extension
-        return extension
+        return f'.{extension}' if extension[0] != '.' else extension
 
     @staticmethod
     def file_to_base64(path):
@@ -140,9 +126,7 @@ class Files:
 
     @staticmethod
     def filter_parent_folder(items, folder):
-        all_relative_items = []
-        for item in items:
-            all_relative_items.append(item.replace(folder, '')[1:])
+        all_relative_items = [item.replace(folder, '')[1:] for item in items]
         return sorted(all_relative_items)
 
     @staticmethod
@@ -155,7 +139,7 @@ class Files:
                     all_files.append(item_path)
                 elif os.path.isdir(item_path):
                     if include_folders:
-                        all_files.append(item_path + '/')
+                        all_files.append(f'{item_path}/')
                     all_files.extend(files_recursive(item_path,include_folders=include_folders))
 
 
@@ -220,17 +204,12 @@ class Files:
         result = []
         item: os.DirEntry
         if Files.is_folder(path):
-            for item in os.scandir(path):
-                if item.is_dir():
-                    result.append(item.path)
+            result.extend(item.path for item in os.scandir(path) if item.is_dir())
         return result
 
     @staticmethod
     def folders_names(folders : list):
-        result = []
-        for folder in folders:
-            if folder:
-                result.append(folder_name(folder))
+        result = [folder_name(folder) for folder in folders if folder]
         return sorted(result)
 
     @staticmethod
@@ -256,29 +235,23 @@ class Files:
     def is_file(target):
         if isinstance(target, Path):
             return target.is_file()
-        if type(target) is str:
-            return os.path.isfile(target)
-        return False
+        return os.path.isfile(target) if type(target) is str else False
 
     @staticmethod
     def is_folder(target):
         if isinstance(target, Path):
             return target.is_dir()
-        if type(target) is str:
-            return os.path.isdir(target)
-        return False
+        return os.path.isdir(target) if type(target) is str else False
 
     @staticmethod
     def lines(path):
         with open(path, "rt") as file:
-            for line in file:
-                yield line
+            yield from file
 
     @staticmethod
     def lines_gz(path):
         with gzip.open(path, "rt") as file:
-            for line in file:
-                yield line
+            yield from file
 
     @staticmethod
     def not_exists(path):
@@ -313,16 +286,14 @@ class Files:
     @staticmethod
     def pickle_save_to_file(object_to_save, path=None):
         path = path or temp_file(extension=".pickle")
-        file_to_store = open(path, "wb")
-        pickle.dump(object_to_save, file_to_store)
-        file_to_store.close()
+        with open(path, "wb") as file_to_store:
+            pickle.dump(object_to_save, file_to_store)
         return path
 
     @staticmethod
     def pickle_load_from_file(path=None):
-        file_to_read = open(path, "rb")
-        loaded_object = pickle.load(file_to_read)
-        file_to_read.close()
+        with open(path, "rb") as file_to_read:
+            loaded_object = pickle.load(file_to_read)
         return loaded_object
 
     @staticmethod
@@ -341,9 +312,7 @@ class Files:
     def sub_folders(target):
         if type(target) is list:
             return Files.folders_sub_folders(target)
-        if type(target) is str:
-            return Files.folder_sub_folders(target)
-        return []
+        return Files.folder_sub_folders(target) if type(target) is str else []
 
     @staticmethod
     def save_bytes_as_file(bytes_to_save, path=None, extension=None):

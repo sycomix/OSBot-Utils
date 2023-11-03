@@ -60,25 +60,22 @@ def class_name(target):
         return type(target).__name__
 
 def class_functions(target):
-    functions = {}
-    for function_name, function_ref in inspect.getmembers(type(target), predicate=inspect.isfunction):
-        functions[function_name] = function_ref
-    return functions
+    return dict(inspect.getmembers(type(target), predicate=inspect.isfunction))
 
 def class_functions_names(target):
     return list_set(class_functions(target))
 
 def convert_to_number(value):
-    if value:
-        try:
-            if value[0] in ['£','$','€']:
-                return float(re.sub(r'[^\d.]', '', value))
-            else:
-                return float(value)
-        except:
-          return 0
-    else:
+    if not value:
         return 0
+    try:
+        return (
+            float(re.sub(r'[^\d.]', '', value))
+            if value[0] in ['£', '$', '€']
+            else float(value)
+        )
+    except:
+      return 0
 
 def date_time_from_to_str(date_time_str, format_from, format_to, print_conversion_error=False):
     try:
@@ -99,15 +96,10 @@ def date_time_to_str(date_time, date_time_format='%Y-%m-%d %H:%M:%S.%f', millise
 
 def date_now(use_utc=True, return_str=True):
     value = date_time_now(use_utc=use_utc, return_str=False)
-    if return_str:
-        return date_to_str(date=value)
-    return value
+    return date_to_str(date=value) if return_str else value
 
 def date_time_now(use_utc=True, return_str=True, milliseconds_numbers=0, date_time_format='%Y-%m-%d %H:%M:%S.%f'):
-    if use_utc:
-        value = datetime.utcnow()
-    else:
-        value = datetime.now()
+    value = datetime.utcnow() if use_utc else datetime.now()
     if return_str:
         return date_time_to_str(value, milliseconds_numbers=milliseconds_numbers, date_time_format=date_time_format)
     return value
@@ -144,9 +136,8 @@ def dict_remove(data, target):
             for key in list(data.keys()):
                 if key in target:
                     del data[key]
-        else:
-            if target in data:
-                del data[target]
+        elif target in data:
+            del data[target]
     return data
 
 
@@ -169,10 +160,7 @@ def env_vars(reload_vars=False):
     if reload_vars:
         load_dotenv()
     vars = os.environ
-    data = {}
-    for key in vars:
-        data[key] = vars[key]
-    return data
+    return {key: vars[key] for key in vars}
 
 def env_vars_list():
     return list_set(env_vars())
@@ -200,16 +188,12 @@ def get_value(target, key, default=None):
 
 # todo: check if this should still be here
 def get_random_color(max=5):
-    if max > 5: max = 5                                                             # add support for more than 5 colors
+    max = min(max, 5)
     colors = ['skyblue', 'darkseagreen', 'palevioletred', 'coral', 'darkgray']
     return colors[random_number(0, max-1)]
 
 def get_missing_fields(target,field):
-    missing_fields = []
-    for field in field:
-        if get_field(target, field) is None:
-            missing_fields.append(field)
-    return missing_fields
+    return [field for field in field if get_field(target, field) is None]
 
 def is_debugging():
     return sys.gettrace() is not None
@@ -257,10 +241,7 @@ def list_add(array : list, value):
 def list_contains_list(array : list, values):
     if array is not None:
         if type(values) is list:
-            for item in values:
-                if (item in array) is False:
-                    return False
-            return True
+            return all(item in array for item in values)
     return False
 
 def list_remove_list(source: list, target: list):
@@ -270,9 +251,7 @@ def list_remove_list(source: list, target: list):
                 source.remove(item)
 
 def list_find(array:list, item):
-    if item in array:
-        return array.index(item)
-    return -1
+    return array.index(item) if item in array else -1
 
 def list_get_field(values, field):
     return [item.get(field) for item in values]
@@ -316,28 +295,19 @@ def list_order_by(urls: List[dict], key: str, reverse: bool=False) -> List[dict]
 
 def list_pop(array:list, position=None, default=None):
     if array:
-        if len(array) >0:
-            if type(position) is int:
-                if len(array) > position:
-                    return array.pop(position)
-            else:
-                return array.pop()
+        if type(position) is not int:
+            return array.pop()
+        if len(array) > position:
+            return array.pop(position)
     return default
 
 def list_pop_and_trim(array, position=None):
     value = array_pop(array,position)
-    if type(value) is str:
-        return trim(value)
-    return value
+    return trim(value) if type(value) is str else value
 
 def list_remove(array, item):
     if type(item) is list:
-        result = []
-        for element in array:
-            if element not in item:
-                result.append(element)
-        return result
-
+        return [element for element in array if element not in item]
     return [element for element in array if element != item]
 
 
@@ -345,9 +315,7 @@ def list_remove_empty(array):
     return [element for element in array if element]
 
 def list_set(target):
-    if hasattr(target, '__iter__'):
-        return sorted(list(set(target)))
-    return []
+    return sorted(list(set(target))) if hasattr(target, '__iter__') else []
 
 def list_zip(*args):
     return list(zip(*args))
@@ -409,20 +377,13 @@ def logger_set_level_info    (): logger_set_level('INFO'    ) # level 20
 def logger_set_level_warning (): logger_set_level('WARNING' ) # level 30
 
 def lower(target : str):
-    if target:
-        return target.lower()
-    return ""
+    return target.lower() if target else ""
 
 def obj_data(target=None):
-    data = {}
-    for key,value in obj_items(target):
-        data[key] = value
-    return data
+    return dict(obj_items(target))
 
 def obj_dict(target=None):
-    if target and hasattr(target,'__dict__'):
-        return target.__dict__
-    return {}
+    return target.__dict__ if target and hasattr(target,'__dict__') else {}
 
 def obj_items(target=None):
     return sorted(list(obj_dict(target).items()))
@@ -445,9 +406,7 @@ def obj_values(target=None):
 
 
 def size(target=None):
-    if target and hasattr(target, '__len__'):
-        return len(target)
-    return 0
+    return len(target) if target and hasattr(target, '__len__') else 0
 
 def str_index(target:str, source:str):
     try:
@@ -462,9 +421,7 @@ def sys_path_python(python_folder='lib/python'):
     return list_contains(sys.path, python_folder)
 
 def str_md5(text : str):
-    if text:
-        return bytes_md5(text.encode())
-    return ''
+    return bytes_md5(text.encode()) if text else ''
 
 def none_or_empty(target,field):
     if target and field:
@@ -484,7 +441,7 @@ def print_obj_data_as_dict(target, **kwargs):
     items          = [f"{k:<{max_key_length}} = {v!r:6}," for k, v in data.items()]   # Format each key-value pair
     items[-1]      = items[-1][:-2]                                                   # Remove comma from the last item
     indented_items = '\n     '.join(items)                                            # Join the items with newline and four-space indentation
-    print("dict(" + indented_items + " )")
+    print(f"dict({indented_items} )")
     return data
 
 def obj_data(target, name_width=30, value_width=100, show_private=False, show_internals=False, show_value_class=False, show_methods=False, only_show_methods=False):
@@ -518,31 +475,26 @@ def print_object_members(target, name_width=30, value_width=100, show_private=Fa
     print()
     if only_show_methods:
         print(f"{'method':<{name_width}} (params)")
+    elif show_value_class:
+        print(f"{'field':<{name_width}} | {'type':<{name_width}} |value")
     else:
-        if show_value_class:
-            print(f"{'field':<{name_width}} | {'type':<{name_width}} |value")
-        else:
-            print(f"{'field':<{name_width}} | value")
+        print(f"{'field':<{name_width}} | value")
 
     print(f"{'-' * max_width}")
     for name, value in obj_data(target, name_width=name_width, value_width=value_width, show_private=show_private, show_internals=show_internals, show_value_class=show_value_class, show_methods=show_methods, only_show_methods=only_show_methods).items():
         if only_show_methods:
             print(f"{name:<{name_width}} {value}"[:max_width])
+        elif show_value_class:
+            value_class = obj_full_name(value)
+            print(f"{name:<{name_width}} | {value_class:{name_width}} | {value}"[:max_width])
         else:
-            if show_value_class:
-                value_class = obj_full_name(value)
-                print(f"{name:<{name_width}} | {value_class:{name_width}} | {value}"[:max_width])
-            else:
-                print(f"{name:<{name_width}} | {value}"[:max_width])
+            print(f"{name:<{name_width}} | {value}"[:max_width])
 
 def print_time_now(use_utc=True):
     print(time_now(use_utc=use_utc))
 
 def str_sha256(text: str):
-    if text:
-        return bytes_sha256(text.encode())
-        #return hashlib.sha256('{0}'.format(text).encode()).hexdigest()
-    return None
+    return bytes_sha256(text.encode()) if text else None
 
 def time_delta_to_str(time_delta):
     microseconds  = time_delta.microseconds
@@ -566,10 +518,7 @@ def time_delta_in_days_hours_or_minutes(time_delta):
 
 
 def time_now(use_utc=True, milliseconds_numbers=1):
-    if use_utc:
-        datetime_now = datetime.utcnow()
-    else:
-        datetime_now = datetime.now()
+    datetime_now = datetime.utcnow() if use_utc else datetime.now()
     return time_to_str(datetime_value=datetime_now,milliseconds_numbers=milliseconds_numbers)
 
 def time_to_str(datetime_value, time_format='%H:%M:%S.%f', milliseconds_numbers=3):
@@ -595,9 +544,7 @@ def timestamp_to_str(timestamp):
     return datetime_to_str(date_time)
 
 def to_string(target):
-    if target:
-        return str(target)
-    return ''
+    return str(target) if target else ''
 
 def random_bytes(length=24):
     return token_bytes(length)
@@ -666,9 +613,7 @@ def split_spaces(target):
     return remove_multiple_spaces(target).split(' ')
 
 def sorted_set(target : object):
-    if target:
-        return sorted(set(target))
-    return []
+    return sorted(set(target)) if target else []
 
 def str_to_base64(target):
     return bytes_to_base64(str_to_bytes(target))
@@ -695,9 +640,7 @@ def to_int(value, default=0):
         return default
 
 def trim(target):
-    if type(target) is str:
-        return target.strip()
-    return ""
+    return target.strip() if type(target) is str else ""
 
 def under_debugger():
     return 'pydevd' in sys.modules
@@ -717,18 +660,14 @@ def utc_now():
     return datetime.utcnow()
 
 def upper(target : str):
-    if target:
-        return target.upper()
-    return ""
+    return target.upper() if target else ""
 
 def wait(seconds):
     if seconds and seconds > 0:
         sleep(seconds)
 
 def word_wrap(text,length = 40):
-    if text:
-        return '\n'.join(textwrap.wrap(text, length))
-    return ''
+    return '\n'.join(textwrap.wrap(text, length)) if text else ''
 
 def word_wrap_escaped(text,length = 40):
     if text:

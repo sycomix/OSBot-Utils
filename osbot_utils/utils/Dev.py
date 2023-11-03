@@ -24,9 +24,7 @@ class Dev:
         print()                                # add a line before
         for arg in args:
             original_pprint.pprint(arg, indent=2)       # use a pprint to format
-        if len(args) == 1:
-            return args[0]
-        return args
+        return args[0] if len(args) == 1 else args
 
     @staticmethod
     def nprint(data):

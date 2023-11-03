@@ -73,7 +73,7 @@ class test_Temp_Zip_In_Memory(TestCase):
                     zip_bytes_to_file(_.zip_bytes(), temp_file_zip.path())
                     assert file_exists(temp_file_zip.path()) is True
                     with Unzip_File(temp_file_zip.path()) as unzipped_folder:
-                        path_test_file = unzipped_folder.path() + '/' + new_file_name
+                        path_test_file = f'{unzipped_folder.path()}/{new_file_name}'
                         assert path_test_file in unzipped_folder.files()
                         assert file_contents(path_test_file) == new_file_contents
 

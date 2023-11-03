@@ -23,10 +23,11 @@ def cache_on_function(function):
         else:
             reload_cache = False                                            # otherwise set reload to False
         cache_id = cache_on_self__get_cache_in_key(function, args, kwargs)
-        if reload_cache is True or hasattr(target, cache_id) is False:        # check if return_value has been set or if reload is True
+        if reload_cache or hasattr(target, cache_id) is False:        # check if return_value has been set or if reload is True
             return_value = function(*args, **kwargs)                        # invoke function and capture the return value
             setattr(target, cache_id,return_value)                            # set the return value
         return getattr(target, cache_id)                                      # return the return value
+
     return wrapper
 
 def cache_on_self__args_to_str(args):
@@ -46,13 +47,9 @@ def cache_on_self__kwargs_to_str(kwargs):
     return kwargs_values_as_str
 
 def cache_on_self__get_cache_in_key(function, args=None, kwargs=None):
-        key_name   = function.__name__
-        args_md5   = ''
-        kwargs_md5 = ''
-        args_values_as_str   = cache_on_self__args_to_str(args)
-        kwargs_values_as_str = cache_on_self__kwargs_to_str(kwargs)
-        if args_values_as_str:
-            args_md5 = str_md5(args_values_as_str)
-        if kwargs_values_as_str:
-            kwargs_md5 = str_md5(kwargs_values_as_str)
-        return f'{CACHE_ON_SELF_KEY_PREFIX}_{key_name}_{args_md5}_{kwargs_md5}'
+    key_name   = function.__name__
+    args_values_as_str   = cache_on_self__args_to_str(args)
+    kwargs_values_as_str = cache_on_self__kwargs_to_str(kwargs)
+    args_md5 = str_md5(args_values_as_str) if args_values_as_str else ''
+    kwargs_md5 = str_md5(kwargs_values_as_str) if kwargs_values_as_str else ''
+    return f'{CACHE_ON_SELF_KEY_PREFIX}_{key_name}_{args_md5}_{kwargs_md5}'

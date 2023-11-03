@@ -150,9 +150,13 @@ class test_Files(TestCase):
         assert folder_copy(source=folder_a, destination=target_a) == target_a
         assert(len(folder_files(target_a)) == 3)
 
-        assert folder_files(target_a) == sorted([ path_append(target_a, remove(file_a, folder_a +'/')) ,
-                                                  path_append(target_a, remove(file_b, folder_a + '/')),
-                                                  path_append(target_a, remove(file_c, folder_a + '/'))])
+        assert folder_files(target_a) == sorted(
+            [
+                path_append(target_a, remove(file_a, f'{folder_a}/')),
+                path_append(target_a, remove(file_b, f'{folder_a}/')),
+                path_append(target_a, remove(file_c, f'{folder_a}/')),
+            ]
+        )
 
         # test with ignore_pattern
         target_b = path_combine(folder_a, 'target_b')
@@ -160,9 +164,13 @@ class test_Files(TestCase):
         assert(len(folder_files(target_b)) == 2)
 
         zipped_files = zip_files(target_a)
-        assert zip_file_list(zipped_files) == sorted([remove(file_a, folder_a + '/'),
-                                                      remove(file_b, folder_a + '/'),
-                                                      remove(file_c, folder_a + '/')])
+        assert zip_file_list(zipped_files) == sorted(
+            [
+                remove(file_a, f'{folder_a}/'),
+                remove(file_b, f'{folder_a}/'),
+                remove(file_c, f'{folder_a}/'),
+            ]
+        )
 
         path_pattern = f'{folder_a}/**/*.*'
         assert len(files_find(path_pattern)) == 8

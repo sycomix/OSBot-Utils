@@ -34,4 +34,4 @@ class test_Local_Cache(TestCase):
         path_cache_file = self.cache.path_cache_file()
         assert file_exists  (path_cache_file)
         assert parent_folder(path_cache_file) == self.cache.path_root_folder()
-        assert file_name    (path_cache_file) == self.cache.cache_name +  ".json"
+        assert file_name    (path_cache_file) == f"{self.cache.cache_name}.json"

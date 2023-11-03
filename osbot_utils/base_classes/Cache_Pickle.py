@@ -21,10 +21,7 @@ class Cache_Pickle:
             return super().__getattribute__(name)
 
         target = super().__getattribute__(name)
-        if not callable(target):
-            return target
-
-        return self.cache_data(target)
+        return target if not callable(target) else self.cache_data(target)
 
     def cache_clear(self):
         cache_dir = self.cache_path()
@@ -60,13 +57,13 @@ class Cache_Pickle:
 
             if use_cache is True and reload_cache is False and file_exists(path_file):
                 return pickle_load_from_file(path_file)
-            else:
-                data = func(*args, **kwargs)
-                if data and use_cache is True:
-                    caller_name = func.__name__
-                    self.log_info(f"Saving cache file data for: {caller_name}")
-                    pickle_save_to_file(data, path_file)
-                return data
+            data = func(*args, **kwargs)
+            if data and use_cache is True:
+                caller_name = func.__name__
+                self.log_info(f"Saving cache file data for: {caller_name}")
+                pickle_save_to_file(data, path_file)
+            return data
+
         return wrapper
 
     def cache_disable(self):
@@ -100,12 +97,12 @@ class Cache_Pickle:
 
     def cache_resolve_file_name(self, function, args=None, kwargs=None):
         key_name               = function.__name__
-        args_md5               = ''
         kwargs_md5             = ''
         args_values_as_str     = self.cache_args_to_str(args)
         kwargs_values_as_str   = self.cache_kwargs_to_str(kwargs)
-        if args_values_as_str  : args_md5   = '_' + str_md5(args_values_as_str  )
-        if kwargs_values_as_str: kwargs_md5 = '_' + str_md5(kwargs_values_as_str)
+        args_md5 = f'_{str_md5(args_values_as_str)}' if args_values_as_str else ''
+        if kwargs_values_as_str:
+            kwargs_md5 = f'_{str_md5(kwargs_values_as_str)}'
         cache_file_name        = f'{key_name}{args_md5}{kwargs_md5}'
         cache_file_name       += '.pickle'
         return cache_file_name

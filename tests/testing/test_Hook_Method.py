@@ -41,9 +41,9 @@ class test_Hook_Method(TestCase):
         assert self.wrap_method.calls_last_one()['return_value'] == "status code: 200 ('head', 'https://www.google.com') {'allow_redirects': False} {}"
 
     def test_before_call(self):
-        assert self.wrap_method.calls_last_one() == None
+        assert self.wrap_method.calls_last_one() is None
         def on_before_call(*args, **kwargs):
-            args = (args[0], args[1] + '/404')
+            args = args[0], f'{args[1]}/404'
             return (args, kwargs)
 
         self.wrap_method.add_on_before_call(on_before_call)

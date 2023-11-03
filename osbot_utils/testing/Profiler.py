@@ -24,12 +24,8 @@ class Profiler:
             value  = getattr(source, arg_name)
             if type(option) is dict:
                 item[arg_name] = self.add_values(option, value)
-            else:
-                if profile_options.get(arg_name):
-                    if arg_name == 'f_locals':
-                        item[arg_name] = value.copy()           # create a copy of the var
-                    else:
-                        item[arg_name] = value
+            elif profile_options.get(arg_name):
+                item[arg_name] = value.copy() if arg_name == 'f_locals' else value
         return item
 
     def current_profiler(self):

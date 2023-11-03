@@ -13,7 +13,7 @@ def obj_base_classes_names(obj, show_module=False):
     names = []
     for base in obj_base_classes(obj):
         if show_module:
-            names.append(base.__module__ + '.' + base.__name__)
+            names.append(f'{base.__module__}.{base.__name__}')
         else:
             names.append(base.__name__)
     return names
