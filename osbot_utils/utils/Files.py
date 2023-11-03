@@ -298,8 +298,8 @@ class Files:
 
     @staticmethod
     def path_combine(path1, path2):
-        if type(path1) is str and type(path2) is str:
-            return abspath(join(path1, path2))
+        if type(path1) in [str, Path] and type(path2) in [str, Path]:
+            return abspath(join(str(path1), str(path2)))
 
     @staticmethod
     def parent_folder(path):
